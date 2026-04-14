@@ -10,14 +10,15 @@ define('APP_NAME',    'InfoDevis');
 define('APP_URL',     'http://localhost/info-devis');
 define('APP_VERSION', '1.0.0');
 
-// ── Email ─────────────────────────────────────────────────────
-define('MAIL_FROM',    'contact@info-devis.fr');
-define('MAIL_NAME',    'InfoDevis');
-define('MAIL_HOST',    'smtp.example.com');
-define('MAIL_PORT',    587);
-define('MAIL_USER',    '');
-define('MAIL_PASS',    '');
-define('MAIL_SECURE',  'tls');
+// ── Email / Mailtrap ──────────────────────────────────────────
+// En local (WAMP) → les emails sont sauvegardés dans storage/mails/
+// En prod  → mettre votre vrai token Mailtrap et domaine vérifié
+define('MAIL_FROM',        'hello@demomailtrap.co');   // sender vérifié Mailtrap sandbox
+define('MAIL_NAME',        'InfoDevis');
+define('ADMIN_EMAIL',      'jonathan@lanationduweb.fr');
+
+// Token API Mailtrap : https://mailtrap.io > Sending > API Tokens
+define('MAILTRAP_API_KEY', 'VOTRE_CLE_MAILTRAP_ICI');
 
 // ── Stripe ────────────────────────────────────────────────────
 define('STRIPE_PUBLIC_KEY',  'pk_test_VOTRE_CLE_PUBLIQUE');

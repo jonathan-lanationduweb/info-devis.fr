@@ -1,286 +1,310 @@
 /* ============================================================
    InfoDevis — Chatbot JS
-   Détection mots-clés, multi-catégories, collecte formulaire
+   Détection mots-clés locale, catégories à cocher, sans API
    ============================================================ */
 
 (function () {
   'use strict';
 
-  const BASE_URL  = document.querySelector('meta[name="base-url"]')?.content || '';
-  const API_URL   = BASE_URL + '/api/chatbot';
-  const SESSION   = 'cb_' + Math.random().toString(36).substr(2, 9);
-
-  let step            = 'initial';
-  let selectedCats    = [];
-  let formData        = {};
-  let autoOpened      = false;
-
-  const btn     = document.getElementById('chatbot-btn');
-  const win     = document.getElementById('chatbot-window');
-  const msgs    = document.getElementById('chatbot-messages');
-  const qr      = document.getElementById('chatbot-qr');
-  const inp     = document.getElementById('chatbot-input');
-  const send    = document.getElementById('chatbot-send');
-  const closeBtn= document.getElementById('chatbot-close');
+  /* ── Éléments DOM ─────────────────────────────────────── */
+  var btn      = document.getElementById('chatbot-btn');
+  var win      = document.getElementById('chatbot-window');
+  var msgs     = document.getElementById('chatbot-messages');
+  var qr       = document.getElementById('chatbot-qr');
+  var inp      = document.getElementById('chatbot-input');
+  var sendBtn  = document.getElementById('chatbot-send');
+  var closeBtn = document.getElementById('chatbot-close');
 
   if (!btn) return;
 
-  // ── Toggle ───────────────────────────────────────────────
-  btn.addEventListener('click', toggle);
-  closeBtn.addEventListener('click', close);
+  var baseUrl      = document.querySelector('meta[name="base-url"]') ? document.querySelector('meta[name="base-url"]').content : '';
+  var greeted      = false;
 
-  function toggle() { win.classList.contains('open') ? close() : open(); }
-  function open()   { win.classList.add('open'); btn.style.display = 'none'; if (!msgs.children.length) welcome(); }
-  function close()  { win.classList.remove('open'); btn.style.display = ''; }
+  /* ── Mots-clés → slugs catégories ────────────────────── */
+  var KEYWORDS = {
+    'fuite':             ['plomberie'],
+    'robinet':           ['plomberie'],
+    'tuyau':             ['plomberie'],
+    'eau':               ['plomberie'],
+    'canalisation':      ['plomberie'],
+    'wc':                ['plomberie'],
+    'toilette':          ['plomberie'],
+    'evacuation':        ['plomberie'],
+    'chauffe-eau':       ['plomberie', 'chauffage'],
+    'ballon':            ['plomberie', 'chauffage'],
+    'fissure':           ['maconnerie'],
+    'lezarde':           ['maconnerie'],
+    'mur':               ['maconnerie', 'peinture'],
+    'plafond':           ['maconnerie', 'peinture', 'plomberie'],
+    'facade':            ['maconnerie', 'peinture'],
+    'peinture':          ['peinture'],
+    'repeindre':         ['peinture'],
+    'enduit':            ['peinture', 'maconnerie'],
+    'ravalement':        ['peinture', 'maconnerie'],
+    'electricite':       ['electricite'],
+    'prise':             ['electricite'],
+    'tableau':           ['electricite'],
+    'disjoncteur':       ['electricite'],
+    'lumiere':           ['electricite'],
+    'interrupteur':      ['electricite'],
+    'cablage':           ['electricite'],
+    'chauffage':         ['chauffage'],
+    'chaudiere':         ['chauffage'],
+    'radiateur':         ['chauffage'],
+    'pac':               ['chauffage', 'energies-renouvelables'],
+    'toiture':           ['toiture'],
+    'toit':              ['toiture'],
+    'tuile':             ['toiture'],
+    'gouttiere':         ['toiture'],
+    'charpente':         ['toiture'],
+    'isolation':         ['isolation'],
+    'combles':           ['isolation'],
+    'isoler':            ['isolation'],
+    'fenetre':           ['menuiserie', 'isolation'],
+    'porte':             ['menuiserie'],
+    'volet':             ['menuiserie'],
+    'escalier':          ['menuiserie'],
+    'renovation':        ['renovation'],
+    'salle de bain':     ['renovation', 'plomberie', 'carrelage'],
+    'cuisine':           ['renovation', 'plomberie', 'electricite'],
+    'carrelage':         ['carrelage'],
+    'parquet':           ['renovation'],
+    'cloison':           ['maconnerie', 'renovation'],
+    'jardin':            ['jardinage'],
+    'pelouse':           ['jardinage'],
+    'haie':              ['jardinage'],
+    'terrasse':          ['amenagements-exterieurs', 'jardinage'],
+    'clim':              ['climatisation'],
+    'climatisation':     ['climatisation'],
+    'panneau solaire':   ['energies-renouvelables'],
+    'solaire':           ['energies-renouvelables']
+  };
 
-  // Auto-open après 8s
-  setTimeout(() => {
-    if (!autoOpened && !win.classList.contains('open')) {
-      autoOpened = true; open();
-    }
-  }, 8000);
+  /* ── Labels lisibles par slug ─────────────────────────── */
+  var CATEGORIES = {
+    'plomberie':               { label: 'Plomberie',               icon: '🔧' },
+    'electricite':             { label: 'Électricité',              icon: '⚡' },
+    'peinture':                { label: 'Peinture',                 icon: '🖌️' },
+    'toiture':                 { label: 'Toiture',                  icon: '🏠' },
+    'chauffage':               { label: 'Chauffage',                icon: '🔥' },
+    'menuiserie':              { label: 'Menuiserie',               icon: '🪚' },
+    'climatisation':           { label: 'Climatisation',            icon: '❄️' },
+    'isolation':               { label: 'Isolation',                icon: '🧱' },
+    'maconnerie':              { label: 'Maçonnerie',               icon: '⬛' },
+    'carrelage':               { label: 'Carrelage',                icon: '◻️' },
+    'jardinage':               { label: 'Jardinage',                icon: '🌿' },
+    'renovation':              { label: 'Rénovation',               icon: '🏗️' },
+    'energies-renouvelables':  { label: 'Énergies renouvelables',   icon: '☀️' },
+    'amenagements-exterieurs': { label: 'Aménagements extérieurs',  icon: '🏊' }
+  };
 
-  // ── Send ────────────────────────────────────────────────
-  send.addEventListener('click', handleSend);
-  inp.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } });
+  /* ── Ouverture / Fermeture ────────────────────────────── */
+  btn.addEventListener('click', function () {
+    win.classList.contains('open') ? fermer() : ouvrir();
+  });
 
-  function handleSend() {
-    const text = inp.value.trim();
-    if (!text) return;
+  closeBtn.addEventListener('click', fermer);
+
+  function ouvrir() {
+    win.classList.add('open');
+    btn.style.display = 'none';
+    if (!greeted) { greeted = true; bienvenue(); }
+    setTimeout(function () { inp.focus(); }, 300);
+  }
+
+  function fermer() {
+    win.classList.remove('open');
+    btn.style.display = '';
+  }
+
+  /* ── Message de bienvenue ─────────────────────────────── */
+  function bienvenue() {
+    ajouterMsg('👋 Bonjour ! Je suis l\'assistant InfoDevis.', 'bot');
+
+    setTimeout(function () {
+      ajouterMsg('Décrivez-moi votre problème et je vous propose les artisans qu\'il vous faut.', 'bot');
+      afficherRapides([
+        '💧 Fuite d\'eau',
+        '⬛ Fissure mur / plafond',
+        '⚡ Problème électricité',
+        '🏗️ Rénovation'
+      ]);
+    }, 500);
+  }
+
+  /* ── Envoi message ────────────────────────────────────── */
+  sendBtn.addEventListener('click', envoyer);
+  inp.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { e.preventDefault(); envoyer(); }
+  });
+
+  function envoyer() {
+    var texte = inp.value.trim();
+    if (!texte) return;
     inp.value = '';
-    addMsg(text, 'user');
-    sendToApi(text);
-  }
-
-  // ── API ────────────────────────────────────────────────
-  async function sendToApi(message) {
-    addTyping();
-    try {
-      const res = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message, session_id: SESSION, step, selected_categories: selectedCats, form_data: formData }),
-      });
-      const data = await res.json();
-      removeTyping();
-      handleResponse(data);
-    } catch {
-      removeTyping();
-      addMsg('Désolé, une erreur s\'est produite. Réessayez.', 'bot');
-    }
-  }
-
-  // ── Response handler ───────────────────────────────────
-  function handleResponse(data) {
-    if (data.step) step = data.step;
-
-    switch (data.type) {
-      case 'category_selection':
-        addMsg(data.message, 'bot');
-        renderCategorySelection(data.categories, data.cta);
-        break;
-      case 'form':
-        addMsg(data.message, 'bot');
-        renderForm(data.fields, data.categories);
-        break;
-      case 'confirmation':
-        addMsg(data.message, 'bot');
-        renderConfirmation(data);
-        break;
-      case 'price':
-        addMsg(data.message.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>'), 'bot', true);
-        if (data.cta) addCta(data.cta, data.action);
-        break;
-      default:
-        addMsg(data.message, 'bot');
-        if (data.quick_replies?.length) renderQuickReplies(data.quick_replies);
-        if (data.cta) addCta(data.cta, data.action);
-    }
-
-    msgs.scrollTop = msgs.scrollHeight;
-  }
-
-  // ── Welcome ────────────────────────────────────────────
-  function welcome() {
-    setTimeout(() => {
-      addMsg('👋 Bonjour ! Je suis l\'assistant InfoDevis. Je peux vous aider à trouver un artisan ou à obtenir un devis gratuit.', 'bot');
-      renderQuickReplies(['Demander un devis', 'Trouver un artisan', 'Connaître les prix', 'Autre question']);
-    }, 400);
-  }
-
-  // ── Category selection ─────────────────────────────────
-  function renderCategorySelection(categories, ctaLabel) {
     qr.innerHTML = '';
-    const div = document.createElement('div');
-    div.className = 'category-checkboxes';
-    div.style.padding = '8px 16px';
-
-    categories.forEach(cat => {
-      const label = document.createElement('label');
-      label.className = 'cat-check-label';
-      label.innerHTML = `
-        <input type="checkbox" value="${cat.id}" data-name="${cat.name}" checked>
-        <span>${cat.name}</span>
-      `;
-      div.appendChild(label);
-    });
-
-    const cta = document.createElement('button');
-    cta.className = 'btn btn-primary w-full';
-    cta.style.margin = '12px 0 8px';
-    cta.textContent = ctaLabel || 'Envoyer ma demande de devis';
-    cta.addEventListener('click', () => {
-      selectedCats = [...div.querySelectorAll('input:checked')].map(i => ({id: i.value, name: i.dataset.name}));
-      if (!selectedCats.length) { addMsg('Veuillez sélectionner au moins une catégorie.', 'bot'); return; }
-      div.remove();
-      sendToApi('Catégories sélectionnées: ' + selectedCats.map(c => c.name).join(', '));
-    });
-
-    msgs.appendChild(div);
-    msgs.appendChild(cta);
-    msgs.scrollTop = msgs.scrollHeight;
+    ajouterMsg(texte, 'user');
+    analyser(texte);
   }
 
-  // ── Form ───────────────────────────────────────────────
-  function renderForm(fields, categories) {
-    selectedCats = categories || selectedCats;
-    const container = document.createElement('div');
-    container.style.cssText = 'padding:8px 16px;display:flex;flex-direction:column;gap:10px;';
-
-    fields.forEach(f => {
-      const wrap = document.createElement('div');
-      if (f.type === 'textarea') {
-        wrap.innerHTML = `
-          <label style="font-size:.8rem;font-weight:600;display:block;margin-bottom:4px">${f.label}${f.required ? ' *' : ''}</label>
-          <textarea name="${f.name}" class="chatbot-input" style="min-height:70px;resize:vertical;border-radius:12px;padding:10px 14px;width:100%;" placeholder="${f.label}"></textarea>`;
-      } else if (f.type === 'select') {
-        const opts = Object.entries(f.options || {}).map(([v,l]) => `<option value="${v}">${l}</option>`).join('');
-        wrap.innerHTML = `
-          <label style="font-size:.8rem;font-weight:600;display:block;margin-bottom:4px">${f.label}</label>
-          <select name="${f.name}" class="chatbot-input" style="border-radius:12px;padding:10px 14px;width:100%;">${opts}</select>`;
-      } else {
-        wrap.innerHTML = `
-          <label style="font-size:.8rem;font-weight:600;display:block;margin-bottom:4px">${f.label}${f.required ? ' *' : ''}</label>
-          <input type="${f.type}" name="${f.name}" class="chatbot-input" placeholder="${f.label}" style="border-radius:12px;padding:10px 14px;width:100%;">`;
-      }
-      container.appendChild(wrap);
-    });
-
-    const btn = document.createElement('button');
-    btn.className = 'btn btn-primary w-full';
-    btn.textContent = 'Envoyer ma demande →';
-    btn.addEventListener('click', () => {
-      const inputs = container.querySelectorAll('input,textarea,select');
-      inputs.forEach(i => { formData[i.name] = i.value; });
-
-      // Validation basique
-      const email = formData.email;
-      if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        addMsg('L\'email saisi n\'est pas valide.', 'bot'); return;
-      }
-      if (!formData.first_name || !formData.email || !formData.ville) {
-        addMsg('Merci de remplir les champs obligatoires (prénom, email, ville).', 'bot'); return;
-      }
-
-      container.remove();
-      sendToApi('Informations complètes');
-    });
-
-    msgs.appendChild(container);
-    msgs.appendChild(btn);
-    msgs.scrollTop = msgs.scrollHeight;
-  }
-
-  // ── Confirmation ───────────────────────────────────────
-  function renderConfirmation(data) {
-    // Soumettre automatiquement le devis via fetch
-    const payload = new FormData();
-    payload.append('csrf_token', getCsrf());
-    payload.append('email', data.form_data.email || '');
-    payload.append('first_name', data.form_data.first_name || '');
-    payload.append('last_name', data.form_data.last_name || '');
-    payload.append('phone', data.form_data.phone || '');
-    payload.append('ville', data.form_data.ville || '');
-    payload.append('code_postal', data.form_data.code_postal || '');
-    payload.append('description', data.form_data.description || 'Demande via chatbot');
-    payload.append('urgency', data.form_data.urgency || 'normal');
-    payload.append('consent_privacy', '1');
-    (data.categories || selectedCats).forEach(c => payload.append('categories[]', c.id || c));
-
-    fetch((data.action || '') + '').then(r => r.json()).then(resp => {
-      if (resp.success) {
-        addMsg('✅ ' + (resp.message || 'Demande envoyée avec succès !'), 'bot');
-        addMsg('Référence : ' + resp.reference + '. Vous recevrez des réponses sous 24 à 48h.', 'bot');
-        addCta('Suivre ma demande', window.location.origin + '/dashboard/client');
-      } else {
-        addMsg('Votre demande n\'a pas pu être envoyée. Contactez-nous directement.', 'bot');
-        addCta('Voir le formulaire complet', data.action || '/devis');
-      }
-    }).catch(() => {
-      addMsg('Redirection vers le formulaire complet...', 'bot');
-      setTimeout(() => { window.location.href = data.action || '/devis'; }, 1500);
-    });
-  }
-
-  // ── Quick replies ──────────────────────────────────────
-  function renderQuickReplies(replies) {
+  /* ── Boutons rapides ──────────────────────────────────── */
+  function afficherRapides(liste) {
     qr.innerHTML = '';
-    replies.forEach(r => {
-      const btn = document.createElement('button');
-      btn.className = 'quick-reply-btn';
-      btn.textContent = r;
-      btn.addEventListener('click', () => {
+    liste.forEach(function (item) {
+      var b = document.createElement('button');
+      b.className = 'quick-reply-btn';
+      b.textContent = item;
+      b.addEventListener('click', function () {
         qr.innerHTML = '';
-        addMsg(r, 'user');
-        sendToApi(r);
+        ajouterMsg(item, 'user');
+        analyser(item);
       });
-      qr.appendChild(btn);
+      qr.appendChild(b);
     });
   }
 
-  // ── CTA ────────────────────────────────────────────────
-  function addCta(label, url) {
-    if (!url) return;
-    const a = document.createElement('a');
-    a.href = url; a.className = 'btn btn-primary btn-sm';
-    a.style.cssText = 'display:inline-flex;margin:4px 16px 8px;';
-    a.textContent = label;
-    msgs.appendChild(a);
-    msgs.scrollTop = msgs.scrollHeight;
+  /* ── Détection mots-clés ──────────────────────────────── */
+  function normaliser(texte) {
+    return texte.toLowerCase()
+      .replace(/[àáâã]/g, 'a')
+      .replace(/[éèêë]/g, 'e')
+      .replace(/[îï]/g, 'i')
+      .replace(/[ôõ]/g, 'o')
+      .replace(/[ùúû]/g, 'u')
+      .replace(/ç/g, 'c');
   }
 
-  // ── Message bubble ─────────────────────────────────────
-  function addMsg(text, type, html = false) {
-    const div = document.createElement('div');
-    div.className = 'chat-msg ' + type;
-    if (html) div.innerHTML = text; else div.textContent = text;
-    msgs.appendChild(div);
-    msgs.scrollTop = msgs.scrollHeight;
-  }
-
-  // ── Typing indicator ───────────────────────────────────
-  function addTyping() {
-    const div = document.createElement('div');
-    div.className = 'chat-msg bot'; div.id = 'typing';
-    div.innerHTML = '<span style="display:flex;gap:4px;align-items:center">' +
-      '<span style="width:7px;height:7px;background:#9ca3af;border-radius:50%;animation:typingDot 1s .0s infinite alternate"></span>' +
-      '<span style="width:7px;height:7px;background:#9ca3af;border-radius:50%;animation:typingDot 1s .2s infinite alternate"></span>' +
-      '<span style="width:7px;height:7px;background:#9ca3af;border-radius:50%;animation:typingDot 1s .4s infinite alternate"></span>' +
-      '</span>';
-    if (!document.getElementById('typing-style')) {
-      const s = document.createElement('style');
-      s.id = 'typing-style';
-      s.textContent = '@keyframes typingDot{from{transform:translateY(0)}to{transform:translateY(-5px)}}';
-      document.head.appendChild(s);
+  function detecterCategories(texte) {
+    var norm  = normaliser(texte);
+    var found = {};
+    var kw, slugs, i;
+    for (kw in KEYWORDS) {
+      if (norm.indexOf(normaliser(kw)) !== -1) {
+        slugs = KEYWORDS[kw];
+        for (i = 0; i < slugs.length; i++) {
+          found[slugs[i]] = true;
+        }
+      }
     }
-    msgs.appendChild(div);
+    return Object.keys(found);
+  }
+
+  function analyser(texte) {
+    var slugs = detecterCategories(texte);
+
+    setTimeout(function () {
+      if (slugs.length > 0) {
+        ajouterMsg('J\'ai bien compris votre problème ! Voici les interventions qui peuvent vous aider :', 'bot');
+        setTimeout(function () { afficherCategories(slugs); }, 300);
+      } else {
+        ajouterMsg('Je n\'ai pas bien saisi votre problème. Pouvez-vous préciser ?', 'bot');
+        setTimeout(function () {
+          ajouterMsg('Exemple : fuite robinet, fissure mur extérieur, radiateur qui chauffe pas...', 'bot');
+          afficherRapides([
+            '💧 Fuite d\'eau',
+            '⬛ Fissure mur / plafond',
+            '⚡ Problème électricité',
+            '🏗️ Rénovation'
+          ]);
+        }, 400);
+      }
+    }, 600);
+  }
+
+  /* ── Affichage catégories à cocher ───────────────────── */
+  function afficherCategories(slugs) {
+    var wrap = document.createElement('div');
+    wrap.className = 'chat-msg bot';
+    wrap.id = 'cat-picker';
+
+    var checkboxes = document.createElement('div');
+    checkboxes.className = 'category-checkboxes';
+
+    slugs.forEach(function (slug) {
+      var cat = CATEGORIES[slug];
+      if (!cat) return;
+
+      var label = document.createElement('label');
+      label.className = 'cat-check-label';
+
+      var cb = document.createElement('input');
+      cb.type    = 'checkbox';
+      cb.value   = slug;
+      cb.checked = true;
+
+      var icone = document.createElement('span');
+      icone.textContent = cat.icon + ' ';
+
+      var nom = document.createElement('span');
+      nom.textContent = cat.label;
+
+      label.appendChild(cb);
+      label.appendChild(icone);
+      label.appendChild(nom);
+      checkboxes.appendChild(label);
+    });
+
+    var valider = document.createElement('button');
+    valider.className = 'btn btn-primary w-full';
+    valider.style.marginTop = '12px';
+    valider.textContent = 'Demander mes devis →';
+
+    valider.addEventListener('click', function () {
+      var coches = checkboxes.querySelectorAll('input:checked');
+      if (coches.length === 0) {
+        ajouterMsg('Veuillez cocher au moins une catégorie.', 'bot');
+        return;
+      }
+
+      var labels = [];
+      var params = [];
+      coches.forEach(function (cb) {
+        var cat = CATEGORIES[cb.value];
+        if (cat) labels.push(cat.label);
+        params.push(cb.value);
+      });
+
+      /* Désactiver le picker */
+      wrap.querySelectorAll('input, button').forEach(function (el) { el.disabled = true; });
+
+      ajouterMsg(labels.join(', '), 'user');
+
+      setTimeout(function () {
+        ajouterMsg('Parfait ! Je vous redirige vers le formulaire de devis pour : ' + labels.join(', ') + '.', 'bot');
+
+        setTimeout(function () {
+          var url = baseUrl + '/devis?categories=' + encodeURIComponent(params.join(','));
+
+          var lien = document.createElement('a');
+          lien.href      = url;
+          lien.className = 'btn btn-primary btn-sm';
+          lien.style.cssText = 'display:inline-flex;margin:4px 16px 8px;';
+          lien.textContent = 'Remplir ma demande de devis →';
+          msgs.appendChild(lien);
+
+          setTimeout(function () {
+            ajouterMsg('Vous avez d\'autres problèmes ?', 'bot');
+            afficherRapides(['↩ Nouveau problème']);
+          }, 800);
+
+          msgs.scrollTop = msgs.scrollHeight;
+        }, 600);
+      }, 400);
+    });
+
+    wrap.appendChild(checkboxes);
+    wrap.appendChild(valider);
+    msgs.appendChild(wrap);
     msgs.scrollTop = msgs.scrollHeight;
   }
-  function removeTyping() { document.getElementById('typing')?.remove(); }
 
-  function getCsrf() {
-    return document.querySelector('input[name="csrf_token"]')?.value ||
-           document.querySelector('meta[name="csrf-token"]')?.content || '';
+  /* ── Ajouter bulle message ────────────────────────────── */
+  function ajouterMsg(texte, type) {
+    var div = document.createElement('div');
+    div.className = 'chat-msg ' + type;
+    div.textContent = texte;
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
   }
 
 })();

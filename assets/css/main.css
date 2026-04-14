@@ -776,3 +776,91 @@ tbody tr:hover { background: var(--c-gray-50); }
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
+/* ── Grille Métiers (page categories) ─────────────────────── */
+.metiers-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px 24px;
+}
+.metiers-grid .metier-card:nth-child(2)  { margin-top: 48px; }
+.metiers-grid .metier-card:nth-child(5)  { margin-top: -64px; }
+.metiers-grid .metier-card:nth-child(8)  { margin-top: 32px; }
+.metiers-grid .metier-card:nth-child(10) { margin-top: 96px; }
+.metiers-grid .metier-card:nth-child(12) { margin-top: -48px; }
+.metiers-grid .metier-card:nth-child(17) { margin-top: -96px; }
+
+.metier-card { display: block; text-decoration: none; color: inherit; cursor: pointer; }
+.metier-card--wide { grid-column: span 2; }
+
+.metier-card__img-wrap {
+  position: relative; overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--c-gray-200);
+  height: 400px;
+}
+.metier-card--wide .metier-card__img-wrap { height: 440px; }
+
+.metier-card__img-wrap img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  transition: transform .7s cubic-bezier(.4,0,.2,1);
+  filter: grayscale(10%);
+}
+.metier-card:hover .metier-card__img-wrap img {
+  transform: scale(1.08);
+  filter: grayscale(0%);
+}
+
+.metier-card__prix {
+  position: absolute; bottom: 14px; right: 14px;
+  background: rgba(255,255,255,.88); backdrop-filter: blur(8px);
+  padding: 6px 14px; border-radius: var(--radius-md);
+  font-size: .72rem; font-weight: 700;
+  letter-spacing: .05em; text-transform: uppercase; color: var(--c-text);
+}
+
+.metier-card__overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,.65) 0%, rgba(0,0,0,.15) 50%, transparent 100%);
+  display: flex; flex-direction: column; justify-content: flex-end; padding: 28px;
+}
+.metier-card__tag {
+  display: inline-block; border: 1px solid rgba(255,255,255,.35);
+  color: #fff; font-size: .68rem; font-weight: 700;
+  letter-spacing: .18em; text-transform: uppercase;
+  padding: 4px 12px; border-radius: var(--radius-md);
+  margin-bottom: 12px; width: fit-content;
+}
+.metier-card__title-overlay {
+  font-size: 1.9rem; font-weight: 800; color: #fff;
+  margin-bottom: 8px; line-height: 1.15;
+}
+.metier-card__desc-overlay {
+  font-size: .88rem; color: rgba(255,255,255,.78);
+  margin-bottom: 14px; line-height: 1.5;
+}
+
+.metier-card__body { padding: 16px 4px 0; }
+.metier-card__title {
+  font-size: 1.2rem; font-weight: 800; color: var(--c-text);
+  margin-bottom: 6px; line-height: 1.2;
+  transition: color var(--transition);
+}
+.metier-card:hover .metier-card__title { color: var(--c-green); }
+.metier-card__desc {
+  font-size: .85rem; color: var(--c-gray-600);
+  line-height: 1.55; margin: 0;
+}
+
+@media (max-width: 1024px) {
+  .metiers-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  .metiers-grid .metier-card:nth-child(n) { margin-top: 0; }
+  .metier-card--wide { grid-column: span 2; }
+  .metier-card__img-wrap { height: 320px; }
+}
+@media (max-width: 640px) {
+  .metiers-grid { grid-template-columns: 1fr; gap: 20px; }
+  .metier-card--wide { grid-column: span 1; }
+  .metier-card__img-wrap,
+  .metier-card--wide .metier-card__img-wrap { height: 260px; }
+  .metier-card__title-overlay { font-size: 1.4rem; }
+}

@@ -1,0 +1,19 @@
+{
+    "name": "info-devis/info-devis",
+    "description": "InfoDevis.fr — Plateforme de mise en relation artisans / clients",
+    "type": "project",
+    "require": {
+        "php": ">=8.1",
+        "railsware/mailtrap-php": "^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "InfoDevis\\": "src/"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    },
+    "minimum-stability": "stable"
+}

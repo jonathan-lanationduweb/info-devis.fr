@@ -1,220 +1,167 @@
-<?php
-$initials = strtoupper(substr($artisan['first_name'] ?? 'A', 0, 1) . substr($artisan['last_name'] ?? '', 0, 1));
-$planColors = ['gratuit' => '#9ca3af', 'starter' => '#3b82f6', 'pro' => '#8b5cf6', 'illimite' => '#f97316'];
-$planColor  = $planColors[$artisan['plan'] ?? 'gratuit'] ?? '#9ca3af';
-?>
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><?= Security::e($pageTitle) ?></title>
-  <link rel="stylesheet" href="<?= APP_URL ?>/assets/css/main.css">
-  <meta name="robots" content="noindex">
-</head>
-<body>
-<div class="dashboard-layout">
+<?php /* views/artisan/dashboard.php */ ?>
+<style>
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24
+  }
+</style>
 
-  <!-- Sidebar -->
-  <aside class="dashboard-sidebar">
-    <div class="sidebar-logo">
-      <a href="<?= APP_URL ?>">Info<span>Devis</span></a>
-    </div>
+<aside class="fixed left-0 top-20 h-[calc(100vh-5rem)] w-64 border-r border-[#aeb3b2]/15 bg-[#faf9f8] flex flex-col py-8 px-4 gap-2 z-40">
+  <div class="mb-8 px-4">
+    <p class="font-label uppercase tracking-widest text-[10px] text-stone-400">Espace Membre</p>
+    <h3 class="font-headline italic text-lg text-primary">Espace Artisan</h3>
+  </div>
+  <nav class="flex-1 flex flex-col gap-1">
+    <a href="<?= APP_URL ?>/dashboard/artisan" class="flex items-center gap-3 bg-primary/5 text-primary rounded-lg px-4 py-3 font-bold">
+      <span class="material-symbols-outlined">dashboard</span>
+      <span class="font-label uppercase tracking-widest text-xs">Tableau de bord</span>
+    </a>
+    <a href="<?= APP_URL ?>/dashboard/artisan/leads" class="flex items-center gap-3 text-stone-500 px-4 py-3 hover:bg-stone-100 transition-colors rounded-lg">
+      <span class="material-symbols-outlined">format_list_bulleted</span>
+      <span class="font-label uppercase tracking-widest text-xs">Mes Leads</span>
+    </a>
+    <a href="<?= APP_URL ?>/dashboard/artisan/messages" class="flex items-center gap-3 text-stone-500 px-4 py-3 hover:bg-stone-100 transition-colors rounded-lg">
+      <span class="material-symbols-outlined">chat_bubble</span>
+      <span class="font-label uppercase tracking-widest text-xs">Messages</span>
+    </a>
+    <a href="<?= APP_URL ?>/dashboard/artisan/calendar" class="flex items-center gap-3 text-stone-500 px-4 py-3 hover:bg-stone-100 transition-colors rounded-lg">
+      <span class="material-symbols-outlined">calendar_today</span>
+      <span class="font-label uppercase tracking-widest text-xs">Calendrier</span>
+    </a>
+    <a href="<?= APP_URL ?>/dashboard/artisan/profile" class="flex items-center gap-3 text-stone-500 px-4 py-3 hover:bg-stone-100 transition-colors rounded-lg">
+      <span class="material-symbols-outlined">account_circle</span>
+      <span class="font-label uppercase tracking-widest text-xs">Profil Public</span>
+    </a>
+    <a href="<?= APP_URL ?>/dashboard/artisan/stats" class="flex items-center gap-3 text-stone-500 px-4 py-3 hover:bg-stone-100 transition-colors rounded-lg">
+      <span class="material-symbols-outlined">query_stats</span>
+      <span class="font-label uppercase tracking-widest text-xs">Statistiques</span>
+    </a>
+    <a href="<?= APP_URL ?>/dashboard/artisan/abonnement" class="flex items-center gap-3 text-stone-500 px-4 py-3 hover:bg-stone-100 transition-colors rounded-lg">
+      <span class="material-symbols-outlined">card_membership</span>
+      <span class="font-label uppercase tracking-widest text-xs">Abonnement</span>
+    </a>
+    <a href="<?= APP_URL ?>/dashboard/artisan/documents" class="flex items-center gap-3 text-stone-500 px-4 py-3 hover:bg-stone-100 transition-colors rounded-lg">
+      <span class="material-symbols-outlined">description</span>
+      <span class="font-label uppercase tracking-widest text-xs">Documents</span>
+    </a>
+  </nav>
+  <div class="p-4 bg-surface-container-low rounded-xl">
+    <p class="text-xs font-bold text-on-surface-variant mb-2">Besoin d'aide ?</p>
+    <p class="text-[10px] text-outline leading-relaxed">Support disponible lundi au vendredi.</p>
+  </div>
+</aside>
 
-    <!-- Profile mini -->
-    <div style="padding:0 20px 24px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:16px">
-      <div style="display:flex;align-items:center;gap:12px">
-        <div style="width:44px;height:44px;border-radius:50%;background:var(--c-orange);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:1rem;flex-shrink:0">
-          <?= $initials ?>
-        </div>
-        <div>
-          <div style="color:#fff;font-weight:600;font-size:.9rem"><?= Security::e($artisan['company_name'] ?? $artisan['first_name']) ?></div>
-          <div style="font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:999px;display:inline-block;margin-top:3px;background:<?= $planColor ?>22;color:<?= $planColor ?>;border:1px solid <?= $planColor ?>44">
-            Plan <?= ucfirst($artisan['plan'] ?? 'gratuit') ?>
-          </div>
-        </div>
-      </div>
-      <?php if (!$artisan['is_verified']): ?>
-      <div style="margin-top:12px;background:rgba(249,115,22,.15);border:1px solid rgba(249,115,22,.3);border-radius:8px;padding:8px 10px;font-size:.78rem;color:#fdba74">
-        ⚠️ Compte en attente de validation
-      </div>
-      <?php endif; ?>
-    </div>
+<main class="ml-64 pt-20 min-h-screen">
+  <div class="max-w-6xl mx-auto px-8 py-12">
 
-    <ul class="sidebar-menu">
-      <li class="sidebar-section-title">Principal</li>
-      <li><a href="<?= APP_URL ?>/dashboard/artisan" class="<?= str_ends_with($_SERVER['REQUEST_URI'],'/artisan') ? 'active' : '' ?>">
-        📊 Tableau de bord
-      </a></li>
-      <li><a href="<?= APP_URL ?>/dashboard/artisan/leads" class="<?= str_contains($_SERVER['REQUEST_URI'],'/leads') ? 'active' : '' ?>">
-        🎯 Mes leads
-        <?php if (($stats['pending_leads'] ?? 0) > 0): ?>
-        <span style="margin-left:auto;background:var(--c-orange);color:#fff;border-radius:999px;padding:2px 8px;font-size:.72rem;font-weight:700"><?= $stats['pending_leads'] ?></span>
-        <?php endif; ?>
-      </a></li>
-      <li><a href="<?= APP_URL ?>/dashboard/artisan/messages" class="<?= str_contains($_SERVER['REQUEST_URI'],'/messages') ? 'active' : '' ?>">
-        💬 Messages
-        <?php if (($stats['unread_messages'] ?? 0) > 0): ?>
-        <span style="margin-left:auto;background:var(--c-danger);color:#fff;border-radius:999px;padding:2px 8px;font-size:.72rem;font-weight:700"><?= $stats['unread_messages'] ?></span>
-        <?php endif; ?>
-      </a></li>
-
-      <li class="sidebar-section-title">Mon compte</li>
-      <li><a href="<?= APP_URL ?>/dashboard/artisan/profile">👤 Mon profil</a></li>
-      <li><a href="<?= APP_URL ?>/dashboard/artisan/calendar">📅 Disponibilités</a></li>
-      <li><a href="<?= APP_URL ?>/dashboard/artisan/documents">📄 Mes documents</a></li>
-      <li><a href="<?= APP_URL ?>/dashboard/artisan/stats">📈 Statistiques</a></li>
-      <li><a href="<?= APP_URL ?>/dashboard/artisan/abonnement">💳 Abonnement</a></li>
-      <li class="sidebar-section-title">Autre</li>
-      <li><a href="<?= APP_URL ?>">🏠 Site principal</a></li>
-      <li><a href="<?= APP_URL ?>/deconnexion" style="color:rgba(255,100,100,.7)">🚪 Déconnexion</a></li>
-    </ul>
-  </aside>
-
-  <!-- Main content -->
-  <main class="dashboard-main">
-    <div class="dashboard-header">
-      <div>
-        <h1 class="dashboard-title">Bonjour, <?= Security::e($artisan['first_name'] ?? 'Artisan') ?> 👋</h1>
-        <p style="color:var(--c-gray-400);margin:0;font-size:.9rem"><?= date('l d F Y') ?></p>
-      </div>
-      <a href="<?= APP_URL ?>/dashboard/artisan/leads" class="btn btn-primary">Voir mes leads</a>
-    </div>
-
-    <!-- KPI Cards -->
-    <div class="kpi-grid">
-      <div class="kpi-card">
-        <div class="kpi-icon blue">🎯</div>
-        <div>
-          <div class="kpi-value"><?= $stats['total_leads'] ?></div>
-          <div class="kpi-label">Leads reçus</div>
-        </div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-icon green">✅</div>
-        <div>
-          <div class="kpi-value"><?= $stats['accepted_leads'] ?></div>
-          <div class="kpi-label">Leads acceptés</div>
-        </div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-icon orange">⏳</div>
-        <div>
-          <div class="kpi-value"><?= $stats['pending_leads'] ?></div>
-          <div class="kpi-label">En attente</div>
-        </div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-icon purple">⭐</div>
-        <div>
-          <div class="kpi-value"><?= $stats['avg_rating'] ?>/5</div>
-          <div class="kpi-label">Note moyenne (<?= $stats['total_avis'] ?> avis)</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Verification alert -->
-    <?php if (!$artisan['is_verified']): ?>
-    <div class="alert alert-warning" style="margin-bottom:24px">
-      <strong>⚠️ Votre compte est en attente de validation.</strong>
-      Déposez vos documents pour accélérer le processus.
-      <a href="<?= APP_URL ?>/dashboard/artisan/documents" style="margin-left:8px;font-weight:700">Déposer mes documents →</a>
-    </div>
-    <?php endif; ?>
-
-    <!-- Upgrade banner -->
-    <?php if (($artisan['plan'] ?? 'gratuit') === 'gratuit'): ?>
-    <div style="background:linear-gradient(135deg,var(--c-navy),var(--c-blue));border-radius:var(--radius-lg);padding:28px 32px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px">
-      <div>
-        <h3 style="color:#fff;margin-bottom:6px;font-family:var(--f-body)">🚀 Passez au plan Pro</h3>
-        <p style="color:rgba(255,255,255,.7);font-size:.9rem;margin:0">Recevez plus de leads, badge vérifié, statistiques avancées</p>
-      </div>
-      <a href="<?= APP_URL ?>/dashboard/artisan/abonnement" class="btn btn-primary">Voir les plans →</a>
-    </div>
-    <?php endif; ?>
-
-    <!-- Quick leads -->
-    <div class="card">
-      <div class="card-header">
-        <h4 class="card-title">Derniers leads reçus</h4>
-        <a href="<?= APP_URL ?>/dashboard/artisan/leads" style="font-size:.85rem;color:var(--c-blue-light)">Voir tous →</a>
-      </div>
-      <div class="card-body" style="padding:0">
-        <div class="table-wrapper" style="border:none;border-radius:0">
-          <?php
-          $recentLeads = Database::fetchAll(
-            'SELECT l.*, d.reference, d.title, d.ville, d.urgency, c.name as cat, u.first_name, u.last_name
-             FROM leads l JOIN devis d ON d.id=l.devis_id JOIN categories c ON c.id=l.category_id JOIN users u ON u.id=d.client_id
-             WHERE l.artisan_id=? ORDER BY l.created_at DESC LIMIT 5',
-            [$artisan['id']]
-          );
-          ?>
-          <?php if (empty($recentLeads)): ?>
-          <div style="padding:40px;text-align:center;color:var(--c-gray-400)">
-            <div style="font-size:2.5rem;margin-bottom:12px">🎯</div>
-            <p>Aucun lead pour l'instant. Complétez votre profil pour en recevoir !</p>
-            <a href="<?= APP_URL ?>/dashboard/artisan/profile" class="btn btn-primary btn-sm" style="margin-top:12px">Compléter mon profil</a>
-          </div>
-          <?php else: ?>
-          <table>
-            <thead>
-              <tr>
-                <th>Réf.</th>
-                <th>Titre</th>
-                <th>Catégorie</th>
-                <th>Ville</th>
-                <th>Urgence</th>
-                <th>Statut</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <?php foreach ($recentLeads as $l): ?>
-              <tr>
-                <td><span style="font-weight:600;font-size:.8rem;color:var(--c-gray-400)"><?= Security::e($l['reference']) ?></span></td>
-                <td><?= Security::e(substr($l['title'],0,40)) ?>...</td>
-                <td><span class="badge badge-active"><?= Security::e($l['cat']) ?></span></td>
-                <td><?= Security::e($l['ville']) ?></td>
-                <td>
-                  <?php $urgColors = ['normal'=>'badge-active','urgent'=>'badge-pending','tres_urgent'=>'badge-refused']; ?>
-                  <span class="badge <?= $urgColors[$l['urgency']] ?? 'badge-active' ?>"><?= ucfirst($l['urgency']) ?></span>
-                </td>
-                <td>
-                  <span class="badge badge-<?= $l['status'] ?>"><?= ucfirst($l['status']) ?></span>
-                </td>
-                <td>
-                  <?php if ($l['status'] === 'pending'): ?>
-                  <div style="display:flex;gap:6px">
-                    <button onclick="respondLead(<?= $l['id'] ?>,'accepted')" class="btn btn-success btn-sm">Accepter</button>
-                    <button onclick="respondLead(<?= $l['id'] ?>,'refused')"  class="btn btn-danger btn-sm">Refuser</button>
-                  </div>
-                  <?php endif; ?>
-                </td>
-              </tr>
-              <?php endforeach; ?>
-            </tbody>
-          </table>
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+      <div class="space-y-2">
+        <div class="flex items-center gap-3">
+          <h1 class="text-4xl font-headline font-bold tracking-tight"><?= Security::e($artisan['company_name'] ?? $_SESSION['user_name'] ?? 'Mon entreprise') ?></h1>
+          <?php if (!empty($artisan['badge_verified']) || ($artisan['verification_status'] ?? '') === 'validated'): ?>
+            <span class="flex items-center gap-1 bg-primary-container text-on-primary-container px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">
+              <span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1,'wght' 300,'GRAD' 0,'opsz' 24">verified</span>
+              Vérifié
+            </span>
           <?php endif; ?>
         </div>
+        <p class="text-on-surface-variant font-medium">Plan <?= ucfirst($artisan['plan'] ?? 'Gratuit') ?></p>
+      </div>
+      <span class="inline-flex items-center gap-2 bg-surface-container-highest border border-outline-variant/20 px-4 py-2 rounded text-xs font-bold uppercase tracking-tighter text-secondary">
+        <span class="material-symbols-outlined text-sm">star</span>
+        Plan <?= ucfirst($artisan['plan'] ?? 'Gratuit') ?>
+      </span>
+    </div>
+
+    <!-- Alerte vérification -->
+    <?php if (($artisan['verification_status'] ?? '') === 'pending'): ?>
+      <div class="mb-12 bg-tertiary-container text-on-tertiary-container p-4 rounded-xl flex items-center gap-4 border border-tertiary/10">
+        <span class="material-symbols-outlined text-tertiary">info</span>
+        <p class="text-sm font-medium">Votre dossier est en cours de validation par nos experts. Certaines fonctionnalités peuvent être limitées.</p>
+        <a href="<?= APP_URL ?>/dashboard/artisan/documents" class="ml-auto text-xs font-bold uppercase tracking-widest text-tertiary hover:underline flex-shrink-0">Uploader mes docs →</a>
+      </div>
+    <?php endif; ?>
+
+    <!-- KPI Cards -->
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-12">
+      <?php
+      $kpis = [
+        ['Total Leads',   $stats['total_leads'],     null],
+        ['En attente',    $stats['pending_leads'],    'text-primary'],
+        ['Acceptés',      $stats['accepted_leads'],   null],
+        ['Note moyenne',  number_format($stats['avg_rating'], 1) . '/5', null],
+        ['Avis',          $stats['total_avis'],       null],
+        ['Messages',      $stats['unread_messages'],  'primary'], // special bg
+      ];
+      foreach ($kpis as $i => [$label, $val, $color]):
+        $isLast = $i === 5;
+      ?>
+        <div class="<?= $isLast ? 'bg-primary text-on-primary' : 'bg-surface-container-lowest border border-outline-variant/10' ?> p-6 rounded-xl shadow-sm">
+          <p class="text-[10px] font-bold uppercase tracking-widest <?= $isLast ? 'opacity-70' : 'text-outline-variant' ?> mb-4"><?= $label ?></p>
+          <div class="flex items-baseline gap-2">
+            <span class="text-3xl font-headline font-bold <?= (!$isLast && $color) ? $color : '' ?>"><?= $val ?></span>
+            <?php if ($isLast): ?><span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1,'wght' 300,'GRAD' 0,'opsz' 24">mark_as_unread</span><?php endif; ?>
+          </div>
+        </div>
+      <?php endforeach; ?>
+    </div>
+
+    <!-- Navigation Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <!-- Grande carte leads -->
+      <a href="<?= APP_URL ?>/dashboard/artisan/leads"
+        class="md:col-span-2 group relative overflow-hidden bg-surface-container-high rounded-2xl aspect-[2/1] p-8 flex flex-col justify-end hover:bg-surface-container-highest transition-colors">
+        <div class="absolute top-0 right-0 p-8 opacity-20 group-hover:opacity-30 transition-opacity">
+          <span class="material-symbols-outlined text-8xl">format_list_bulleted</span>
+        </div>
+        <div class="relative z-10">
+          <h3 class="text-2xl font-headline font-bold mb-2">Gestion des Leads</h3>
+          <p class="text-on-surface-variant text-sm max-w-xs">Consultez et répondez aux nouvelles demandes de devis qualifiées.</p>
+          <?php if ($stats['pending_leads'] > 0): ?>
+            <span class="mt-3 inline-block bg-primary text-on-primary text-xs font-bold px-3 py-1 rounded-full"><?= $stats['pending_leads'] ?> en attente</span>
+          <?php endif; ?>
+        </div>
+      </a>
+
+      <?php
+      $navCards = [
+        ['/dashboard/artisan/messages',   'mail',           'Messagerie',    'Échanges avec vos clients'],
+        ['/dashboard/artisan/calendar',   'calendar_today', 'Calendrier',    'Rendez-vous et chantiers'],
+        ['/dashboard/artisan/profile',    'account_circle', 'Profil Public', 'Portfolio et vitrine'],
+        ['/dashboard/artisan/stats',      'query_stats',    'Statistiques',  'Performance et visibilité'],
+        ['/dashboard/artisan/abonnement', 'card_membership', 'Abonnement',    'Plan ' . ucfirst($artisan['plan'] ?? 'Gratuit')],
+        ['/dashboard/artisan/documents',  'description',    'Documents',     'Assurances et KBIS'],
+      ];
+      foreach ($navCards as [$url, $icon, $title, $sub]):
+      ?>
+        <a href="<?= APP_URL . $url ?>" class="group bg-surface-container-low rounded-2xl p-8 flex flex-col justify-between hover:shadow-lg transition-all border border-outline-variant/5">
+          <span class="material-symbols-outlined text-primary text-3xl"><?= $icon ?></span>
+          <div>
+            <h3 class="text-lg font-headline font-bold"><?= $title ?></h3>
+            <p class="text-outline text-xs mt-1"><?= $sub ?></p>
+          </div>
+        </a>
+      <?php endforeach; ?>
+    </div>
+
+    <!-- Citation éditoriale -->
+    <div class="mt-20 p-12 bg-surface-container-highest rounded-3xl relative overflow-hidden">
+      <span class="absolute top-0 left-4 text-primary/10 text-[120px] font-headline select-none">"</span>
+      <div class="relative z-10 max-w-2xl">
+        <p class="text-xl font-headline italic text-on-surface mb-6 leading-relaxed">
+          Le succès d'un artisan sur Info-Devis repose sur la réactivité. Les clients qui reçoivent une réponse dans les 2 heures ont un taux de conversion 3 fois plus élevé.
+        </p>
+        <div class="flex items-center gap-4">
+          <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+            <span class="material-symbols-outlined text-primary">person</span>
+          </div>
+          <div>
+            <p class="text-xs font-bold uppercase tracking-widest text-primary">Conseil de l'Expert</p>
+            <p class="text-sm font-headline font-medium">L'équipe InfoDevis</p>
+          </div>
+        </div>
       </div>
     </div>
-  </main>
-</div>
 
-<script src="<?= APP_URL ?>/assets/js/main.js"></script>
-<script>
-const CSRF = '<?= Security::generateCsrf() ?>';
-async function respondLead(leadId, status) {
-  if (!confirm(status === 'accepted' ? 'Accepter ce lead ?' : 'Refuser ce lead ?')) return;
-  const res = await fetch('<?= APP_URL ?>/dashboard/artisan/lead/respond', {
-    method: 'POST',
-    headers: {'Content-Type':'application/x-www-form-urlencoded'},
-    body: `csrf_token=${CSRF}&lead_id=${leadId}&status=${status}`
-  });
-  const d = await res.json();
-  if (d.success) location.reload();
-  else alert(d.error || 'Erreur');
-}
-</script>
-</body>
-</html>
+  </div>
+</main>

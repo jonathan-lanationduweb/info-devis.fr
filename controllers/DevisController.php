@@ -6,21 +6,24 @@ require_once BASE_PATH . '/services/MatchingService.php';
 require_once BASE_PATH . '/services/MailService.php';
 require_once BASE_PATH . '/services/AntiDuplicateService.php';
 
-class DevisController extends BaseController {
+class DevisController extends BaseController
+{
 
     private DevisModel          $devisModel;
     private CategoryModel       $categoryModel;
     private MatchingService     $matchingService;
     private AntiDuplicateService $antiDupService;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->devisModel      = new DevisModel();
         $this->categoryModel   = new CategoryModel();
         $this->matchingService = new MatchingService();
         $this->antiDupService  = new AntiDuplicateService();
     }
 
-    public function form(): void {
+    public function form(): void
+    {
         $categories = $this->categoryModel->getMainCategories();
         $catId      = (int)($_GET['categorie'] ?? 0);
         $this->view('home/devis', [
@@ -30,28 +33,30 @@ class DevisController extends BaseController {
         ]);
     }
 
-    public function create(): void {
+    public function create(): void
+    {
         $this->csrfCheck();
 
-        $email      = $this->input('email');
-        $phone      = $this->input('phone');
-        $firstName  = $this->input('first_name');
-        $lastName   = $this->input('last_name');
-        $ville      = $this->input('ville');
-        $codePostal = $this->input('code_postal');
-        $catId      = (int)$this->input('category_id');
-        $categories = $_POST['categories'] ?? [$catId]; // Multi-catégories
-        $description= $this->input('description');
-        $urgency    = $this->input('urgency', 'normal');
+        // ── CORRECTION : cast string pour éviter null sur isValidEmail ──
+        $email      = (string)($this->input('email') ?? '');
+        $phone      = (string)($this->input('phone') ?? '');
+        $firstName  = (string)($this->input('first_name') ?? '');
+        $lastName   = (string)($this->input('last_name') ?? '');
+        $ville      = (string)($this->input('ville') ?? '');
+        $codePostal = (string)($this->input('code_postal') ?? '');
+        $catId      = (int)($this->input('category_id') ?? 0);
+        $categories = $_POST['categories'] ?? ($catId > 0 ? [$catId] : []);
+        $description = (string)($this->input('description') ?? '');
+        $urgency    = (string)($this->input('urgency') ?? 'normal');
 
         // Validation
         $errors = [];
-        if (!Security::isValidEmail($email)) $errors[] = 'Email invalide.';
+        if (empty($email) || !Security::isValidEmail($email)) $errors[] = 'Email invalide.';
         if (empty($firstName))               $errors[] = 'Prénom requis.';
         if (empty($ville))                   $errors[] = 'Ville requise.';
         if (empty($categories))              $errors[] = 'Catégorie requise.';
         if (empty($description))             $errors[] = 'Description requise.';
-        if (!$this->input('consent_privacy'))$errors[] = 'Consentement requis.';
+        if (!$this->input('consent_privacy')) $errors[] = 'Consentement requis.';
 
         if (!empty($errors)) {
             $this->json(['success' => false, 'errors' => $errors], 422);
@@ -125,19 +130,19 @@ class DevisController extends BaseController {
                         'status'      => 'pending',
                         'notified_at' => date('Y-m-d H:i:s'),
                     ]);
-                    // Notifier artisan
                     $this->notifyArtisan($artisan, $devisId, $ref, $ville, $description, $urgency);
                     $totalLeads++;
                 }
             }
 
-            // Email confirmation client
-            MailService::sendDevisConfirmation($email, $firstName, $ref, $ville);
+            // Email confirmation client (ignoré si SMTP non dispo en local)
+            try {
+                MailService::sendDevisConfirmation($email, $firstName, $ref, $ville);
+            } catch (Exception $mailEx) {
+                error_log('[MAIL SKIP] ' . $mailEx->getMessage());
+            }
 
-            // Programmer relance si 0 réponse en 24h
             $this->scheduleRelance($devisId, $userId);
-
-            // Mise à jour score client
             $this->incrementClientRequests($userId);
 
             Database::commit();
@@ -150,7 +155,6 @@ class DevisController extends BaseController {
                 'leads_count' => $totalLeads,
                 'redirect'    => APP_URL . '/devis/confirmation?ref=' . $ref,
             ]);
-
         } catch (Exception $e) {
             Database::rollback();
             error_log('[DEVIS ERROR] ' . $e->getMessage());
@@ -158,7 +162,8 @@ class DevisController extends BaseController {
         }
     }
 
-    public function confirmation(): void {
+    public function confirmation(): void
+    {
         $ref = Security::sanitize($_GET['ref'] ?? '');
         $this->view('home/devis-confirmation', [
             'pageTitle' => 'Demande envoyée | InfoDevis',
@@ -166,7 +171,8 @@ class DevisController extends BaseController {
         ]);
     }
 
-    private function findOrCreateClient(string $email, string $fn, string $ln, string $phone): int {
+    private function findOrCreateClient(string $email, string $fn, string $ln, string $phone): int
+    {
         $user = Database::fetch('SELECT id FROM users WHERE email = ?', [$email]);
         if ($user) return $user['id'];
 
@@ -177,14 +183,16 @@ class DevisController extends BaseController {
             'first_name'       => $fn,
             'last_name'        => $ln,
             'phone'            => $phone,
-            'email_verified_at'=> date('Y-m-d H:i:s'),
+            // ── CORRECTION : email vérifié automatiquement pour les clients devis ──
+            'email_verified_at' => date('Y-m-d H:i:s'),
             'is_active'        => 1,
         ]);
         Database::insert('client_score', ['user_id' => $userId]);
         return $userId;
     }
 
-    private function generateTitle(array $catIds, string $description): string {
+    private function generateTitle(array $catIds, string $description): string
+    {
         if (count($catIds) > 1) {
             return 'Travaux multiples - ' . substr($description, 0, 60);
         }
@@ -192,45 +200,60 @@ class DevisController extends BaseController {
         return ($cat['name'] ?? 'Travaux') . ' - ' . substr($description, 0, 50);
     }
 
-    private function notifyArtisan(array $artisan, int $devisId, string $ref, string $ville, string $desc, string $urgency): void {
-        Database::insert('notifications', [
-            'user_id' => $artisan['user_id'],
-            'type'    => 'new_lead',
-            'title'   => 'Nouveau lead : ' . $ref,
-            'body'    => 'Un particulier à ' . $ville . ' cherche un artisan.',
-            'data'    => json_encode(['devis_id' => $devisId, 'ref' => $ref, 'ville' => $ville]),
-        ]);
-        // Email asynchrone via queue
-        Database::insert('queue_jobs', [
-            'queue'   => 'emails',
-            'payload' => json_encode([
-                'type'      => 'artisan_lead_notify',
-                'artisan_id'=> $artisan['id'],
-                'devis_id'  => $devisId,
-                'ref'       => $ref,
-                'ville'     => $ville,
-                'urgency'   => $urgency,
-            ]),
-        ]);
+    private function notifyArtisan(array $artisan, int $devisId, string $ref, string $ville, string $desc, string $urgency): void
+    {
+        try {
+            Database::insert('notifications', [
+                'user_id' => $artisan['user_id'],
+                'type'    => 'new_lead',
+                'title'   => 'Nouveau lead : ' . $ref,
+                'body'    => 'Un particulier à ' . $ville . ' cherche un artisan.',
+                'data'    => json_encode(['devis_id' => $devisId, 'ref' => $ref, 'ville' => $ville]),
+            ]);
+        } catch (Exception $e) {
+            error_log('[NOTIFY] ' . $e->getMessage());
+        }
+        try {
+            Database::insert('queue_jobs', [
+                'queue'   => 'emails',
+                'payload' => json_encode([
+                    'type'      => 'artisan_lead_notify',
+                    'artisan_id' => $artisan['id'],
+                    'devis_id'  => $devisId,
+                    'ref'       => $ref,
+                    'ville'     => $ville,
+                    'urgency'   => $urgency,
+                ]),
+            ]);
+        } catch (Exception $e) {
+            error_log('[QUEUE] ' . $e->getMessage());
+        }
     }
 
-    private function scheduleRelance(int $devisId, int $userId): void {
-        Database::insert('relances', [
-            'type'          => 'client_response',
-            'entity_id'     => $devisId,
-            'target_user_id'=> $userId,
-            'scheduled_at'  => date('Y-m-d H:i:s', strtotime('+24 hours')),
-        ]);
+    private function scheduleRelance(int $devisId, int $userId): void
+    {
+        try {
+            Database::insert('relances', [
+                'type'          => 'client_response',
+                'entity_id'     => $devisId,
+                'target_user_id' => $userId,
+                'scheduled_at'  => date('Y-m-d H:i:s', strtotime('+24 hours')),
+            ]);
+        } catch (Exception $e) {
+            error_log('[RELANCE] ' . $e->getMessage());
+        }
     }
 
-    private function getClientScore(string $email): ?array {
+    private function getClientScore(string $email): ?array
+    {
         return Database::fetch(
             'SELECT cs.* FROM client_score cs JOIN users u ON cs.user_id = u.id WHERE u.email = ?',
             [$email]
         );
     }
 
-    private function incrementClientRequests(int $userId): void {
+    private function incrementClientRequests(int $userId): void
+    {
         Database::query(
             'UPDATE client_score SET total_requests = total_requests + 1 WHERE user_id = ?',
             [$userId]

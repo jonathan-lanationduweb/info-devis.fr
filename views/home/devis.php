@@ -1,187 +1,292 @@
-<div style="background:var(--c-gray-50);min-height:100vh;padding:calc(var(--header-h) + 48px) 0 80px;">
-  <div class="container container--narrow">
-    <!-- Header -->
-    <div style="text-align:center;margin-bottom:48px;">
-      <span class="eyebrow" style="display:inline-block;background:rgba(249,115,22,.1);color:var(--c-orange);border-radius:var(--radius-full);font-size:.78rem;font-weight:700;padding:5px 16px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:16px">
-        100% gratuit — Sans engagement
-      </span>
-      <h1 style="margin-bottom:16px">Demandez votre devis gratuit</h1>
-      <p class="lead">Décrivez votre projet en moins de 2 minutes et recevez jusqu'à 5 devis d'artisans qualifiés sous 24h.</p>
-    </div>
+<?php /* views/home/devis.php — Formulaire complet */ ?>
 
-    <!-- Steps indicator -->
-    <div style="display:flex;justify-content:center;gap:8px;margin-bottom:40px;">
-      <?php for ($i=1;$i<=3;$i++): ?>
-      <div style="display:flex;align-items:center;gap:8px;">
-        <div style="width:32px;height:32px;border-radius:50%;background:<?= $i===1 ? 'var(--c-orange)' : 'var(--c-gray-200)' ?>;display:flex;align-items:center;justify-content:center;color:<?= $i===1 ? '#fff' : 'var(--c-gray-400)' ?>;font-weight:700;font-size:.875rem;">
-          <?= $i ?>
-        </div>
-        <span style="font-size:.85rem;color:<?= $i===1 ? 'var(--c-navy)' : 'var(--c-gray-400)' ?>;font-weight:<?= $i===1 ? '600' : '400' ?>">
-          <?= ['Votre projet','Vos coordonnées','Confirmation'][$i-1] ?>
-        </span>
-        <?php if ($i<3): ?><span style="color:var(--c-gray-300)">›</span><?php endif; ?>
+<div class="flex flex-1 pt-24">
+
+  <!-- Sidebar progression -->
+  <aside class="hidden lg:flex flex-col w-72 h-screen p-10 pt-32 fixed left-0 top-0 bg-background border-r border-outline-variant/15">
+    <div class="mb-10">
+      <h3 class="font-headline italic text-2xl text-primary mb-1">Votre devis</h3>
+      <p class="font-label text-xs text-secondary uppercase tracking-widest">Gratuit & sans engagement</p>
+    </div>
+    <nav class="space-y-8">
+      <div class="flex items-center gap-4 text-primary font-bold border-r-2 border-primary pr-4 font-label text-sm">
+        <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">architecture</span>
+        <span>Votre projet</span>
       </div>
-      <?php endfor; ?>
+      <div class="flex items-center gap-4 text-primary font-bold border-r-2 border-primary pr-4 font-label text-sm">
+        <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">person</span>
+        <span>Vos coordonnées</span>
+      </div>
+      <div class="flex items-center gap-4 text-secondary font-label text-sm">
+        <span class="material-symbols-outlined">check_circle</span>
+        <span>Confirmation</span>
+      </div>
+    </nav>
+    <!-- Garanties -->
+    <div class="mt-12 space-y-4">
+      <?php foreach (
+        [
+          ['verified', 'Artisans certifiés'],
+          ['lock', 'Données sécurisées'],
+          ['euro', '100% gratuit'],
+          ['schedule', 'Réponse rapide'],
+        ] as [$icon, $text]
+      ): ?>
+        <div class="flex items-center gap-3 text-sm text-secondary">
+          <span class="material-symbols-outlined text-primary text-base"><?= $icon ?></span>
+          <?= $text ?>
+        </div>
+      <?php endforeach; ?>
     </div>
+    <div class="mt-auto pb-10">
+      <a href="<?= APP_URL ?>/contact" class="flex items-center gap-2 text-primary font-bold text-sm hover:translate-x-1 transition-all">
+        <span class="material-symbols-outlined text-lg">help_outline</span>
+        Besoin d'aide ?
+      </a>
+    </div>
+  </aside>
 
-    <div class="card">
-      <div class="card-body" style="padding:40px;">
-        <div id="devis-result"></div>
+  <!-- Contenu principal -->
+  <main class="flex-1 lg:ml-72 px-6 py-12 md:px-12 lg:px-24">
+    <div class="max-w-2xl mx-auto">
 
-        <form id="devis-form" action="<?= APP_URL ?>/devis" method="POST" enctype="multipart/form-data">
-          <?= Security::csrfField() ?>
+      <header class="mb-12">
+        <h1 class="font-headline text-5xl md:text-6xl text-on-surface leading-tight mb-4">
+          Décrivez votre <span class="italic text-primary">projet.</span>
+        </h1>
+        <p class="text-secondary text-lg max-w-md">
+          Recevez jusqu'à 5 devis d'artisans qualifiés rapidement.
+        </p>
+      </header>
 
-          <!-- Catégorie(s) -->
-          <div class="form-group">
-            <label class="form-label">Type de travaux <span class="req">*</span></label>
-            <select name="category_id" id="cat-select" class="form-control" required>
-              <option value="">-- Choisir une catégorie --</option>
-              <?php foreach ($categories as $cat): ?>
-              <option value="<?= $cat['id'] ?>" <?= ($catId == $cat['id']) ? 'selected' : '' ?>>
-                <?= Security::e($cat['name']) ?>
-                <?php if ($cat['prix_min']): ?>
-                  (à partir de <?= number_format($cat['prix_min'],0,',',' ') ?> €)
-                <?php endif; ?>
-              </option>
-              <?php endforeach; ?>
-            </select>
-            <p class="form-hint">Vous pouvez sélectionner plusieurs catégories ci-dessous si besoin.</p>
+      <!-- Erreurs -->
+      <?php if (!empty($errors)): ?>
+        <div class="mb-8 p-5 border-l-4 border-red-400 bg-red-50 rounded-r-xl">
+          <p class="font-label text-xs uppercase tracking-widest text-red-600 font-bold mb-2">Veuillez corriger les erreurs suivantes :</p>
+          <ul class="space-y-1">
+            <?php foreach ($errors as $err): ?>
+              <li class="text-sm text-red-700 flex items-center gap-2">
+                <span class="material-symbols-outlined text-sm">error</span>
+                <?= Security::e($err) ?>
+              </li>
+            <?php endforeach; ?>
+          </ul>
+        </div>
+      <?php endif; ?>
+
+      <form id="devis-form" action="<?= APP_URL ?>/devis" method="POST" class="space-y-10">
+        <?= Security::csrfField() ?>
+
+        <!-- ── SECTION 1 : Votre projet ── -->
+        <div class="space-y-8">
+          <div class="flex items-center gap-3 pb-3 border-b border-outline-variant/20">
+            <span class="w-7 h-7 bg-primary text-on-primary rounded-full flex items-center justify-center font-bold text-sm">1</span>
+            <h2 class="font-headline text-2xl text-on-surface">Votre projet</h2>
           </div>
 
-          <!-- Multi-catégories (optionnel) -->
-          <div class="form-group" id="multi-cat-section" style="display:none;">
-            <label class="form-label">Ajouter d'autres catégories (optionnel)</label>
-            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;max-height:220px;overflow-y:auto;padding:4px;">
+          <!-- Catégorie -->
+          <div class="space-y-2">
+            <label class="font-label text-[10px] uppercase tracking-widest text-secondary font-bold">Type de travaux *</label>
+            <select name="category_id"
+              class="w-full bg-surface-container border-none focus:ring-1 focus:ring-primary p-4 rounded-xl font-body text-on-surface" required>
+              <option value="">-- Sélectionnez un métier --</option>
               <?php foreach ($categories as $cat): ?>
-              <label style="display:flex;align-items:center;gap:8px;background:var(--c-gray-50);border:1px solid var(--c-gray-200);border-radius:var(--radius-md);padding:10px 12px;cursor:pointer;font-size:.88rem;">
-                <input type="checkbox" name="categories[]" value="<?= $cat['id'] ?>"
-                       id="cat_<?= $cat['id'] ?>" style="accent-color:var(--c-orange);">
-                <?= Security::e($cat['name']) ?>
-              </label>
+                <option value="<?= (int)$cat['id'] ?>" <?= (($_POST['category_id'] ?? $catId) == $cat['id']) ? 'selected' : '' ?>>
+                  <?= Security::e($cat['name']) ?>
+                  <?php if (!empty($cat['prix_min'])): ?>
+                    (à partir de <?= number_format($cat['prix_min'], 0, ',', ' ') ?> €)
+                  <?php endif; ?>
+                </option>
               <?php endforeach; ?>
-            </div>
+            </select>
           </div>
 
           <!-- Description -->
-          <div class="form-group">
-            <label class="form-label">Décrivez votre projet <span class="req">*</span></label>
-            <textarea name="description" class="form-control" rows="5" required
-              placeholder="Exemple : J'ai une fuite d'eau sous mon évier, l'eau coule abondamment. Appartement Paris 75011, besoin d'intervention rapide..."><?= Security::e($_POST['description'] ?? '') ?></textarea>
-            <p class="form-hint">Plus vous êtes précis, plus les devis seront adaptés à votre besoin.</p>
+          <div class="space-y-2">
+            <label class="font-label text-[10px] uppercase tracking-widest text-secondary font-bold">Décrivez votre projet *</label>
+            <textarea name="description" rows="4" required
+              class="w-full bg-surface-container border-none focus:ring-1 focus:ring-primary p-4 rounded-xl font-body text-on-surface resize-none"
+              placeholder="Détaillez vos besoins pour obtenir une estimation précise..."><?= Security::e($_POST['description'] ?? '') ?></textarea>
           </div>
 
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label">Urgence</label>
-              <select name="urgency" class="form-control">
-                <option value="normal">Normal (sous une semaine)</option>
-                <option value="urgent">Urgent (sous 48h)</option>
-                <option value="tres_urgent">Très urgent (aujourd'hui)</option>
-              </select>
+          <!-- Urgence + Budget -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="space-y-3">
+              <label class="font-label text-[10px] uppercase tracking-widest text-secondary font-bold">Urgence</label>
+              <?php foreach (['normal' => 'Normal', 'urgent' => 'Urgent', 'tres_urgent' => 'Très urgent'] as $val => $lbl): ?>
+                <label class="flex items-center gap-3 cursor-pointer group">
+                  <input type="radio" name="urgency" value="<?= $val ?>"
+                    class="w-5 h-5 text-primary border-outline-variant focus:ring-primary"
+                    <?= (($_POST['urgency'] ?? 'normal') === $val) ? 'checked' : '' ?>>
+                  <span class="text-on-surface group-hover:text-primary transition-colors"><?= $lbl ?></span>
+                </label>
+              <?php endforeach; ?>
             </div>
-            <div class="form-group">
-              <label class="form-label">Budget approximatif</label>
-              <select name="budget_min" class="form-control">
-                <option value="">Pas de budget défini</option>
-                <option value="0">Moins de 500 €</option>
-                <option value="500">500 € - 1 000 €</option>
-                <option value="1000">1 000 € - 5 000 €</option>
-                <option value="5000">5 000 € - 10 000 €</option>
-                <option value="10000">Plus de 10 000 €</option>
-              </select>
+            <div class="space-y-3">
+              <label class="font-label text-[10px] uppercase tracking-widest text-secondary font-bold">Budget approximatif</label>
+              <?php foreach (['non_defini' => 'Non défini', 'moins_500' => '< 500 €', '500_1000' => '500 – 1 000 €', '1000_5000' => '1 000 – 5 000 €', 'plus_5000' => '> 5 000 €'] as $val => $lbl): ?>
+                <label class="flex items-center gap-3 cursor-pointer group">
+                  <input type="radio" name="budget" value="<?= $val ?>"
+                    class="w-5 h-5 text-primary border-outline-variant focus:ring-primary"
+                    <?= (($_POST['budget'] ?? 'non_defini') === $val) ? 'checked' : '' ?>>
+                  <span class="text-sm text-on-surface group-hover:text-primary transition-colors"><?= $lbl ?></span>
+                </label>
+              <?php endforeach; ?>
             </div>
+          </div>
+        </div>
+
+        <!-- ── SECTION 2 : Vos coordonnées ── -->
+        <div class="space-y-8">
+          <div class="flex items-center gap-3 pb-3 border-b border-outline-variant/20">
+            <span class="w-7 h-7 bg-primary text-on-primary rounded-full flex items-center justify-center font-bold text-sm">2</span>
+            <h2 class="font-headline text-2xl text-on-surface">Vos coordonnées</h2>
           </div>
 
-          <hr style="border:none;border-top:1px solid var(--c-gray-200);margin:28px 0;">
-          <h3 style="margin-bottom:24px;font-size:1.1rem;font-family:var(--f-body);font-weight:700;">Vos coordonnées</h3>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label">Prénom <span class="req">*</span></label>
-              <input type="text" name="first_name" class="form-control" required
-                     value="<?= Security::e($_POST['first_name'] ?? '') ?>" placeholder="Jean">
+          <!-- Nom + Prénom -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-2">
+              <label class="font-label text-[10px] uppercase tracking-widest text-secondary font-bold">Prénom *</label>
+              <input type="text" name="first_name" required
+                value="<?= Security::e($_POST['first_name'] ?? '') ?>"
+                placeholder="Jean"
+                class="w-full bg-surface-container border-none focus:ring-1 focus:ring-primary p-4 rounded-xl font-body text-on-surface">
             </div>
-            <div class="form-group">
-              <label class="form-label">Nom</label>
-              <input type="text" name="last_name" class="form-control"
-                     value="<?= Security::e($_POST['last_name'] ?? '') ?>" placeholder="Dupont">
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label">Email <span class="req">*</span></label>
-              <input type="email" name="email" class="form-control" required
-                     value="<?= Security::e($_POST['email'] ?? '') ?>" placeholder="jean@exemple.fr">
-            </div>
-            <div class="form-group">
-              <label class="form-label">Téléphone</label>
-              <input type="tel" name="phone" class="form-control"
-                     value="<?= Security::e($_POST['phone'] ?? '') ?>" placeholder="06 XX XX XX XX">
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label">Ville <span class="req">*</span></label>
-              <input type="text" name="ville" class="form-control" required
-                     value="<?= Security::e($_GET['ville'] ?? $_POST['ville'] ?? '') ?>" placeholder="Paris">
-            </div>
-            <div class="form-group">
-              <label class="form-label">Code postal</label>
-              <input type="text" name="code_postal" class="form-control"
-                     value="<?= Security::e($_POST['code_postal'] ?? '') ?>" placeholder="75011">
+            <div class="space-y-2">
+              <label class="font-label text-[10px] uppercase tracking-widest text-secondary font-bold">Nom</label>
+              <input type="text" name="last_name"
+                value="<?= Security::e($_POST['last_name'] ?? '') ?>"
+                placeholder="Dupont"
+                class="w-full bg-surface-container border-none focus:ring-1 focus:ring-primary p-4 rounded-xl font-body text-on-surface">
             </div>
           </div>
 
-          <!-- RGPD -->
-          <div class="form-group" style="background:var(--c-gray-50);border-radius:var(--radius-md);padding:20px;margin-top:8px;">
-            <label style="display:flex;align-items:flex-start;gap:12px;cursor:pointer;">
-              <input type="checkbox" name="consent_privacy" required style="margin-top:3px;width:16px;height:16px;flex-shrink:0;">
-              <span style="font-size:.85rem;color:var(--c-gray-600);">
-                En soumettant ce formulaire, j'accepte que mes données soient transmises à des artisans qualifiés pour recevoir des devis.
-                <a href="<?= APP_URL ?>/politique-confidentialite" style="color:var(--c-blue-light)">Politique de confidentialité</a>. <span class="req">*</span>
-              </span>
-            </label>
+          <!-- Email + Téléphone -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-2">
+              <label class="font-label text-[10px] uppercase tracking-widest text-secondary font-bold">Email *</label>
+              <input type="email" name="email" required
+                value="<?= Security::e($_POST['email'] ?? '') ?>"
+                placeholder="jean@example.com"
+                class="w-full bg-surface-container border-none focus:ring-1 focus:ring-primary p-4 rounded-xl font-body text-on-surface">
+            </div>
+            <div class="space-y-2">
+              <label class="font-label text-[10px] uppercase tracking-widest text-secondary font-bold">Téléphone</label>
+              <input type="tel" name="phone"
+                value="<?= Security::e($_POST['phone'] ?? '') ?>"
+                placeholder="06 00 00 00 00"
+                class="w-full bg-surface-container border-none focus:ring-1 focus:ring-primary p-4 rounded-xl font-body text-on-surface">
+            </div>
           </div>
 
-          <button type="submit" class="btn btn-primary w-full btn-xl" style="margin-top:24px">
-            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
-            </svg>
-            Envoyer ma demande gratuite
+          <!-- Ville + Code postal -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-2">
+              <label class="font-label text-[10px] uppercase tracking-widest text-secondary font-bold">Ville *</label>
+              <input type="text" name="ville" required
+                value="<?= Security::e($_POST['ville'] ?? '') ?>"
+                placeholder="Paris"
+                class="w-full bg-surface-container border-none focus:ring-1 focus:ring-primary p-4 rounded-xl font-body text-on-surface">
+            </div>
+            <div class="space-y-2">
+              <label class="font-label text-[10px] uppercase tracking-widest text-secondary font-bold">Code postal</label>
+              <input type="text" name="code_postal"
+                value="<?= Security::e($_POST['code_postal'] ?? '') ?>"
+                placeholder="75001"
+                class="w-full bg-surface-container border-none focus:ring-1 focus:ring-primary p-4 rounded-xl font-body text-on-surface">
+            </div>
+          </div>
+        </div>
+
+        <!-- ── SECTION 3 : Consentement & Envoi ── -->
+        <div class="space-y-6 pt-4 border-t border-outline-variant/20">
+
+          <label class="flex items-start gap-3 cursor-pointer group">
+            <input type="checkbox" name="consent_privacy" value="1" required
+              class="mt-1 w-5 h-5 text-primary border-outline-variant focus:ring-primary rounded flex-shrink-0"
+              <?= !empty($_POST['consent_privacy']) ? 'checked' : '' ?>>
+            <span class="text-sm text-on-surface-variant leading-relaxed">
+              J'accepte que mes données soient transmises à des artisans qualifiés pour répondre à ma demande.
+              <a href="<?= APP_URL ?>/confidentialite" class="text-primary hover:underline">Politique de confidentialité</a> *
+            </span>
+          </label>
+
+          <label class="flex items-start gap-3 cursor-pointer group">
+            <input type="checkbox" name="consent_marketing" value="1"
+              class="mt-1 w-5 h-5 text-primary border-outline-variant focus:ring-primary rounded flex-shrink-0"
+              <?= !empty($_POST['consent_marketing']) ? 'checked' : '' ?>>
+            <span class="text-sm text-on-surface-variant leading-relaxed">
+              J'accepte de recevoir des conseils et offres d'InfoDevis par email (optionnel).
+            </span>
+          </label>
+
+          <button type="submit" id="submit-btn"
+            class="w-full bg-primary text-on-primary px-10 py-5 rounded-xl font-bold text-lg shadow-2xl shadow-primary/20 hover:-translate-y-1 transition-all active:scale-95 flex items-center justify-center gap-3">
+            <span>Envoyer ma demande</span>
+            <span class="material-symbols-outlined text-xl">send</span>
           </button>
 
-          <p style="text-align:center;font-size:.8rem;color:var(--c-gray-400);margin-top:14px;">
-            🔒 Données sécurisées · Service 100% gratuit · Sans engagement
+          <p class="text-center text-[10px] text-secondary italic">
+            Gratuit, sans engagement. Vos données ne sont jamais vendues.
           </p>
-        </form>
-      </div>
-    </div>
+        </div>
 
-    <!-- Trust -->
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:32px;text-align:center;">
-      <div><div style="font-size:1.5rem;margin-bottom:4px">🛡️</div><div style="font-size:.85rem;font-weight:600">Artisans vérifiés</div></div>
-      <div><div style="font-size:1.5rem;margin-bottom:4px">⏱️</div><div style="font-size:.85rem;font-weight:600">Réponse sous 24h</div></div>
-      <div><div style="font-size:1.5rem;margin-bottom:4px">💚</div><div style="font-size:.85rem;font-weight:600">100% gratuit</div></div>
+      </form>
     </div>
-  </div>
+  </main>
 </div>
 
 <script>
-// Sync la catégorie principale dans les checkboxes
-document.getElementById('cat-select')?.addEventListener('change', function() {
-  const val = this.value;
-  const multi = document.getElementById('multi-cat-section');
-  if (val) {
-    multi.style.display = 'block';
-    const cb = document.getElementById('cat_' + val);
-    if (cb) cb.checked = true;
-  } else {
-    multi.style.display = 'none';
-  }
-});
+  // Attendre que le DOM soit prêt
+  window.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('devis-form');
+    if (!form) return;
 
-// Init si catégorie pré-sélectionnée
-if (document.getElementById('cat-select')?.value) {
-  document.getElementById('cat-select').dispatchEvent(new Event('change'));
-}
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const btn = document.getElementById('submit-btn');
+      if (!btn) return;
+
+      btn.disabled = true;
+      btn.innerHTML = '<span>Envoi en cours...</span><span class="material-symbols-outlined text-xl">hourglass_empty</span>';
+
+      try {
+        const res = await fetch('<?= APP_URL ?>/devis', {
+          method: 'POST',
+          body: new FormData(this),
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          // Succès — redirection
+          window.location.href = data.redirect || '<?= APP_URL ?>/devis/confirmation';
+        } else {
+          // Afficher les erreurs
+          const errDiv = document.createElement('div');
+          errDiv.className = 'mb-8 p-5 border-l-4 border-red-400 bg-red-50 rounded-r-xl';
+          errDiv.innerHTML = '<p class="font-label text-xs uppercase tracking-widest text-red-600 font-bold mb-2">Erreurs :</p>' +
+            (data.errors || ['Erreur inconnue']).map(e =>
+              `<p class="text-sm text-red-700">• ${e}</p>`
+            ).join('');
+
+          const existing = document.querySelector('.border-red-400');
+          if (existing) existing.remove();
+          this.before(errDiv);
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+
+          btn.disabled = false;
+          btn.innerHTML = '<span>Envoyer ma demande</span><span class="material-symbols-outlined text-xl">send</span>';
+        }
+      } catch (err) {
+        btn.disabled = false;
+        btn.innerHTML = '<span>Envoyer ma demande</span><span class="material-symbols-outlined text-xl">send</span>';
+        alert('Erreur réseau. Réessayez.');
+      }
+    }); // fin submit
+  }); // fin DOMContentLoaded
 </script>

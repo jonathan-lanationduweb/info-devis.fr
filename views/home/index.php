@@ -1,237 +1,276 @@
 <?php
 $catIcons = [
-    'plomberie' => '🔧', 'electricite' => '⚡', 'peinture' => '🖌️',
-    'toiture' => '🏠', 'chauffage' => '🔥', 'menuiserie' => '🪚',
-    'climatisation' => '❄️', 'isolation' => '🧱', 'maconnerie' => '⬛',
-    'carrelage' => '◻️', 'jardinage' => '🌿', 'renovation' => '🏗️',
-    'securite-domotique' => '🛡️', 'energies-renouvelables' => '☀️',
-    'amenagements-exterieurs' => '🏊', 'services-b2b' => '💼',
-    'demenagement-services' => '🚚', 'traitement-protection' => '🦺',
+  'plomberie'               => '🔧',
+  'electricite'             => '⚡',
+  'peinture'                => '🖌️',
+  'toiture'                 => '🏠',
+  'chauffage'               => '🔥',
+  'menuiserie'              => '🪚',
+  'climatisation'           => '❄️',
+  'isolation'               => '🧱',
+  'maconnerie'              => '⬛',
+  'carrelage'               => '◻️',
+  'jardinage'               => '🌿',
+  'renovation'              => '🏗️',
+  'securite-domotique'      => '🛡️',
+  'energies-renouvelables'  => '☀️',
+  'amenagements-exterieurs' => '🏊',
+  'services-b2b'            => '💼',
+  'demenagement-services'   => '🚚',
+  'traitement-protection'   => '🦺',
+];
+
+// Images de fond par catégorie (Unsplash libre de droit)
+$catImages = [
+  'plomberie'               => 'https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=800&q=80',
+  'electricite'             => 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=800&q=80',
+  'peinture'                => 'https://images.unsplash.com/photo-1562259949-e8e7689d7828?w=800&q=80',
+  'toiture'                 => 'https://images.unsplash.com/photo-1632207691143-643e2a9a9361?w=800&q=80',
+  'chauffage'               => 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80',
+  'menuiserie'              => 'https://images.unsplash.com/photo-1504148455328-c376907d081c?w=800&q=80',
+  'climatisation'           => 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=800&q=80',
+  'isolation'               => 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800&q=80',
+  'maconnerie'              => 'https://images.unsplash.com/photo-1590856029826-c7a73142bbf1?w=800&q=80',
+  'carrelage'               => 'https://images.unsplash.com/photo-1565538810643-b5bdb714032a?w=800&q=80',
+  'jardinage'               => 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800&q=80',
+  'renovation'              => 'https://images.unsplash.com/photo-1572120360610-d971b9d7767c?w=800&q=80',
 ];
 ?>
 
-<!-- ── Hero ──────────────────────────────────────────────────── -->
-<section class="hero">
-  <div class="hero-grain"></div>
-  <div class="container">
-    <div class="hero-inner">
-      <div class="hero-content">
-        <div class="hero-eyebrow">
-          <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-          12 000+ artisans vérifiés
-        </div>
-        <h1 class="hero-title">
-          Trouvez l'artisan<br>
-          <em>parfait</em> pour<br>vos travaux
-        </h1>
-        <p class="hero-subtitle">
-          Obtenez jusqu'à 5 devis en moins de 24h de professionnels qualifiés et certifiés. Gratuit, rapide, sans engagement.
-        </p>
-        <div class="hero-actions">
-          <a href="<?= APP_URL ?>/devis" class="btn btn-primary btn-xl">
-            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-            Demander un devis gratuit
-          </a>
-          <a href="<?= APP_URL ?>/categories" class="btn btn-outline-white btn-xl">Voir les métiers</a>
-        </div>
-        <div class="hero-trust">
-          <div class="hero-trust-item">
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-            100% gratuit
-          </div>
-          <div class="hero-trust-item">
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            Réponse sous 24h
-          </div>
-          <div class="hero-trust-item">
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            Artisans vérifiés
-          </div>
-          <div class="hero-trust-item">
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
-            Sans engagement
-          </div>
-        </div>
-      </div>
+<!-- ── Hero ── -->
+<section class="relative min-h-[870px] flex items-center pt-20 overflow-hidden">
+  <div class="absolute inset-0 z-0">
+    <div style="position:absolute;inset:0;background-image:url('<?= APP_URL ?>/assets/img/artisan.png');background-size:cover;background-position:center center;"></div>
+    <div class="absolute inset-0 bg-black/50"></div>
+  </div>
 
-      <!-- Card flottante -->
-      <div class="hero-visual">
-        <div class="hero-card">
-          <p class="hero-card-title">Quelle prestation cherchez-vous ?</p>
-          <form class="hero-form" id="hero-quick-form" onsubmit="heroQuickSubmit(event)">
-            <select name="category" class="form-control" required>
-              <option value="">-- Choisir une catégorie --</option>
-              <?php foreach ($categories as $cat): ?>
+  <div class="relative z-10 w-full max-w-screen-2xl mx-auto px-8">
+    <div class="max-w-3xl">
+      <h1 class="font-headline text-6xl md:text-8xl text-white mb-8 leading-[1.1] tracking-tight drop-shadow-lg">
+        Trouvez l'artisan parfait pour vos
+        <span class="text-primary italic"> travaux</span>
+      </h1>
+
+      <!-- Barre de recherche -->
+      <div class="bg-white/95 backdrop-blur-md rounded-xl p-2 flex flex-col md:flex-row items-stretch gap-2 max-w-2xl shadow-2xl">
+        <div class="flex-1 flex items-center px-4 py-3 border-r border-gray-200">
+          <svg class="text-gray-400 mr-3 flex-shrink-0" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+            <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z" />
+          </svg>
+          <select name="category" id="hero-category" class="w-full bg-transparent border-none focus:ring-0 text-on-background text-sm font-body">
+            <option value="">Type de métier</option>
+            <?php foreach ($categories as $cat): ?>
               <option value="<?= $cat['id'] ?>"><?= Security::e($cat['name']) ?></option>
-              <?php endforeach; ?>
-            </select>
-            <input type="text" name="ville" placeholder="Votre ville (ex: Paris)" required>
-            <button type="submit" class="btn btn-primary w-full">
-              Trouver un artisan →
-            </button>
-          </form>
-          <p style="text-align:center;color:rgba(255,255,255,.55);font-size:.78rem;margin-top:12px;">
-            🔒 Vos données sont protégées
-          </p>
+            <?php endforeach; ?>
+          </select>
         </div>
+        <div class="flex-1 flex items-center px-4 py-3 border-r border-gray-200">
+          <svg class="text-gray-400 mr-3 flex-shrink-0" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
+            <circle cx="12" cy="10" r="3" />
+          </svg>
+          <input type="text" id="hero-ville" placeholder="Code postal / Ville"
+            class="w-full bg-transparent border-none focus:ring-0 text-on-background placeholder-gray-400 text-sm font-body">
+        </div>
+        <button id="hero-search-btn" class="bg-primary text-white px-8 py-3 rounded-lg font-semibold text-sm hover:opacity-90 transition-all">
+          Chercher
+        </button>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ── Stats Bar ─────────────────────────────────────────────── -->
-<div class="stats-bar">
-  <div class="container">
-    <div class="stats-bar-inner">
-      <div class="stat-item">
-        <div class="stat-number"><?= $stats['artisans'] ?></div>
-        <div class="stat-label">Artisans vérifiés</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-number"><?= $stats['devis'] ?></div>
-        <div class="stat-label">Devis envoyés</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-number"><?= $stats['avis'] ?></div>
-        <div class="stat-label">Avis vérifiés</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-number"><?= $stats['cities'] ?></div>
-        <div class="stat-label">Villes couvertes</div>
-      </div>
+<!-- ── Barre réassurance ── -->
+<div class="bg-primary py-5">
+  <div class="max-w-screen-2xl mx-auto px-8 flex flex-col md:flex-row justify-around items-center gap-6 text-white font-label text-xs tracking-[0.15em] font-bold">
+    <div class="flex items-center gap-3">
+      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" />
+        <polyline points="12 6 12 12 16 14" />
+      </svg>
+      100% GRATUIT
+    </div>
+    <div class="flex items-center gap-3">
+      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="10" />
+        <polyline points="12 6 12 12 16 14" />
+      </svg>
+      RÉPONSE RAPIDE
+    </div>
+    <div class="flex items-center gap-3">
+      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
+        <polyline points="22 4 12 14.01 9 11.01" />
+      </svg>
+      ARTISANS CERTIFIÉS
     </div>
   </div>
 </div>
 
-<!-- ── Categories ────────────────────────────────────────────── -->
-<section class="section">
-  <div class="container">
-    <div class="section-header">
-      <span class="eyebrow">Tous les métiers</span>
-      <h2>Trouvez le bon professionnel</h2>
-      <p>Tous nos artisans sont vérifiés, assurés et certifiés. Comparez les devis et choisissez en toute confiance.</p>
-    </div>
-    <div class="categories-grid">
-      <?php foreach ($categories as $cat): ?>
-      <a href="<?= APP_URL ?>/categorie/<?= Security::e($cat['slug']) ?>" class="category-card reveal">
-        <div class="category-icon"><?= $catIcons[$cat['slug']] ?? '🛠️' ?></div>
-        <h3><?= Security::e($cat['name']) ?></h3>
-        <p><?= Security::e(substr($cat['description'] ?? '', 0, 65)) ?>...</p>
-        <?php if ($cat['prix_min'] && $cat['prix_max']): ?>
-        <div class="category-price">
-          À partir de <?= number_format($cat['prix_min'], 0, ',', ' ') ?> €
-        </div>
-        <?php endif; ?>
+<!-- ── Nos expertises ── -->
+<section class="pt-24 pb-16 bg-surface-container-low">
+  <div class="max-w-screen-2xl mx-auto px-8">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
+      <div>
+        <span class="font-label text-xs uppercase tracking-widest text-primary font-bold mb-4 block">Services Professionnels</span>
+        <h2 class="font-headline text-5xl text-on-background">Nos expertises</h2>
+      </div>
+      <a href="<?= APP_URL ?>/categories" class="text-primary font-medium flex items-center gap-2 hover:gap-4 transition-all pb-2 text-sm">
+        Voir tous les métiers
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <line x1="5" y1="12" x2="19" y2="12" />
+          <polyline points="12 5 19 12 12 19" />
+        </svg>
       </a>
+    </div>
+
+    <!-- Bento Grid -->
+    <?php
+    $cats = array_values($categories);
+    $first  = $cats[0] ?? null;
+    $second = $cats[1] ?? null;
+    $rest   = array_slice($cats, 2, 3);
+    ?>
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+
+      <!-- Grande carte gauche -->
+      <?php if ($first): ?>
+        <a href="<?= APP_URL ?>/categorie/<?= Security::e($first['slug']) ?>"
+          class="md:col-span-8 group relative overflow-hidden rounded-xl bg-surface-container-low aspect-[16/9] md:aspect-auto md:h-[500px]">
+          <img src="<?= $catImages[$first['slug']] ?? 'https://images.unsplash.com/photo-1590856029826-c7a73142bbf1?w=800&q=80' ?>"
+            alt="<?= Security::e($first['name']) ?>"
+            class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+          <div class="absolute bottom-0 p-10 w-full">
+            <span class="bg-primary-container/90 text-on-primary-container px-3 py-1 text-xs font-label uppercase tracking-widest mb-4 inline-block rounded">
+              <?= $catIcons[$first['slug']] ?? '🛠️' ?> <?= Security::e($first['name']) ?>
+            </span>
+            <h3 class="text-3xl font-headline text-white mb-3"><?= Security::e($first['name']) ?></h3>
+            <p class="text-white/80 max-w-md text-sm leading-relaxed mb-5">
+              <?= Security::e(substr($first['description'] ?? 'Artisans qualifiés disponibles près de chez vous.', 0, 120)) ?>...
+            </p>
+            <span class="inline-flex items-center gap-2 text-white font-label text-sm group-hover:gap-4 transition-all">
+              Découvrir le métier →
+            </span>
+          </div>
+        </a>
+      <?php endif; ?>
+
+      <!-- Carte portrait droite -->
+      <?php if ($second): ?>
+        <a href="<?= APP_URL ?>/categorie/<?= Security::e($second['slug']) ?>"
+          class="md:col-span-4 group relative overflow-hidden rounded-xl bg-surface-container-low h-[500px]">
+          <img src="<?= $catImages[$second['slug']] ?? 'https://images.unsplash.com/photo-1504148455328-c376907d081c?w=800&q=80' ?>"
+            alt="<?= Security::e($second['name']) ?>"
+            class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+          <div class="absolute bottom-0 p-8 w-full">
+            <span class="bg-primary-container/90 text-on-primary-container px-3 py-1 text-xs font-label uppercase tracking-widest mb-4 inline-block rounded">
+              <?= $catIcons[$second['slug']] ?? '🛠️' ?> <?= Security::e($second['name']) ?>
+            </span>
+            <h3 class="text-2xl font-headline text-white mb-3"><?= Security::e($second['name']) ?></h3>
+            <p class="text-white/80 text-sm leading-relaxed mb-5">
+              <?= Security::e(substr($second['description'] ?? 'Artisans qualifiés disponibles près de chez vous.', 0, 100)) ?>...
+            </p>
+            <span class="inline-flex items-center gap-2 text-white font-label text-sm group-hover:gap-4 transition-all">
+              Voir les réalisations →
+            </span>
+          </div>
+        </a>
+      <?php endif; ?>
+
+      <!-- 3 petites cartes carrées -->
+      <?php foreach ($rest as $cat): ?>
+        <a href="<?= APP_URL ?>/categorie/<?= Security::e($cat['slug']) ?>"
+          class="md:col-span-4 group relative overflow-hidden rounded-xl bg-surface-container-low aspect-square">
+          <img src="<?= $catImages[$cat['slug']] ?? 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=800&q=80' ?>"
+            alt="<?= Security::e($cat['name']) ?>"
+            class="absolute inset-0 w-full h-full object-cover transition-all duration-700 group-hover:scale-105">
+          <div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-500"></div>
+          <div class="absolute inset-0 flex flex-col justify-end p-8 bg-gradient-to-t from-black/80 to-transparent">
+            <h3 class="text-xl font-headline text-white mb-2">
+              <?= $catIcons[$cat['slug']] ?? '🛠️' ?> <?= Security::e($cat['name']) ?>
+            </h3>
+            <p class="text-white/70 text-xs leading-relaxed">
+              <?= Security::e(substr($cat['description'] ?? 'Artisans qualifiés disponibles près de chez vous.', 0, 80)) ?>...
+            </p>
+          </div>
+        </a>
       <?php endforeach; ?>
     </div>
-    <div style="text-align:center;margin-top:40px">
-      <a href="<?= APP_URL ?>/categories" class="btn btn-navy">Voir toutes les catégories</a>
+  </div>
+</section>
+
+<!-- ── Comment ça marche ── -->
+<section class="py-24 bg-surface">
+  <div class="max-w-screen-2xl mx-auto px-8">
+    <div class="max-w-2xl mx-auto text-center mb-20">
+      <h2 class="font-headline text-5xl mb-6">Comment ça marche</h2>
+      <p class="text-on-surface-variant text-lg">Trois étapes simples pour concrétiser vos projets de rénovation avec sérénité.</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-16">
+      <?php
+      $steps = [
+        ['icon' => 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2', 'title' => 'Décrivez votre projet', 'desc' => 'Remplissez notre formulaire en 2 minutes pour détailler vos besoins spécifiques.'],
+        ['icon' => 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z', 'title' => 'Recevez des devis', 'desc' => "Jusqu'à 5 artisans qualifiés vous contactent pour proposer leurs services."],
+        ['icon' => 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z', 'title' => 'Choisissez &amp; Réalisez', 'desc' => "Comparez les offres et sélectionnez l'artisan qui vous correspond le mieux."],
+      ];
+      ?>
+      <?php foreach ($steps as $s): ?>
+        <div class="text-center group">
+          <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-8 shadow-lg group-hover:bg-primary transition-colors duration-300">
+            <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" class="text-primary group-hover:text-white transition-colors">
+              <path d="<?= $s['icon'] ?>" />
+            </svg>
+          </div>
+          <h3 class="font-headline text-2xl mb-4"><?= $s['title'] ?></h3>
+          <p class="text-on-surface-variant font-light px-4 text-sm leading-relaxed"><?= $s['desc'] ?></p>
+        </div>
+      <?php endforeach; ?>
     </div>
   </div>
 </section>
 
-<!-- ── Comment ça marche ─────────────────────────────────────── -->
-<section class="section section--gray">
-  <div class="container">
-    <div class="section-header">
-      <span class="eyebrow">Simple & rapide</span>
-      <h2>Comment ça marche ?</h2>
-      <p>Obtenez vos devis en 3 étapes simples, 100% gratuit et sans engagement.</p>
-    </div>
-    <div class="steps-grid">
-      <div class="step-card reveal">
-        <div class="step-number">1</div>
-        <div class="step-title">Décrivez votre projet</div>
-        <p class="step-desc">Remplissez le formulaire en moins de 2 minutes. Décrivez vos travaux, votre ville et votre urgence.</p>
-      </div>
-      <div class="step-card reveal reveal-delay-1">
-        <div class="step-number">2</div>
-        <div class="step-title">Recevez des devis</div>
-        <p class="step-desc">Jusqu'à 5 artisans qualifiés de votre région vous contactent sous 24h avec leurs devis.</p>
-      </div>
-      <div class="step-card reveal reveal-delay-2">
-        <div class="step-number">3</div>
-        <div class="step-title">Choisissez & validez</div>
-        <p class="step-desc">Comparez les devis, vérifiez les avis clients et choisissez le professionnel qui vous convient.</p>
-      </div>
-      <div class="step-card reveal reveal-delay-3">
-        <div class="step-number">4</div>
-        <div class="step-title">Suivez votre chantier</div>
-        <p class="step-desc">Utilisez votre espace client pour suivre l'avancement, échanger et payer en sécurité.</p>
+<!-- ── Citation ── -->
+<section class="py-24 bg-surface-container-highest/40">
+  <div class="max-w-4xl mx-auto px-8">
+    <div class="bg-surface-container-highest p-16 rounded-xl relative overflow-hidden">
+      <span class="absolute top-0 left-0 text-[10rem] font-headline opacity-5 leading-none select-none">"</span>
+      <div class="relative z-10 text-center">
+        <p class="text-2xl font-headline italic text-on-surface leading-snug mb-8">
+          "La qualité d'un ouvrage ne réside pas seulement dans les matériaux utilisés, mais dans l'intention et la précision de la main qui les façonne."
+        </p>
+        <span class="font-label font-bold text-primary tracking-widest text-xs uppercase block">L'équipe InfoDevis</span>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ── Top Artisans ──────────────────────────────────────────── -->
-<?php if (!empty($topArtisans)): ?>
-<section class="section">
-  <div class="container">
-    <div class="section-header">
-      <span class="eyebrow">Notre sélection</span>
-      <h2>Artisans les mieux notés</h2>
-      <p>Des professionnels vérifiés, certifiés et recommandés par nos clients.</p>
-    </div>
-    <div class="artisans-grid">
-      <?php foreach ($topArtisans as $a): ?>
-      <div class="artisan-card reveal">
-        <div class="artisan-header">
-          <div class="artisan-avatar">
-            <?= strtoupper(substr($a['first_name'] ?? 'A', 0, 1)) ?>
-          </div>
-          <div>
-            <div class="artisan-name">
-              <?= Security::e($a['company_name'] ?: ($a['first_name'] . ' ' . $a['last_name'])) ?>
-            </div>
-            <div class="artisan-meta"><?= Security::e($a['ville'] ?? '') ?></div>
-          </div>
-        </div>
-        <div class="d-flex gap-8" style="margin-bottom:12px;flex-wrap:wrap">
-          <?php if ($a['badge_verified']): ?>
-          <span class="badge-verified">✓ Certifié</span>
-          <?php endif; ?>
-          <?php if ($a['plan'] !== 'gratuit'): ?>
-          <span class="badge-pro">⭐ <?= ucfirst($a['plan']) ?></span>
-          <?php endif; ?>
-        </div>
-        <div class="artisan-rating">
-          <span class="stars"><?= str_repeat('★', (int)round($a['rating_avg'] ?? 0)) . str_repeat('☆', 5 - (int)round($a['rating_avg'] ?? 0)) ?></span>
-          <span class="text-sm fw-600"><?= number_format((float)($a['rating_avg'] ?? 0), 1) ?></span>
-          <span class="text-sm text-muted">(<?= $a['rating_count'] ?? 0 ?> avis)</span>
-        </div>
-        <?php if (!empty($a['categories'])): ?>
-        <p class="text-xs text-muted" style="margin-top:8px"><?= Security::e($a['categories']) ?></p>
-        <?php endif; ?>
-        <a href="<?= APP_URL ?>/devis" class="btn btn-primary w-full" style="margin-top:16px">
-          Demander un devis
+<!-- ── CTA ── -->
+<section class="py-20 bg-surface-container-low">
+  <div class="max-w-screen-xl mx-auto px-8">
+    <div class="bg-primary rounded-2xl p-12 md:p-20 text-center relative overflow-hidden">
+      <div class="absolute top-0 right-0 w-1/3 h-full bg-white/5 skew-x-12 translate-x-1/2"></div>
+      <h2 class="font-headline text-4xl md:text-6xl text-white mb-8 relative z-10">Prêt à lancer vos travaux ?</h2>
+      <p class="text-white/80 text-xl mb-12 max-w-2xl mx-auto relative z-10 font-light">
+        Rejoignez des milliers de particuliers qui font confiance à notre réseau d'artisans certifiés.
+      </p>
+      <div class="flex flex-col md:flex-row gap-6 justify-center relative z-10">
+        <a href="<?= APP_URL ?>/devis" class="bg-white text-primary px-10 py-4 rounded font-bold text-lg hover:bg-green-50 transition-colors shadow-lg">
+          Demander mon devis gratuit
+        </a>
+        <a href="<?= APP_URL ?>/tarifs-pro" class="border border-white/30 text-white px-10 py-4 rounded font-bold text-lg hover:bg-white/10 transition-colors">
+          Consulter les tarifs
         </a>
       </div>
-      <?php endforeach; ?>
-    </div>
-  </div>
-</section>
-<?php endif; ?>
-
-<!-- ── CTA Banner ────────────────────────────────────────────── -->
-<section class="section section--navy">
-  <div class="container" style="text-align:center">
-    <h2 style="color:#fff;margin-bottom:16px">Prêt à démarrer votre projet ?</h2>
-    <p style="color:rgba(255,255,255,.75);max-width:520px;margin:0 auto 40px;font-size:1.1rem">
-      Rejoignez les milliers de particuliers qui trouvent leur artisan idéal sur InfoDevis chaque jour.
-    </p>
-    <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
-      <a href="<?= APP_URL ?>/devis" class="btn btn-primary btn-xl">Demander un devis gratuit</a>
-      <a href="<?= APP_URL ?>/categories" class="btn btn-outline-white btn-xl">Voir les catégories</a>
     </div>
   </div>
 </section>
 
 <script>
-function heroQuickSubmit(e) {
-  e.preventDefault();
-  const cat  = e.target.category.value;
-  const ville = encodeURIComponent(e.target.ville.value);
-  window.location.href = '<?= APP_URL ?>/devis?categorie=' + cat + '&ville=' + ville;
-}
+  document.getElementById('hero-search-btn').addEventListener('click', function() {
+    var cat = document.getElementById('hero-category').value;
+    var ville = encodeURIComponent(document.getElementById('hero-ville').value);
+    window.location.href = '<?= APP_URL ?>/devis?categorie=' + cat + '&ville=' + ville;
+  });
 </script>

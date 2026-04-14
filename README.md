@@ -40,7 +40,7 @@ AllowOverride All
 ### 6. Accès
 - **Site** : `http://localhost/info-devis`
 - **Admin** : `http://localhost/info-devis/admin`
-- **Login admin** : `admin@info-devis.fr` / `Admin@2024!`
+- **Login admin** : `admin@info-devis.fr` / `Admin1234!`
 
 ---
 

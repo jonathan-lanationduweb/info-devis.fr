@@ -1,15 +1,17 @@
 <?php
+
 /**
  * Service de matching artisans
  * Critères : zone géographique, catégorie, disponibilité, score
  */
 
-class MatchingService {
+class MatchingService
+{
 
-    public function findArtisans(int $categoryId, string $ville, string $codePostal, int $limit = 5): array {
+    public function findArtisans(int $categoryId, string $ville, string $codePostal, int $limit = 5): array
+    {
         $departement = substr($codePostal, 0, 2);
 
-        // Requête principale avec score de matching
         $sql = "
             SELECT DISTINCT
                 a.id, a.user_id, a.company_name, a.ville, a.code_postal,
@@ -37,7 +39,6 @@ class MatchingService {
             JOIN artisan_categories ac ON ac.artisan_id = a.id
             WHERE
                 ac.category_id = ?
-                AND a.is_active = 1
                 AND a.is_verified = 1
                 AND a.verification_status = 'validated'
                 AND (
@@ -76,7 +77,8 @@ class MatchingService {
     /**
      * Calcule et met à jour le score de matching d'un artisan
      */
-    public function updateMatchingScore(int $artisanId): void {
+    public function updateMatchingScore(int $artisanId): void
+    {
         $stats = Database::fetch(
             'SELECT * FROM artisan_stats WHERE artisan_id = ?',
             [$artisanId]
@@ -88,7 +90,7 @@ class MatchingService {
 
         if (!$stats || !$artisan) return;
 
-        $planBonus = match($artisan['plan']) {
+        $planBonus = match ($artisan['plan']) {
             'illimite' => 40,
             'pro'      => 30,
             'starter'  => 20,
@@ -108,12 +110,13 @@ class MatchingService {
     /**
      * Calcule la distance entre deux points GPS (formule Haversine)
      */
-    public static function distance(float $lat1, float $lng1, float $lat2, float $lng2): float {
-        $R    = 6371; // km
+    public static function distance(float $lat1, float $lng1, float $lat2, float $lng2): float
+    {
+        $R    = 6371;
         $dLat = deg2rad($lat2 - $lat1);
         $dLng = deg2rad($lng2 - $lng1);
         $a    = sin($dLat / 2) ** 2
-              + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * sin($dLng / 2) ** 2;
+            + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * sin($dLng / 2) ** 2;
         return $R * 2 * atan2(sqrt($a), sqrt(1 - $a));
     }
 }

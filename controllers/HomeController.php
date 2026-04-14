@@ -4,17 +4,20 @@ require_once BASE_PATH . '/models/CategoryModel.php';
 require_once BASE_PATH . '/models/ArtisanModel.php';
 require_once BASE_PATH . '/models/DevisModel.php';
 
-class HomeController extends BaseController {
+class HomeController extends BaseController
+{
 
     private CategoryModel $categoryModel;
     private ArtisanModel  $artisanModel;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->categoryModel = new CategoryModel();
         $this->artisanModel  = new ArtisanModel();
     }
 
-    public function index(): void {
+    public function index(): void
+    {
         $categories   = $this->categoryModel->getMainCategories();
         $topArtisans  = $this->artisanModel->getTopArtisans(6);
         $stats        = $this->getStats();
@@ -28,20 +31,25 @@ class HomeController extends BaseController {
         ]);
     }
 
-    public function tarifs(): void {
+    public function tarifs(): void
+    {
         $this->view('home/tarifs', [
             'pageTitle' => 'Tarifs Pro - Abonnements pour artisans | InfoDevis',
             'plans'     => PLAN_PRICES,
         ]);
     }
 
-    public function guides(): void {
+    public function guides(): void
+    {
+        $categories = $this->categoryModel->getMainCategories();
+
         $this->view('home/guides', [
-            'pageTitle' => 'Guides & Prix des travaux | InfoDevis',
+            'pageTitle'  => 'Guides & Prix des travaux | InfoDevis',
+            'categories' => $categories,
         ]);
     }
-
-    private function getStats(): array {
+    private function getStats(): array
+    {
         $artisansCount = Database::fetch('SELECT COUNT(*) as c FROM artisans WHERE is_verified = 1')['c'] ?? 0;
         $devisCount    = Database::fetch('SELECT COUNT(*) as c FROM devis')['c'] ?? 0;
         $avisCount     = Database::fetch('SELECT COUNT(*) as c FROM avis WHERE verified = 1')['c'] ?? 0;

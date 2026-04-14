@@ -1,10 +1,16 @@
 <?php
+
 /**
  * Point d'entrée principal — InfoDevis.fr
  * Routeur MVC
  */
 
 define('ROOT', __DIR__);
+
+// ── Composer autoload (SDK Mailtrap, etc.) ────────────────────
+if (file_exists(ROOT . '/vendor/autoload.php')) {
+    require_once ROOT . '/vendor/autoload.php';
+}
 
 // ── Autoload config ───────────────────────────────────────────
 require_once ROOT . '/config/app.php';
@@ -27,7 +33,10 @@ spl_autoload_register(function (string $class): void {
     ];
     foreach ($dirs as $dir) {
         $file = $dir . $class . '.php';
-        if (file_exists($file)) { require_once $file; return; }
+        if (file_exists($file)) {
+            require_once $file;
+            return;
+        }
     }
 });
 
@@ -68,7 +77,7 @@ $routes = [
 
     // Dashboard artisan
     'GET /dashboard/artisan'      => ['DashboardArtisanController', 'index'],
-    'GET /dashboard/artisan/leads'=> ['DashboardArtisanController', 'leads'],
+    'GET /dashboard/artisan/leads' => ['DashboardArtisanController', 'leads'],
     'POST /dashboard/artisan/lead/respond' => ['DashboardArtisanController', 'respondLead'],
     'GET /dashboard/artisan/messages'  => ['DashboardArtisanController', 'messages'],
     'GET /dashboard/artisan/profile'   => ['DashboardArtisanController', 'profile'],
@@ -76,9 +85,9 @@ $routes = [
     'GET /dashboard/artisan/stats'     => ['DashboardArtisanController', 'stats'],
     'GET /dashboard/artisan/calendar'  => ['DashboardArtisanController', 'calendar'],
     'POST /dashboard/artisan/calendar' => ['DashboardArtisanController', 'saveAvailability'],
-    'GET /dashboard/artisan/abonnement'=> ['DashboardArtisanController', 'abonnement'],
+    'GET /dashboard/artisan/abonnement' => ['DashboardArtisanController', 'abonnement'],
     'GET /dashboard/artisan/documents' => ['DashboardArtisanController', 'documents'],
-    'POST /dashboard/artisan/documents'=> ['DashboardArtisanController', 'uploadDocument'],
+    'POST /dashboard/artisan/documents' => ['DashboardArtisanController', 'uploadDocument'],
 
     // Dashboard client
     'GET /dashboard/client'            => ['DashboardClientController', 'index'],
@@ -91,32 +100,38 @@ $routes = [
     'GET /dashboard/client/paiement/{id}'  => ['DashboardClientController', 'paiement'],
 
     // Dashboard admin
-    'GET /admin'                       => ['AdminController', 'index'],
-    'GET /admin/artisans'              => ['AdminController', 'artisans'],
-    'POST /admin/artisan/validate'     => ['AdminController', 'validateArtisan'],
-    'GET /admin/devis'                 => ['AdminController', 'devis'],
-    'GET /admin/users'                 => ['AdminController', 'users'],
-    'GET /admin/blog'                  => ['AdminController', 'blog'],
-    'POST /admin/blog/validate'        => ['AdminController', 'validateBlog'],
-    'GET /admin/paiements'             => ['AdminController', 'paiements'],
-    'GET /admin/abonnements'           => ['AdminController', 'abonnements'],
-    'GET /admin/chatbot'               => ['AdminController', 'chatbot'],
-    'GET /admin/metrics'               => ['AdminController', 'metrics'],
-    'GET /admin/categories'            => ['AdminController', 'categories'],
+    'GET /admin'                        => ['AdminController', 'index'],
+    'GET /admin/artisans'               => ['AdminController', 'artisans'],
+    'GET /admin/artisan/{id}'           => ['AdminController', 'artisanDetail'],    // ← NOUVEAU
+    'POST /admin/artisan/validate'      => ['AdminController', 'validateArtisan'],
+    'POST /admin/artisan/note'          => ['AdminController', 'artisanNote'],      // ← NOUVEAU
+    'GET /admin/document/{id}'          => ['AdminController', 'documentView'],     // ← NOUVEAU
+    'POST /admin/document/validate'     => ['AdminController', 'documentValidate'], // ← NOUVEAU
+    'GET /admin/devis'                  => ['AdminController', 'devis'],
+    'GET /admin/users'                  => ['AdminController', 'users'],
+    'GET /admin/blog'                   => ['AdminController', 'blog'],
+    'POST /admin/blog/validate'         => ['AdminController', 'validateBlog'],
+    'GET /admin/paiements'              => ['AdminController', 'paiements'],
+    'GET /admin/abonnements'            => ['AdminController', 'abonnements'],
+    'GET /admin/chatbot'                => ['AdminController', 'chatbot'],
+    'GET /admin/metrics'                => ['AdminController', 'metrics'],
+    'GET /admin/categories'             => ['AdminController', 'categories'],
+    'POST /admin/categories/save'       => ['AdminController', 'saveCategory'],     // ← NOUVEAU
+    'POST /admin/categories/delete'     => ['AdminController', 'deleteCategory'],
 
     // API
     'POST /api/auth/login'             => ['ApiAuthController',    'login'],
     'POST /api/auth/register'          => ['ApiAuthController',    'register'],
     'GET /api/devis'                   => ['ApiDevisController',   'index'],
     'POST /api/devis'                  => ['ApiDevisController',   'create'],
-    'GET /api/artisans'                => ['ApiArtisansController','index'],
-    'GET /api/artisans/{id}'           => ['ApiArtisansController','show'],
-    'POST /api/messages'               => ['ApiMessagesController','send'],
-    'GET /api/messages/{leadId}'       => ['ApiMessagesController','get'],
-    'POST /api/payments/create-intent' => ['ApiPaymentsController','createIntent'],
-    'POST /api/payments/webhook'       => ['ApiPaymentsController','webhook'],
+    'GET /api/artisans'                => ['ApiArtisansController', 'index'],
+    'GET /api/artisans/{id}'           => ['ApiArtisansController', 'show'],
+    'POST /api/messages'               => ['ApiMessagesController', 'send'],
+    'GET /api/messages/{leadId}'       => ['ApiMessagesController', 'get'],
+    'POST /api/payments/create-intent' => ['ApiPaymentsController', 'createIntent'],
+    'POST /api/payments/webhook'       => ['ApiPaymentsController', 'webhook'],
     'POST /api/chatbot'                => ['ChatbotController',    'handle'],
-    'GET /api/categories'             => ['ApiCategoryController', 'index'],
+    'GET /api/categories'              => ['ApiCategoryController', 'index'],
 
     // Utilitaires
     'GET /sitemap.xml'                 => ['SeoController', 'sitemap'],
@@ -124,7 +139,8 @@ $routes = [
 ];
 
 // ── Résolution de route ───────────────────────────────────────
-function matchRoute(array $routes, string $method, string $uri): ?array {
+function matchRoute(array $routes, string $method, string $uri): ?array
+{
     $key = "{$method} {$uri}";
     if (isset($routes[$key])) return $routes[$key] + ['params' => []];
 
