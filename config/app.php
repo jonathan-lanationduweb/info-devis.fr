@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Configuration principale de l'application
  * InfoDevis.fr
@@ -9,16 +10,44 @@ define('APP_ENV',     'development'); // 'production' en prod
 define('APP_NAME',    'InfoDevis');
 define('APP_URL',     'http://localhost/info-devis');
 define('APP_VERSION', '1.0.0');
+define('MAIL_FORCE_SMTP', true);
 
-// ── Email / Mailtrap ──────────────────────────────────────────
-// En local (WAMP) → les emails sont sauvegardés dans storage/mails/
-// En prod  → mettre votre vrai token Mailtrap et domaine vérifié
-define('MAIL_FROM',        'hello@demomailtrap.co');   // sender vérifié Mailtrap sandbox
-define('MAIL_NAME',        'InfoDevis');
-define('ADMIN_EMAIL',      'jonathan@lanationduweb.fr');
+// ── Email (PHPMailer + SMTP) ──────────────────────────────────
+//
+// CONFIGURATION GMAIL SMTP
+// ─────────────────────────
+// Pour obtenir un mot de passe d'application Gmail :
+//   1. Connectez-vous à votre compte Google
+//   2. Allez sur : https://myaccount.google.com/security
+//   3. Activez la "Validation en deux étapes" (obligatoire)
+//   4. Cherchez "Mots de passe des applications" (en bas de la page Sécurité)
+//      ou allez directement sur : https://myaccount.google.com/apppasswords
+//   5. Sélectionnez "Autre (nom personnalisé)" → tapez "InfoDevis"
+//   6. Cliquez "Générer" → copiez le mot de passe à 16 caractères (ex: abcd efgh ijkl mnop)
+//   7. Collez-le dans MAIL_PASS ci-dessous (sans les espaces)
+//   8. Dans MAIL_USER, mettez votre adresse Gmail complète (ex: votre.adresse@gmail.com)
+//   9. Dans MAIL_FROM, mettez la même adresse Gmail (Gmail exige From = compte authentifié)
+//
+// NOTE : Le compte Gmail doit être le même que celui utilisé pour générer le mot de passe.
+//
+define('MAIL_FROM',   'noreply@info-devis.fr'); // Mailtrap accepte n'importe quelle adresse ; Gmail exige que ce soit = MAIL_USER
+define('MAIL_NAME',   'InfoDevis');
+define('ADMIN_EMAIL', 'jonathan@lanationduweb.fr');
 
-// Token API Mailtrap : https://mailtrap.io > Sending > API Tokens
-define('MAILTRAP_API_KEY', 'VOTRE_CLE_MAILTRAP_ICI');
+// define('MAIL_HOST',   'smtp.gmail.com'); // Serveur Gmail
+// define('MAIL_PORT',   587);              // TLS (recommandé)
+// define('MAIL_USER',   '');               // Votre adresse Gmail complète (ex: votre.adresse@gmail.com)
+// define('MAIL_PASS',   '');               // Mot de passe d'application Gmail (16 car. sans espaces)
+// define('MAIL_SECURE', 'tls');            // Ne pas modifier
+
+// ── Mailtrap sandbox (tests sans livraison réelle) ────────────────────────
+// Pour passer en Gmail : décommenter le bloc ci-dessus et commenter celui-ci
+//
+define('MAIL_HOST',   'sandbox.smtp.mailtrap.io');
+define('MAIL_PORT',   2525);
+define('MAIL_USER',   '48ca78bab706c9');
+define('MAIL_PASS',   'a15ced477683da');
+define('MAIL_SECURE', 'tls');
 
 // ── Stripe ────────────────────────────────────────────────────
 define('STRIPE_PUBLIC_KEY',  'pk_test_VOTRE_CLE_PUBLIQUE');
@@ -50,7 +79,9 @@ define('MATCH_RADIUS_DEFAULT_KM', 50);
 define('UPLOAD_PATH', __DIR__ . '/../uploads/');
 define('UPLOAD_MAX_SIZE', 10 * 1024 * 1024); // 10 Mo
 define('UPLOAD_ALLOWED_MIME', [
-    'image/jpeg', 'image/png', 'image/webp',
+    'image/jpeg',
+    'image/png',
+    'image/webp',
     'application/pdf',
 ]);
 

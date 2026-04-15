@@ -137,7 +137,8 @@ class DevisController extends BaseController
 
             // Email confirmation client (ignoré si SMTP non dispo en local)
             try {
-                MailService::sendDevisConfirmation($email, $firstName, $ref, $ville);
+                $catName = Database::fetch('SELECT name FROM categories WHERE id=?', [$catIdMain])['name'] ?? 'Travaux';
+                MailService::sendDevisReception($email, $firstName, $ref, $catName, $ville, $description, $urgency);
             } catch (Exception $mailEx) {
                 error_log('[MAIL SKIP] ' . $mailEx->getMessage());
             }

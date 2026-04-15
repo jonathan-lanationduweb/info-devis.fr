@@ -7,7 +7,7 @@
 
 define('ROOT', __DIR__);
 
-// ── Composer autoload (SDK Mailtrap, etc.) ────────────────────
+// ── Composer autoload (PHPMailer, etc.) ──────────────────────
 if (file_exists(ROOT . '/vendor/autoload.php')) {
     require_once ROOT . '/vendor/autoload.php';
 }
@@ -98,6 +98,8 @@ $routes = [
     'GET /dashboard/client/signature/{id}' => ['DashboardClientController', 'signature'],
     'POST /dashboard/client/signature' => ['DashboardClientController', 'sign'],
     'GET /dashboard/client/paiement/{id}'  => ['DashboardClientController', 'paiement'],
+    'GET /dashboard/client/calendrier'      => ['DashboardClientController', 'calendrier'],
+    'GET /dashboard/client/calendrier/{id}' => ['DashboardClientController', 'calendrierArtisan'],
 
     // Dashboard admin
     'GET /admin'                        => ['AdminController', 'index'],

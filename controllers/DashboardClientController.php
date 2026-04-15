@@ -2,15 +2,17 @@
 require_once BASE_PATH . '/controllers/BaseController.php';
 require_once BASE_PATH . '/models/DevisModel.php';
 
-class DashboardClientController extends BaseController {
-
+class DashboardClientController extends BaseController
+{
     private DevisModel $devisModel;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->devisModel = new DevisModel();
     }
 
-    public function index(): void {
+    public function index(): void
+    {
         $session = $this->requireAuth('client');
         $devis   = $this->devisModel->getByClient($session['user_id']);
         $notifs  = $this->getNotifications($session['user_id']);
@@ -22,7 +24,8 @@ class DashboardClientController extends BaseController {
         ]);
     }
 
-    public function devis(): void {
+    public function devis(): void
+    {
         $session = $this->requireAuth('client');
         $devis   = $this->devisModel->getByClient($session['user_id']);
 
@@ -32,7 +35,8 @@ class DashboardClientController extends BaseController {
         ]);
     }
 
-    public function messages(): void {
+    public function messages(): void
+    {
         $session = $this->requireAuth('client');
 
         $conversations = Database::fetchAll(
@@ -56,7 +60,8 @@ class DashboardClientController extends BaseController {
         ]);
     }
 
-    public function avis(): void {
+    public function avis(): void
+    {
         $session = $this->requireAuth('client');
         $myAvis  = Database::fetchAll(
             'SELECT av.*, a.company_name, u.first_name, u.last_name, d.reference
@@ -69,7 +74,6 @@ class DashboardClientController extends BaseController {
             [$session['user_id']]
         );
 
-        // Devis terminés sans avis
         $pending = Database::fetchAll(
             'SELECT d.id, d.reference, a.company_name, l.artisan_id
              FROM devis d
@@ -88,7 +92,8 @@ class DashboardClientController extends BaseController {
         ]);
     }
 
-    public function createAvis(): void {
+    public function createAvis(): void
+    {
         $session = $this->requireAuth('client');
         $this->csrfCheck();
 
@@ -111,7 +116,6 @@ class DashboardClientController extends BaseController {
             'verified'   => 1,
         ]);
 
-        // Mettre à jour rating artisan
         $avg = Database::fetch(
             'SELECT AVG(rating) as avg, COUNT(*) as c FROM avis WHERE artisan_id = ? AND verified = 1',
             [$artisanId]
@@ -125,7 +129,108 @@ class DashboardClientController extends BaseController {
         $this->json(['success' => true, 'message' => 'Merci pour votre avis !']);
     }
 
-    public function signature(int $devisId): void {
+    // ── Calendriers des artisans disponibles ──────────────────────
+    public function calendrier(): void
+    {
+        $this->requireAuth('client');
+
+        $catSlug = $_GET['cat'] ?? '';
+        $month   = date('Y-m');
+
+        // Requête artisans vérifiés avec filtrage catégorie optionnel
+        if ($catSlug) {
+            $artisans = Database::fetchAll(
+                "SELECT DISTINCT a.id, a.company_name, a.ville, a.calendar_description,
+                        u.first_name, u.last_name,
+                        GROUP_CONCAT(DISTINCT cat.name ORDER BY cat.name SEPARATOR ', ') as categories
+                 FROM artisans a
+                 JOIN users u ON u.id = a.user_id
+                 JOIN artisan_categories ac ON ac.artisan_id = a.id
+                 JOIN categories cat ON cat.id = ac.category_id
+                 JOIN artisan_categories acf ON acf.artisan_id = a.id
+                 JOIN categories cf ON cf.id = acf.category_id AND cf.slug = ?
+                 WHERE a.is_verified = 1
+                 GROUP BY a.id
+                 ORDER BY a.company_name ASC
+                 LIMIT 20",
+                [$catSlug]
+            );
+        } else {
+            $artisans = Database::fetchAll(
+                "SELECT DISTINCT a.id, a.company_name, a.ville, a.calendar_description,
+                        u.first_name, u.last_name,
+                        GROUP_CONCAT(DISTINCT cat.name ORDER BY cat.name SEPARATOR ', ') as categories
+                 FROM artisans a
+                 JOIN users u ON u.id = a.user_id
+                 LEFT JOIN artisan_categories ac ON ac.artisan_id = a.id
+                 LEFT JOIN categories cat ON cat.id = ac.category_id
+                 WHERE a.is_verified = 1
+                 GROUP BY a.id
+                 ORDER BY a.company_name ASC
+                 LIMIT 20"
+            );
+        }
+
+        // Pour chaque artisan, récupérer ses disponibilités du mois courant
+        foreach ($artisans as &$art) {
+            $art['availability'] = Database::fetchAll(
+                'SELECT date, status, note FROM availability
+                 WHERE artisan_id = ? AND DATE_FORMAT(date, "%Y-%m") = ?',
+                [$art['id'], $month]
+            );
+        }
+        unset($art);
+
+        $this->view('client/calendrier', [
+            'pageTitle' => 'Calendriers artisans | InfoDevis',
+            'artisans'  => $artisans,
+            'month'     => $month,
+        ]);
+    }
+
+    // ── Calendrier d'un artisan spécifique ────────────────────────
+    public function calendrierArtisan(int $id = 0): void
+    {
+        $this->requireAuth('client');
+        if (!$id) $id = (int)($_GET['id'] ?? 0);
+
+        $artisan = Database::fetch(
+            'SELECT a.*, u.first_name, u.last_name
+             FROM artisans a JOIN users u ON u.id = a.user_id
+             WHERE a.id = ? AND a.is_verified = 1',
+            [$id]
+        );
+        if (!$artisan) {
+            $this->redirect('/dashboard/client/calendrier');
+            return;
+        }
+
+        $month = $_GET['month'] ?? date('Y-m');
+
+        $availability = Database::fetchAll(
+            'SELECT date, status, note FROM availability
+             WHERE artisan_id = ? AND DATE_FORMAT(date, "%Y-%m") = ?',
+            [$id, $month]
+        );
+
+        $categories = Database::fetchAll(
+            'SELECT cat.name FROM artisan_categories ac
+             JOIN categories cat ON cat.id = ac.category_id
+             WHERE ac.artisan_id = ?',
+            [$id]
+        );
+
+        $this->view('client/calendrier_artisan', [
+            'pageTitle'    => 'Calendrier — ' . ($artisan['company_name'] ?? ''),
+            'artisan'      => $artisan,
+            'availability' => $availability,
+            'categories'   => $categories,
+            'month'        => $month,
+        ]);
+    }
+
+    public function signature(int $devisId): void
+    {
         $session = $this->requireAuth('client');
         $devis   = $this->devisModel->getById($devisId);
 
@@ -147,7 +252,8 @@ class DashboardClientController extends BaseController {
         ]);
     }
 
-    public function sign(): void {
+    public function sign(): void
+    {
         $session = $this->requireAuth('client');
         $this->csrfCheck();
 
@@ -165,7 +271,6 @@ class DashboardClientController extends BaseController {
             return;
         }
 
-        // Hash du document signé
         $docHash = hash('sha256', $devisId . $session['user_id'] . $signatureData . time());
 
         Database::insert('signatures', [
@@ -177,16 +282,17 @@ class DashboardClientController extends BaseController {
             'document_hash'  => $docHash,
         ]);
 
-        // Statut devis → in_progress
         $this->devisModel->updateStatus($devisId, 'in_progress');
         $this->log('devis_signed', 'devis', $devisId);
 
         $this->json(['success' => true, 'message' => 'Devis signé avec succès !', 'hash' => $docHash]);
     }
 
-    public function paiement(int $devisId): void {
+    public function paiement(int $devisId): void
+    {
         $session = $this->requireAuth('client');
         $devis   = $this->devisModel->getById($devisId);
+
         if (!$devis || $devis['client_id'] !== $session['user_id']) {
             $this->redirect('/dashboard/client/devis');
             return;
@@ -199,12 +305,12 @@ class DashboardClientController extends BaseController {
         ]);
     }
 
-    private function getNotifications(int $userId): array {
+    private function getNotifications(int $userId): array
+    {
         $notifs = Database::fetchAll(
             'SELECT * FROM notifications WHERE user_id = ? ORDER BY created_at DESC LIMIT 10',
             [$userId]
         );
-        // Marquer comme lues
         Database::query('UPDATE notifications SET is_read = 1 WHERE user_id = ?', [$userId]);
         return $notifs;
     }

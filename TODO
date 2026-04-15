@@ -1,0 +1,21 @@
+sur admin sur la page http://localhost/info-devis/admin/artisan/2 je dois pouvoir valider et refuser les doc et aussi visionner les doc si ils sont bon et aussi avoir la possibiliter de dannuler la verification dun artisant 
+sur la page metiers enlever la partie "à partir + le prix" ne rien mettre 
+sur la page guides & prix enlever  les prix mettre autre chose que des prix
+sur admin la page gestion categorie il faut pouvoir rajouter des categorie revoir comment on les rentres 
+il faut que les mail fonctionne pour le moment on ne recoi pas les mail 
+il faudrait que les artisant et client ont un calendrier de rdv comme doctolib 
+lartisant peux faire une description de sur sont calandrie ou il doit aller
+les client on la possibiliter de voir le calendrier et de selectionner leur qui leur correspond
+il faut que en admin on recoit un mail pour valider un artisant en attente
+ameliorer les blog sur la page blog
+il faudrait que les artisant puisse aussi mettre des article ou des blog qui sont sur eux et quon pourra voir et valider en admin 
+resoudre le probleme du chatbot quand il selectionne plusieur metiers il doit faire un devis qui regroupe les metiers seletionner 
+en admin il y a un probleme sur la page paiement il y a 2 header different
+en responsive la page contact le hambergeur ne fonctionne pas 
+en reponsive on ne peux pas apercevoir le tableau de bord avec les option trouver une solution
+le dashboard artisant et client nest pas responsive
+les client doivent avoir la possibiliter de mettre des avis 
+utiliser phpmailer/brevo pour les mail a tester si cela fonctionne que d'utiliser mailtrap 
+
+
+si tu acces a tout le site et au todo voit se qui a etait fait et pas encore si tu trouve des erreur et des bug ou autre sur le dsite arrange cela et fait fonctionner le site stp
