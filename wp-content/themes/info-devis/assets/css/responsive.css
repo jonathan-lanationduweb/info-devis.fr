@@ -1,0 +1,331 @@
+/*
+ * Responsive InfoDevis — mobile-first.
+ * Le desktop (>= 1440px) reste identique aux captures du site original.
+ * Points de rupture : mobile <= 767px, tablette 768-1023px, laptop 1024-1439px.
+ * Tailwind gère déjà les préfixes md:/lg: du HTML original ; ce fichier
+ * corrige ce que l'original ne couvrait pas (débordements, tailles tactiles,
+ * titres, tableaux, filtres).
+ */
+
+/* ── Garde-fous globaux (toutes tailles) ─────────────────────── */
+html,
+body {
+  overflow-x: clip;
+  max-width: 100%;
+}
+
+img,
+svg,
+video {
+  max-width: 100%;
+}
+
+/* Cibles tactiles confortables */
+@media (pointer: coarse) {
+  a,
+  button,
+  input[type="submit"],
+  .nav-link {
+    min-height: 44px;
+  }
+
+  .nav-link {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  input,
+  select,
+  textarea {
+    font-size: 16px; /* évite le zoom automatique iOS */
+  }
+}
+
+/* ── Mobile : jusqu'à 767px ──────────────────────────────────── */
+@media (max-width: 767px) {
+
+  /* Marges latérales suffisantes mais contenu maximisé */
+  .px-8 {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
+
+  /* Titres : réduction progressive avec clamp() */
+  h1,
+  .page-banner__title {
+    font-size: clamp(1.9rem, 8.5vw, 3rem) !important;
+    line-height: 1.12 !important;
+    letter-spacing: -0.01em;
+  }
+
+  h2 {
+    font-size: clamp(1.5rem, 6.5vw, 2.25rem) !important;
+    line-height: 1.18 !important;
+  }
+
+  h3 {
+    font-size: clamp(1.15rem, 5vw, 1.5rem) !important;
+  }
+
+  /* Héro accueil : hauteur adaptée, recherche empilée pleine largeur */
+  .min-h-\[870px\] {
+    min-height: 640px !important;
+  }
+
+  #hero-category,
+  #hero-ville {
+    min-height: 44px;
+  }
+
+  #hero-search-btn {
+    width: 100%;
+    min-height: 48px;
+  }
+
+  /* Les séparateurs verticaux de la barre de recherche deviennent horizontaux */
+  .bg-white\/95 .border-r {
+    border-right: none !important;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  /* Bento : hauteurs fixes remplacées par des ratios flexibles */
+  [style*="height:400px"],
+  [style*="height:450px"],
+  [style*="height:380px"],
+  [style*="height:420px"],
+  [style*="height:480px"],
+  [style*="height:360px"],
+  [style*="height:500px"],
+  [style*="height:350px"] {
+    height: auto !important;
+    aspect-ratio: 4 / 3;
+  }
+
+  /* Cartes réduites : padding contenu */
+  .p-16 {
+    padding: 28px 20px !important;
+  }
+
+  .p-12 {
+    padding: 24px 18px !important;
+  }
+
+  .p-10 {
+    padding: 24px 18px !important;
+  }
+
+  /* Recherche annuaire (search-pill) : empilée */
+  .search-pill {
+    flex-direction: column !important;
+    border-radius: 20px !important;
+    padding: 10px !important;
+    gap: 8px;
+  }
+
+  .search-pill__divider {
+    display: none !important;
+  }
+
+  .search-pill__field {
+    width: 100%;
+    min-height: 46px;
+  }
+
+  .search-pill__btn {
+    width: 100%;
+    justify-content: center;
+    min-height: 48px;
+  }
+
+  /* Pills de filtres métiers : ligne défilable horizontale */
+  .idv-filter-pills {
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 8px;
+    scrollbar-width: thin;
+  }
+
+  .idv-filter-pills > a {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  /* Tableaux (dashboards) : zone défilable, jamais de débordement page */
+  .idc-dash-table,
+  .guide-table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+  }
+
+  .idc-dash-table th,
+  .idc-dash-table td {
+    padding: 9px 10px;
+    font-size: 0.85rem;
+  }
+
+  /* Formulaires : pleine largeur, champs confortables */
+  .idc-form {
+    padding: 20px 16px;
+  }
+
+  .idc-form input,
+  .idc-form select,
+  .idc-form textarea {
+    min-height: 46px;
+  }
+
+  .idc-form textarea {
+    min-height: 110px;
+  }
+
+  .idc-btn {
+    display: block;
+    width: 100%;
+    text-align: center;
+    min-height: 48px;
+  }
+
+  /* CTA : boutons empilés pleine largeur (déjà flex-col md:flex-row) */
+  .bg-primary.rounded-2xl a,
+  .bg-primary.rounded-3xl a {
+    display: block;
+    width: 100%;
+  }
+
+  /* Footer : colonnes déjà empilées par Tailwind ; resserrer les espacements */
+  footer .gap-12 {
+    gap: 32px !important;
+  }
+
+  footer .py-16 {
+    padding-top: 44px !important;
+    padding-bottom: 36px !important;
+  }
+
+  /* Pagination */
+  .page-numbers {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    min-height: 40px;
+    border: 1px solid #e2e8ea;
+    border-radius: 10px;
+    margin: 2px;
+    text-decoration: none;
+    font-size: 0.9rem;
+  }
+
+  .page-numbers.current {
+    background: #207752;
+    color: #fff;
+    border-color: #207752;
+  }
+}
+
+/* ── Tablette : 768 à 1023px ─────────────────────────────────── */
+@media (min-width: 768px) and (max-width: 1023px) {
+
+  /* La navbar desktop (6 liens + 4 actions) ne tient pas sous 1024px :
+     on garde le menu hamburger comme sur mobile. */
+  #site-header .hidden.md\:flex {
+    display: none !important;
+  }
+
+  #site-header .md\:hidden {
+    display: flex !important;
+  }
+
+  #mobile-nav {
+    display: none !important;
+  }
+
+  #mobile-nav.flex {
+    display: flex !important;
+  }
+
+  /* Grilles 3-4 colonnes -> 2 colonnes (cartes pros, expertises internes) */
+  .md\:grid-cols-3,
+  .lg\:grid-cols-3,
+  .lg\:grid-cols-4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  /* Bento accueil : la grande carte garde 12 colonnes -> pleine largeur,
+     les cartes 4/12 passent en 6/12 (2 par ligne) */
+  .md\:col-span-8 {
+    grid-column: span 12 / span 12 !important;
+  }
+
+  .md\:col-span-4 {
+    grid-column: span 6 / span 6 !important;
+  }
+
+  /* Titres très larges du desktop légèrement réduits */
+  .md\:text-8xl {
+    font-size: clamp(3.2rem, 8vw, 4.5rem) !important;
+  }
+
+  .lg\:text-7xl {
+    font-size: clamp(2.8rem, 7vw, 4rem) !important;
+  }
+
+  /* Tableaux défilables aussi sur tablette */
+  .idc-dash-table {
+    display: block;
+    overflow-x: auto;
+  }
+}
+
+/* ── Laptop : 1024 à 1439px ──────────────────────────────────── */
+@media (min-width: 1024px) and (max-width: 1439px) {
+
+  /* Rien à réorganiser : le design original tient à partir de 1024px.
+     On resserre seulement les conteneurs les plus larges. */
+  .max-w-\[1440px\] {
+    max-width: 100% !important;
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+}
+
+/* ── Pagination (toutes tailles desktop) ─────────────────────── */
+@media (min-width: 768px) {
+  .page-numbers {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 38px;
+    min-height: 38px;
+    border: 1px solid #e2e8ea;
+    border-radius: 10px;
+    margin: 2px;
+    text-decoration: none;
+    font-size: 0.9rem;
+  }
+
+  .page-numbers.current {
+    background: #207752;
+    color: #fff;
+    border-color: #207752;
+  }
+}
+
+/* ── Accessibilité : préférence de mouvement réduit ──────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}

@@ -1,0 +1,52 @@
+# ===================================================================
+#  InfoDevis — .gitignore
+#  On versionne UNIQUEMENT le code métier (thème + plugins custom + docs).
+#  Le cœur WordPress, les extensions tierces, les données et les SECRETS
+#  sont installés/configurés séparément lors du déploiement.
+# ===================================================================
+
+# --- Cœur WordPress (réinstallé via wp-cli / téléchargement officiel) ---
+/wp-admin/
+/wp-includes/
+/wp-*.php
+/index.php
+/xmlrpc.php
+/readme.html
+/license.txt
+
+# --- SECRETS & config locale — NE JAMAIS committer ---
+wp-config.php
+/.htaccess
+
+# --- Données, envois, sauvegardes ---
+/backups/
+/wp-content/uploads/
+/wp-content/upgrade/
+/wp-content/cache/
+/wp-content/mu-plugins/
+
+# --- Extensions tierces (réinstallées depuis l'admin WordPress) ---
+/wp-content/plugins/akismet/
+/wp-content/plugins/hello.php
+/wp-content/plugins/wordpress-seo/
+/wp-content/plugins/wp-mail-smtp/
+/wp-content/plugins/index.php
+
+# --- Thèmes non utilisés (Astra + thèmes par défaut) ---
+/wp-content/themes/astra/
+/wp-content/themes/twentytwentytwo/
+/wp-content/themes/twentytwentythree/
+/wp-content/themes/twentytwentyfour/
+/wp-content/themes/twentytwentyfive/
+/wp-content/themes/index.php
+
+# --- Captures d'écran (lourdes, documentation interne) ---
+/docs/captures/
+
+# --- Divers ---
+*.log
+Thumbs.db
+.DS_Store
+
+# --- Traductions WordPress (auto-installées) ---
+/wp-content/languages/

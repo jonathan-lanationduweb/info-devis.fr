@@ -1,0 +1,18 @@
+/*
+Theme Name: Info Devis
+Description: Thème autonome InfoDevis — conversion fidèle du site original (Tailwind CDN, Newsreader/Manrope, Font Awesome). Le design provient des vues PHP historiques, la logique métier de l'extension Info Devis Core.
+Version: 1.0.0
+Author: Jonathan — La Nation du Web
+Text Domain: info-devis
+Requires PHP: 8.1
+*/
+
+/*
+ * Les styles du site vivent dans assets/css/ :
+ *   theme.css      — design tokens originaux (copie conforme)
+ *   portfolio.css  — composants cartes/portfolio originaux (copie conforme)
+ *   rdv.css        — composants rendez-vous originaux (copie conforme)
+ *   layout.css     — styles inline du layout original (extraits de views/layout/main.php)
+ *   transitional.css — styles temporaires des shortcodes (pages non encore portées)
+ * Tailwind est chargé via CDN avec la configuration inline d'origine (voir functions.php).
+ */

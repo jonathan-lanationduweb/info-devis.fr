@@ -1,0 +1,558 @@
+/* ============================================================
+ * portfolio.css - Composants signature Brief V2 (2026-05-15)
+ *
+ * Conserve Tailwind CDN deja en place dans views/layout/main.php.
+ * Ce fichier ajoute UNIQUEMENT les composants speciaux non couverts
+ * par Tailwind : pill-title, expert-card, glass-pill, active-tab,
+ * btn-primary-pill, badges Certifie/Gold.
+ * ============================================================ */
+
+/* ── DESIGN TOKENS ───────────────────────────────────────────
+ * Les variables --idv-*, --tw-* et les thèmes [data-theme] sont
+ * désormais centralisés dans /assets/css/theme.css (chargé avant
+ * ce fichier dans layout/main.php).
+ *
+ * Toute couleur ajoutée ici DOIT référencer var(--color-*) ou
+ * var(--idv-*) — pas de hex en dur.
+ * ──────────────────────────────────────────────────────────── */
+
+/* ── Pill-title : mot-clé encadré noir italique ──────────── */
+.pill-title {
+  background-color: var(--idv-ink);
+  color: #fff;
+  padding: 0.05em 0.55em;
+  border-radius: 9999px;
+  display: inline-block;
+  font-style: italic;
+  font-family: 'Newsreader', serif;
+  line-height: 1.1;
+}
+
+/* ── Bouton pill primary vert ────────────────────────────── */
+.btn-primary-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--idv-primary);
+  color: #fff;
+  padding: 14px 32px;
+  border-radius: 9999px;
+  font-family: 'Manrope', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.2s;
+  box-shadow: 0 4px 10px rgba(32, 119, 82, 0.15);
+}
+.btn-primary-pill:hover { background: var(--idv-primary-dark); transform: translateY(-1px); }
+.btn-primary-pill:active { transform: translateY(0); }
+
+/* Variante outline */
+.btn-outline-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #fff;
+  color: var(--idv-ink);
+  padding: 12px 28px;
+  border-radius: 9999px;
+  border: 1px solid var(--idv-gray-border);
+  font-family: 'Manrope', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.btn-outline-pill:hover { border-color: var(--idv-primary); color: var(--idv-primary); }
+
+/* ── Glass pill (badge sur photo, blur) ──────────────────── */
+.glass-pill {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--idv-ink);
+}
+
+/* ════════════════════════════════════════════════════════════
+ * BADGES ARTISAN — 4 niveaux de confiance
+ * Brief V2 final - 2026-05-15
+ * ════════════════════════════════════════════════════════════ */
+.idv-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: 'Manrope', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-radius: 6px;
+  white-space: nowrap;
+  border: 1px solid transparent;
+  transition: transform 0.15s, box-shadow 0.15s;
+  cursor: default;
+  line-height: 1;
+  vertical-align: middle;
+}
+.idv-badge__icon {
+  /* Compatible Font Awesome <i> ET ancien Material Symbols <span> */
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+/* Override : pour Font Awesome (<i>), font-variation-settings n'a pas d'effet et OK */
+i.idv-badge__icon { font-variation-settings: normal; }
+.idv-badge__label {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+/* Tailles */
+.idv-badge--sm { font-size: 9px; padding: 3px 7px; }
+.idv-badge--sm .idv-badge__icon { font-size: 11px; }
+.idv-badge--md { font-size: 10px; padding: 5px 10px; }
+.idv-badge--md .idv-badge__icon { font-size: 13px; }
+.idv-badge--lg { font-size: 12px; padding: 7px 15px; border-radius: 9999px; }
+.idv-badge--lg .idv-badge__icon { font-size: 16px; }
+
+/* NIVEAU 1 - Référencé (gris discret) */
+.idv-badge--referenced {
+  background: #F3F4F6;
+  color: #6B7280;
+  border-color: #E5E7EB;
+}
+
+/* NIVEAU 2 - Vérifié (vert clair) */
+.idv-badge--verified {
+  background: #ECFDF5;
+  color: #047857;
+  border-color: #A7F3D0;
+}
+
+/* NIVEAU 3 - Vérifié Pro (vert foncé, relief) */
+.idv-badge--verified-pro {
+  background: #DCFCE7;
+  color: #14532D;
+  border-color: #2D5F4E;
+  box-shadow: 0 1px 2px rgba(20, 83, 45, 0.1);
+}
+.idv-badge--verified-pro:hover {
+  box-shadow: 0 4px 8px rgba(20, 83, 45, 0.15);
+}
+
+/* NIVEAU 4 (Premium) supprimé — refonte 3 niveaux Brief V2 */
+@keyframes idv-shimmer {
+  0% { left: -100%; }
+  50%, 100% { left: 200%; }
+}
+
+/* ── Badge Certifié (legacy) ──────────────────────────────── */
+.badge-certified {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--idv-primary-soft);
+  color: var(--idv-primary);
+  border: 1px solid rgba(32, 119, 82, 0.2);
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-family: 'Manrope', sans-serif;
+}
+
+/* ── Badge Gold (premium) ────────────────────────────────── */
+.badge-gold {
+  display: inline-flex;
+  align-items: center;
+  background: var(--idv-gold-bg);
+  color: var(--idv-gold-text);
+  border: 1px solid var(--idv-gold-border);
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-family: 'Manrope', sans-serif;
+}
+
+/* ── Card pro (annuaire) : avatar circulaire en debord ──── */
+.expert-card {
+  position: relative;          /* nécessaire pour positionner l'avatar */
+  background: var(--idv-paper);
+  border: 1px solid var(--idv-gray-border);
+  border-radius: 16px;
+  /* overflow: visible volontaire pour permettre à l'avatar de chevaucher cover/body */
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.expert-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  border-color: var(--idv-primary);
+}
+.expert-card__cover {
+  position: relative;
+  height: 224px;
+  overflow: hidden;            /* clip uniquement de l'image zoomée au hover */
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+}
+.expert-card__cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s;
+}
+.expert-card:hover .expert-card__cover img { transform: scale(1.05); }
+.expert-card__cover::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
+  pointer-events: none;
+}
+/* Avatar en débord (à cheval sur cover + body) — désormais hors cover */
+.expert-card__avatar {
+  position: absolute;
+  top: 176px;                  /* cover height (224) − avatar half height (48) = 176 */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  border: 4px solid #fff;
+  background: #fff;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  outline: 2px solid var(--idv-primary-soft);
+}
+.expert-card__avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* ── Tags spécialités sur la carte ────────────────────────── */
+.card-specialites {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  margin: 0 0 16px;
+}
+.card-specialite-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  background: #f0f9f0;
+  color: #2D5F4E;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 500;
+  font-family: 'Manrope', sans-serif;
+  line-height: 1.4;
+}
+.card-specialite-tag i { font-size: 10px; }
+.card-specialite-tag--more {
+  background: #e5e7eb;
+  color: #4b5563;
+}
+.expert-card__body {
+  padding: 64px 32px 32px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.expert-card__count-badge {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(4px);
+  color: var(--idv-ink);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.expert-card__fav {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+.expert-card__fav:hover { background: rgba(255, 255, 255, 0.4); }
+
+/* ── Card projet (4:3 + glass-pills) ─────────────────────── */
+.projet-card {
+  border: 1px solid var(--idv-gray-line);
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--idv-paper);
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s;
+}
+.projet-card:hover {
+  box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+  transform: translateY(-4px);
+}
+.projet-card__visual {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--idv-gray-bg);
+}
+.projet-card__visual img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s;
+}
+.projet-card:hover .projet-card__visual img { transform: scale(1.05); }
+.projet-card__body { padding: 24px; flex: 1; display: flex; flex-direction: column; }
+.projet-card__title {
+  font-family: 'Newsreader', serif;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 0 0 16px;
+  color: var(--idv-ink);
+  transition: color 0.2s;
+}
+.projet-card:hover .projet-card__title { color: var(--idv-primary); }
+.projet-card__stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 24px;
+}
+.projet-card__stat {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--idv-text-soft);
+}
+.projet-card__stat .material-symbols-outlined {
+  font-size: 14px;
+  color: var(--idv-primary);
+}
+.projet-card__resume {
+  font-size: 12px;
+  font-style: italic;
+  color: var(--idv-text-muted);
+  margin-bottom: 32px;
+}
+.projet-card__cta {
+  margin-top: auto;
+  width: 100%;
+  padding: 12px;
+  background: var(--idv-ink);
+  color: #fff;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-family: 'Manrope', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.projet-card:hover .projet-card__cta { background: var(--idv-primary); }
+
+/* ── Onglets profil artisan ──────────────────────────────── */
+.tabs-artisan {
+  display: flex;
+  gap: 48px;
+  border-bottom: 1px solid var(--idv-gray-line);
+  margin: 64px 0 40px;
+}
+.tabs-artisan__tab {
+  position: relative;
+  padding-bottom: 16px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--idv-text-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.tabs-artisan__tab:hover { color: var(--idv-ink); }
+.tabs-artisan__tab.active-tab {
+  color: var(--idv-primary);
+  font-weight: 700;
+}
+.tabs-artisan__tab.active-tab::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: var(--idv-primary);
+}
+
+/* ── Pagination ──────────────────────────────────────────── */
+.pagination-portfolio {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 64px 0;
+}
+.pagination-portfolio__item {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--idv-gray-border);
+  background: #fff;
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--idv-text-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.pagination-portfolio__item:hover { border-color: var(--idv-primary); color: var(--idv-primary); }
+.pagination-portfolio__item--active {
+  background: var(--idv-primary);
+  color: #fff;
+  border-color: var(--idv-primary);
+  font-weight: 700;
+}
+.pagination-portfolio__item--active:hover { color: #fff; }
+.pagination-portfolio__ellipsis { color: var(--idv-text-muted); padding: 0 8px; }
+
+/* ── Card hover generique ────────────────────────────────── */
+.card-hover {
+  border: 1px solid var(--idv-gray-border);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.card-hover:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+  border-color: var(--idv-primary);
+}
+
+/* ── Search pill (annuaire) ──────────────────────────────── */
+.search-pill {
+  background: #fff;
+  border-radius: 9999px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  border: 1px solid var(--idv-gray-border);
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  max-width: 960px;
+  gap: 8px;
+}
+.search-pill__field {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-left: 16px;
+}
+.search-pill__field .material-symbols-outlined { color: var(--idv-primary); }
+.search-pill__input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  padding: 12px 4px;
+  color: var(--idv-ink);
+}
+.search-pill__divider { width: 1px; height: 32px; background: var(--idv-gray-border); }
+.search-pill__btn {
+  background: var(--idv-primary);
+  color: #fff;
+  padding: 14px 32px;
+  border-radius: 9999px;
+  border: none;
+  cursor: pointer;
+  font-family: 'Manrope', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.2s;
+}
+.search-pill__btn:hover { background: var(--idv-primary-dark); }
+
+/* ── Mobile responsive ───────────────────────────────────── */
+@media (max-width: 768px) {
+  .search-pill { flex-direction: column; border-radius: 24px; padding: 16px; }
+  .search-pill__divider { display: none; }
+  .search-pill__field { width: 100%; }
+  .search-pill__btn { width: 100%; justify-content: center; }
+  .tabs-artisan { gap: 24px; overflow-x: auto; }
+  /* Carte pro : cover plus petit + avatar repositionné en conséquence */
+  .expert-card__cover { height: 180px; }
+  .expert-card__avatar {
+    top: 132px;            /* 180 (cover) − 48 (avatar half) = 132 */
+    width: 88px; height: 88px;
+  }
+  .expert-card__body { padding: 56px 20px 24px; }
+  .projet-card__body { padding: 16px; }
+  /* Tags spécialités plus compacts */
+  .card-specialite-tag { font-size: 10px; padding: 3px 8px; }
+  .card-specialite-tag i { font-size: 9px; }
+}
+@media (max-width: 480px) {
+  .expert-card__cover { height: 160px; }
+  .expert-card__avatar { top: 112px; width: 80px; height: 80px; }
+  /* Badges réduits sur très petit écran */
+  .idv-badge--md { font-size: 9px; padding: 4px 8px; }
+  .idv-badge--md .idv-badge__icon { font-size: 11px; }
+}

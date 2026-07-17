@@ -1,0 +1,20 @@
+ancienne_url,nouvelle_url,type,justification,etat_test
+/,/,aucune,Accueil identique,ok
+/metiers,/trouver-un-artisan/,301,Page metiers remplacee par l annuaire filtrable,a tester en prod
+/metier/{slug},/metier/{slug}/,301 si difference,Slugs de categories conserves a l identique (taxonomie metier),ok en local
+/artisans,/artisans/,301 si difference,Archive du CPT artisan,ok en local
+/artisan/{id},/artisan/{slug}/,301 unitaire,Les fiches passent d un ID numerique a un slug - table de correspondance a generer depuis _idc_legacy_id,a construire avant prod
+/devis,/demande-de-devis/,301,Formulaire de devis,a tester en prod
+/guides,/guides/,aucune,Archive du CPT guide - slug conserve,ok en local
+/guide/{slug},/guide/{slug}/,aucune,Slugs des guides conserves a l identique,ok en local
+/blog,/blog-actualites/,301,Page des articles,a tester en prod
+/blog/{slug},/{slug}/,301,Articles migres avec leur slug d origine en permalien /%postname%/,ok en local
+/login,/connexion/,301,Page de connexion fidele (auth/login.php),ok en local
+/register,/inscription/,301,Page d inscription fidele (auth/register.php - ?type=artisan),ok en local
+/dashboard,/espace-membre/,301,Aiguillage par role vers /dashboard/client/ ou /dashboard/artisan/,ok en local
+/admin,/wp-admin/,301,Administration WordPress,ok en local
+/contact,/contact/,aucune,Identique,ok en local
+/abonnement,/tarifs-pro/,301,Offres professionnelles (URL originale conservee),ok en local
+/api/payments/webhook,/wp-json/idc/v1/stripe-webhook,mise a jour cote Stripe,Reconfigurer l endpoint dans le dashboard Stripe (pas une redirection),a faire avant prod
+/sitemap.xml,/sitemap_index.xml,301,Sitemap genere par Yoast,ok en local
+/artisans,/professionnels/,301 (implementee dans le theme),Annuaire unifie sur la vue professionnels fidele,ok en local

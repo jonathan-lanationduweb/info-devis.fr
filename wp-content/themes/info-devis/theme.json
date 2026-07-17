@@ -1,0 +1,23 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/theme.json",
+  "version": 2,
+  "settings": {
+    "color": {
+      "palette": [
+        { "slug": "primary", "color": "#207752", "name": "Primaire (vert InfoDevis)" },
+        { "slug": "primary-dark", "color": "#165a3c", "name": "Primaire foncé" },
+        { "slug": "teal", "color": "#157e90", "name": "Teal" },
+        { "slug": "surface", "color": "#faf9f8", "name": "Fond" },
+        { "slug": "on-surface", "color": "#2f3333", "name": "Texte" },
+        { "slug": "navy-footer", "color": "#071e24", "name": "Fond footer" },
+        { "slug": "gold", "color": "#f0b429", "name": "Or" }
+      ]
+    },
+    "typography": {
+      "fontFamilies": [
+        { "slug": "headline", "name": "Newsreader (titres)", "fontFamily": "Newsreader, serif" },
+        { "slug": "body", "name": "Manrope (texte)", "fontFamily": "Manrope, sans-serif" }
+      ]
+    }
+  }
+}

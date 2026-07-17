@@ -1,0 +1,384 @@
+/* ============================================================
+ * rdv.css - Composants système RDV (Brief V2 final)
+ * Date : 2026-05-15
+ * Convention : CSS vanilla (pas de Tailwind utility)
+ * ============================================================ */
+
+/* ── Variables (mêmes que portfolio.css pour cohérence) ──────── */
+:root {
+  --rdv-primary:        #207752;
+  --rdv-primary-dark:   #1a6143;
+  --rdv-primary-soft:   rgba(32, 119, 82, 0.10);
+  --rdv-primary-container: #a0f4c6;
+  --rdv-on-primary:     #e1ffeb;
+  --rdv-on-primary-container: #005e3d;
+  --rdv-ink:            #111111;
+  --rdv-text-soft:      #4B5563;
+  --rdv-text-muted:     #9CA3AF;
+  --rdv-paper:          #FFFFFF;
+  --rdv-gray-bg:        #F8F8F8;
+  --rdv-gray-border:    #E5E7EB;
+  --rdv-gray-line:      #F3F4F6;
+  --rdv-error:          #9f403d;
+}
+
+/* ── Page /rdv/prendre - Layout 2 colonnes ─────────────────── */
+.rdv-prendre {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 112px 24px 24px;  /* pt-28 pour passer sous navbar */
+}
+.rdv-prendre__breadcrumb {
+  font-size: 12px;
+  color: var(--rdv-text-muted);
+  margin-bottom: 16px;
+}
+.rdv-prendre__breadcrumb a { color: var(--rdv-text-muted); text-decoration: none; }
+.rdv-prendre__breadcrumb a:hover { color: var(--rdv-primary); }
+.rdv-prendre__breadcrumb-sep { margin: 0 8px; }
+.rdv-prendre__title {
+  font-family: 'Newsreader', serif;
+  font-size: 48px;
+  font-weight: 600;
+  color: var(--rdv-primary);
+  line-height: 1.1;
+  margin-bottom: 8px;
+}
+.rdv-prendre__subtitle {
+  color: var(--rdv-text-soft);
+  font-size: 16px;
+  margin-bottom: 48px;
+}
+.rdv-prendre__grid {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 32px;
+  margin-bottom: 24px;
+}
+@media (max-width: 768px) {
+  .rdv-prendre__grid { grid-template-columns: 1fr; }
+}
+
+/* ── Sidebar gauche : Artisan + Projet ─────────────────────── */
+.rdv-prendre__sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.rdv-card {
+  background: var(--rdv-gray-line);
+  border-radius: 8px;
+  padding: 16px;
+}
+.rdv-card__label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--rdv-text-muted);
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.rdv-card__artisan {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.rdv-card__avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  background: var(--rdv-primary);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Newsreader', serif;
+  font-weight: 700;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.rdv-card__name {
+  font-family: 'Newsreader', serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--rdv-ink);
+  line-height: 1.2;
+}
+.rdv-card__rating {
+  font-size: 12px;
+  color: var(--rdv-primary);
+  font-weight: 600;
+  margin-top: 2px;
+}
+.rdv-card__speciality {
+  font-style: italic;
+  font-size: 12px;
+  color: var(--rdv-text-soft);
+  font-family: 'Newsreader', serif;
+}
+.rdv-card__projet-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--rdv-ink);
+  margin-bottom: 4px;
+}
+.rdv-card__projet-ref {
+  font-size: 11px;
+  font-family: ui-monospace, 'SF Mono', Monaco, monospace;
+  color: var(--rdv-text-soft);
+}
+
+/* ── Section avec numéro ───────────────────────────────────── */
+.rdv-section {
+  background: var(--rdv-paper);
+  border: 1px solid var(--rdv-gray-border);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+.rdv-section__title {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--rdv-primary);
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+/* ── Picker créneaux ───────────────────────────────────────── */
+.creneaux-picker__nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  font-size: 13px;
+}
+.creneaux-picker__nav-btn {
+  background: none;
+  border: none;
+  color: var(--rdv-primary);
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+.creneaux-picker__nav-btn:hover { background: var(--rdv-primary-soft); }
+.creneaux-picker__nav-btn:disabled { color: var(--rdv-text-muted); cursor: not-allowed; }
+.creneaux-picker__nav-btn:disabled:hover { background: transparent; }
+.creneaux-picker__week-label {
+  font-family: 'Newsreader', serif;
+  font-style: italic;
+  color: var(--rdv-text-soft);
+}
+.creneaux-picker__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+@media (max-width: 640px) {
+  .creneaux-picker__grid { grid-template-columns: repeat(2, 1fr); }
+}
+.creneaux-picker__day-col {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.creneaux-picker__day-head {
+  text-align: center;
+  padding: 8px 0;
+  margin-bottom: 6px;
+  border-bottom: 1px solid var(--rdv-gray-line);
+}
+.creneaux-picker__day-name {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--rdv-text-muted);
+  font-weight: 700;
+}
+.creneaux-picker__day-date {
+  font-family: 'Newsreader', serif;
+  font-size: 18px;
+  color: var(--rdv-ink);
+  margin-top: 2px;
+}
+.creneaux-picker__day-head--today .creneaux-picker__day-date { color: var(--rdv-primary); }
+.creneaux-picker__slot {
+  display: block;
+  background: var(--rdv-paper);
+  border: 0.5px solid var(--rdv-gray-border);
+  border-radius: 4px;
+  padding: 6px 8px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--rdv-ink);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+  font-family: 'Manrope', sans-serif;
+}
+.creneaux-picker__slot:hover {
+  border-color: var(--rdv-primary);
+}
+.creneaux-picker__slot--selected {
+  background: var(--rdv-primary);
+  color: #fff;
+  border-color: var(--rdv-primary);
+  font-weight: 700;
+}
+.creneaux-picker__slot--selected::after {
+  content: ' ✓';
+  font-size: 11px;
+}
+.creneaux-picker__slot--unavailable {
+  color: var(--rdv-text-muted);
+  text-decoration: line-through;
+  cursor: not-allowed;
+  background: var(--rdv-gray-bg);
+}
+.creneaux-picker__day-empty {
+  font-size: 11px;
+  color: var(--rdv-text-muted);
+  font-style: italic;
+  text-align: center;
+  padding: 8px 0;
+}
+
+/* ── Section 2 : champs ────────────────────────────────────── */
+.rdv-field { margin-bottom: 16px; }
+.rdv-field__label {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  color: var(--rdv-text-soft);
+  margin-bottom: 6px;
+}
+.rdv-field__input,
+.rdv-field__textarea {
+  width: 100%;
+  border: 0.5px solid var(--rdv-gray-border);
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  background: var(--rdv-paper);
+  transition: border-color 0.15s;
+}
+.rdv-field__input:focus,
+.rdv-field__textarea:focus {
+  outline: none;
+  border-color: var(--rdv-primary);
+}
+.rdv-field__textarea { resize: vertical; min-height: 80px; }
+.rdv-upload {
+  border: 1px dashed var(--rdv-gray-border);
+  border-radius: 6px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  background: var(--rdv-gray-bg);
+  transition: border-color 0.15s, background 0.15s;
+}
+.rdv-upload:hover { border-color: var(--rdv-primary); background: var(--rdv-primary-soft); }
+.rdv-upload__icon { font-size: 28px; color: var(--rdv-text-muted); }
+.rdv-upload__text { font-size: 13px; color: var(--rdv-text-soft); margin-top: 6px; }
+.rdv-upload__hint { font-size: 11px; color: var(--rdv-text-muted); margin-top: 2px; }
+.rdv-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--rdv-text-soft);
+  line-height: 1.5;
+  padding: 12px 0;
+}
+.rdv-checkbox input { margin-top: 2px; accent-color: var(--rdv-primary); }
+
+/* ── Bandeau récap (vert plein) ────────────────────────────── */
+.rdv-recap {
+  background: var(--rdv-primary);
+  color: #fff;
+  border-radius: 12px;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.rdv-recap__label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-weight: 700;
+  opacity: 0.7;
+  margin-bottom: 4px;
+}
+.rdv-recap__date {
+  font-family: 'Newsreader', serif;
+  font-size: 22px;
+  font-weight: 600;
+}
+.rdv-recap__date--empty {
+  opacity: 0.6;
+  font-style: italic;
+  font-weight: 400;
+}
+.rdv-recap__btn {
+  background: #fff;
+  color: var(--rdv-primary);
+  border: none;
+  padding: 12px 24px;
+  border-radius: 9999px;
+  font-family: 'Manrope', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: opacity 0.15s, transform 0.15s;
+}
+.rdv-recap__btn:hover:not(:disabled) { transform: translateX(2px); }
+.rdv-recap__btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.rdv-rassurante {
+  font-size: 11px;
+  color: var(--rdv-text-muted);
+  line-height: 1.5;
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* ── Message d'état ────────────────────────────────────────── */
+.rdv-msg {
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+.rdv-msg--info { background: #f0f9ff; color: #0369a1; border: 1px solid #bae6fd; }
+.rdv-msg--err  { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+.rdv-msg--ok   { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+.rdv-msg--hidden { display: none; }
+
+/* ── Spinner ───────────────────────────────────────────────── */
+.rdv-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: rdv-spin 0.7s linear infinite;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+@keyframes rdv-spin { to { transform: rotate(360deg); } }

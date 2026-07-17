@@ -1,0 +1,271 @@
+/* ============================================================
+ * theme.css — DESIGN TOKENS InfoDevis
+ *
+ * Source unique de vérité pour TOUTES les couleurs du site.
+ * Toute couleur utilisée dans une feuille de style, un composant
+ * ou un style inline DEVRAIT référencer une variable ci-dessous
+ * via var(--color-...).
+ *
+ * Structure :
+ *   1. BRAND (couleurs de marque)
+ *   2. PRIMARY (déclinaisons d'usage : hover, soft, container…)
+ *   3. SURFACES (fonds : page, cartes, panels)
+ *   4. TEXT (typographies : ink, muted, disabled)
+ *   5. BORDERS (séparations)
+ *   6. STATUS (success, warning, danger, info)
+ *   7. ACCENTS (gold, premium)
+ *   8. ALIASES (rétrocompat avec --idv-*, --rdv-*, --tw-*)
+ *   9. THÈMES PERSONNALISÉS (body[data-theme="..."])
+ *
+ * Fichier chargé EN PREMIER dans le <head> pour que toutes
+ * les autres CSS puissent y faire référence.
+ *
+ * Convention : noms en kebab-case, préfixe `--color-` pour
+ * éviter les collisions avec d'autres design tokens (spacing,
+ * radius, typo…).
+ * ============================================================ */
+
+:root {
+  /* ── 1. BRAND ─────────────────────────────────────────────────
+   * La couleur de marque. NE PAS UTILISER directement dans les
+   * composants — référencer plutôt --color-primary (alias).
+   * Modifier ici change la marque globalement.
+   */
+  --color-brand:               #207752;
+  --color-brand-dark:          #165a3c;
+  --color-brand-darker:        #0e6c48;
+  --color-brand-light:         #28936a;
+  --color-brand-rgb:           32 119 82;       /* triplet RGB pour rgb() / alpha */
+
+  /* ── 2. PRIMARY (sémantique d'usage) ──────────────────────────
+   * Alias d'usage qui pointent vers la brand. C'est ce que les
+   * composants doivent consommer.
+   */
+  --color-primary:             var(--color-brand);
+  --color-primary-hover:       var(--color-brand-dark);
+  --color-primary-active:      var(--color-brand-darker);
+  --color-primary-light:       var(--color-brand-light);
+  --color-primary-soft:        rgba(32, 119, 82, 0.10);
+  --color-primary-softer:      rgba(32, 119, 82, 0.05);
+  --color-on-primary:          #e1ffeb;   /* texte sur fond primary */
+  --color-primary-container:   #a0f4c6;   /* badge/pill secondary */
+  --color-on-primary-container:#005e3d;
+
+  /* ── 3. SURFACES (fonds) ──────────────────────────────────────
+   * Échelle des fonds, du plus clair (page) au plus dense (panels).
+   */
+  --color-bg:                  #faf9f8;   /* fond global page */
+  --color-surface:             #ffffff;   /* cartes blanches */
+  --color-surface-1:           #f9f7f2;   /* sidebar, blocs subtils */
+  --color-surface-2:           #f3f4f3;   /* alternance ligne, hover doux */
+  --color-surface-3:           #edeeed;   /* zones encart un peu plus marquées */
+  --color-surface-4:           #e6e9e8;   /* zones de séparation visibles */
+  --color-surface-dim:         #d6dbda;   /* surfaces sombres (panel skel) */
+  --color-surface-on:          #2f3333;   /* texte par défaut sur surfaces */
+
+  /* ── 4. TEXT ──────────────────────────────────────────────────
+   * Hiérarchie typographique du plus dense au plus discret.
+   */
+  --color-text:                #111111;   /* titres principaux */
+  --color-text-strong:         #2f3333;   /* corps texte fort */
+  --color-text-default:        #4B5563;   /* corps texte normal */
+  --color-text-muted:          #5b605f;   /* texte secondaire */
+  --color-text-disabled:       #9CA3AF;   /* placeholder, désactivé */
+  --color-text-outline:        #777c7b;   /* texte décoratif */
+
+  /* ── 5. BORDERS ───────────────────────────────────────────────*/
+  --color-border:              #e5e7eb;   /* bordure standard */
+  --color-border-soft:         #f3f4f6;   /* séparateur très subtil */
+  --color-border-strong:       #aeb3b2;   /* bordures marquées */
+
+  /* ── 6. STATUS (sémantique d'état) ───────────────────────────*/
+  --color-success:             #10b981;
+  --color-success-bg:          #d1fae5;
+  --color-success-text:        #047857;
+  --color-success-border:      #A7F3D0;
+
+  --color-warning:             #f59e0b;
+  --color-warning-bg:          #fef3c7;
+  --color-warning-text:        #b45309;
+  --color-warning-border:      #FDE68A;
+
+  --color-danger:              #ef4444;
+  --color-danger-bg:           #fee2e2;
+  --color-danger-text:         #9f403d;
+  --color-danger-border:       #fecaca;
+
+  --color-info:                #3b82f6;
+  --color-info-bg:             #dbeafe;
+  --color-info-text:           #1e40af;
+  --color-info-border:         #BFDBFE;
+
+  /* ── 7. ACCENTS (gold / premium) ─────────────────────────────*/
+  --color-gold:                #f0b429;
+  --color-gold-bg:             #FEF3C7;
+  --color-gold-text:           #B45309;
+  --color-gold-border:         #FDE68A;
+
+  /* ─────────────────────────────────────────────────────────────
+   * 8. ALIASES (rétrocompat — NE PAS UTILISER pour du nouveau code)
+   * ─────────────────────────────────────────────────────────────
+   * Maintient l'ancien naming pour ne pas tout refactorer d'un coup.
+   * Nouveau code → consommer les --color-* directement.
+   */
+
+  /* a) Alias --idv-* (portfolio.css, btn-primary-pill, idv-badge) */
+  --idv-primary:               var(--color-primary);
+  --idv-primary-dark:          var(--color-primary-hover);
+  --idv-primary-soft:          var(--color-primary-soft);
+  --idv-ink:                   var(--color-text);
+  --idv-text-soft:             var(--color-text-default);
+  --idv-text-muted:            var(--color-text-disabled);
+  --idv-paper:                 var(--color-surface);
+  --idv-gray-bg:               var(--color-surface-1);
+  --idv-gray-border:           var(--color-border);
+  --idv-gray-line:             var(--color-border-soft);
+  --idv-gold-bg:               var(--color-gold-bg);
+  --idv-gold-text:             var(--color-gold-text);
+  --idv-gold-border:           var(--color-gold-border);
+
+  /* b) Alias --tw-* (consommés par Tailwind via rgb(var(--tw-*) / alpha))
+   * Format RGB triplet sans virgules. NE PAS toucher au format. */
+  --tw-primary:                32 119 82;     /* = --color-brand */
+  --tw-primary-dk:             22 90 60;
+  --tw-primary-lt:             40 147 106;
+  --tw-primary-container:      160 244 198;
+  --tw-on-primary:             225 255 235;
+  --tw-on-primary-container:   0 94 61;
+
+  /* c) Alias --rdv-* (rdv.css) — couleurs neutres réutilisées */
+  --rdv-text-muted:            var(--color-text-disabled);
+  --rdv-gray-border:           var(--color-border);
+}
+
+/* ============================================================
+ * 9. THÈMES PERSONNALISÉS (préférences artisan)
+ *
+ * Activation : <body data-theme="ocean"> dans layout/main.php
+ * (la valeur vient de la table artisans.preferences_theme).
+ *
+ * Chaque thème surcharge UNIQUEMENT les couleurs primaires
+ * (brand + déclinaisons) — surfaces, text, status ne bougent pas.
+ *
+ * Pour ajouter un thème :
+ *  1. Choisir une couleur HEX principale
+ *  2. Calculer une variante sombre (-20% luminance) et claire (+30%)
+ *  3. Calculer le triplet RGB pour --tw-primary
+ *  4. Choisir une couleur "on-primary" lisible (souvent #fff)
+ *  5. Calculer un container (clair) et son on-color (sombre)
+ * ============================================================ */
+body[data-theme="ocean"] {
+  --color-brand:               #1E40AF;
+  --color-brand-dark:           #1E3A8A;
+  --color-brand-light:          #3B82F6;
+  --color-primary-soft:         rgba(30, 64, 175, 0.10);
+  --color-primary-softer:       rgba(30, 64, 175, 0.05);
+  --color-on-primary:           #ffffff;
+  --color-primary-container:    #BFDBFE;
+  --color-on-primary-container: #1E3A8A;
+  --tw-primary: 30 64 175;
+  --tw-primary-dk: 30 58 138;
+  --tw-primary-lt: 59 130 246;
+  --tw-primary-container: 191 219 254;
+  --tw-on-primary: 255 255 255;
+  --tw-on-primary-container: 30 58 138;
+}
+body[data-theme="rose"] {
+  --color-brand:               #EC4899;
+  --color-brand-dark:           #BE185D;
+  --color-brand-light:          #F472B6;
+  --color-primary-soft:         rgba(236, 72, 153, 0.10);
+  --color-primary-softer:       rgba(236, 72, 153, 0.05);
+  --color-on-primary:           #ffffff;
+  --color-primary-container:    #FBCFE8;
+  --color-on-primary-container: #831843;
+  --tw-primary: 236 72 153;
+  --tw-primary-dk: 190 24 93;
+  --tw-primary-lt: 244 114 182;
+  --tw-primary-container: 251 207 232;
+  --tw-on-primary: 255 255 255;
+  --tw-on-primary-container: 131 24 67;
+}
+body[data-theme="sunset"] {
+  --color-brand:               #F97316;
+  --color-brand-dark:           #C2410C;
+  --color-brand-light:          #FB923C;
+  --color-primary-soft:         rgba(249, 115, 22, 0.10);
+  --color-primary-softer:       rgba(249, 115, 22, 0.05);
+  --color-on-primary:           #ffffff;
+  --color-primary-container:    #FED7AA;
+  --color-on-primary-container: #7C2D12;
+  --tw-primary: 249 115 22;
+  --tw-primary-dk: 194 65 12;
+  --tw-primary-lt: 251 146 60;
+  --tw-primary-container: 254 215 170;
+  --tw-on-primary: 255 255 255;
+  --tw-on-primary-container: 124 45 18;
+}
+body[data-theme="elegant"] {
+  --color-brand:               #1F2937;
+  --color-brand-dark:           #111827;
+  --color-brand-light:          #4B5563;
+  --color-primary-soft:         rgba(31, 41, 55, 0.10);
+  --color-primary-softer:       rgba(31, 41, 55, 0.05);
+  --color-on-primary:           #ffffff;
+  --color-primary-container:    #D1D5DB;
+  --color-on-primary-container: #111827;
+  --tw-primary: 31 41 55;
+  --tw-primary-dk: 17 24 39;
+  --tw-primary-lt: 75 85 99;
+  --tw-primary-container: 209 213 219;
+  --tw-on-primary: 255 255 255;
+  --tw-on-primary-container: 17 24 39;
+}
+body[data-theme="purple"] {
+  --color-brand:               #7C3AED;
+  --color-brand-dark:           #5B21B6;
+  --color-brand-light:          #A78BFA;
+  --color-primary-soft:         rgba(124, 58, 237, 0.10);
+  --color-primary-softer:       rgba(124, 58, 237, 0.05);
+  --color-on-primary:           #ffffff;
+  --color-primary-container:    #DDD6FE;
+  --color-on-primary-container: #4C1D95;
+  --tw-primary: 124 58 237;
+  --tw-primary-dk: 91 33 182;
+  --tw-primary-lt: 167 139 250;
+  --tw-primary-container: 221 214 254;
+  --tw-on-primary: 255 255 255;
+  --tw-on-primary-container: 76 29 149;
+}
+body[data-theme="solar"] {
+  --color-brand:               #EAB308;
+  --color-brand-dark:           #A16207;
+  --color-brand-light:          #FACC15;
+  --color-primary-soft:         rgba(234, 179, 8, 0.10);
+  --color-primary-softer:       rgba(234, 179, 8, 0.05);
+  --color-on-primary:           #713F12;
+  --color-primary-container:    #FEF08A;
+  --color-on-primary-container: #713F12;
+  --tw-primary: 234 179 8;
+  --tw-primary-dk: 161 98 7;
+  --tw-primary-lt: 250 204 21;
+  --tw-primary-container: 254 240 138;
+  --tw-on-primary: 113 63 18;
+  --tw-on-primary-container: 113 63 18;
+}
+
+/* ============================================================
+ * COULEUR PERSONNALISÉE (artisan)
+ * ----------------------------------------------------------------
+ * Quand l'artisan a choisi une couleur custom dans /apparence,
+ * elle est injectée via style inline sur <body> :
+ *   style="--idv-primary-custom: #ec4899;"
+ * Cette règle surcharge alors --color-primary (et donc --idv-primary).
+ * Note : la conversion HEX → RGB triplet pour --tw-primary
+ * nécessiterait du JS au runtime (à faire plus tard si besoin).
+ * ============================================================ */
+body[style*="--idv-primary-custom"] {
+  --color-primary: var(--idv-primary-custom);
+  --color-brand:   var(--idv-primary-custom);
+  --idv-primary:   var(--idv-primary-custom);
+}

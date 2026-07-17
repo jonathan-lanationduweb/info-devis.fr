@@ -1,0 +1,218 @@
+/*
+ * Styles TRANSITOIRES pour les shortcodes de l'extension (formulaires, tableaux
+ * de bord) sur les pages dont le portage fidèle n'est pas encore fait
+ * (étapes 9-10 du plan de correction). À supprimer une fois chaque page
+ * reproduite depuis sa vue originale.
+ */
+
+:root {
+  --idc-brand: #207752;
+  --idc-brand-dark: #165a3c;
+  --idc-navy: #0f2460;
+  --idc-off-white: #f8faff;
+  --idc-gray: #6b7280;
+  --idc-border: #e5e7eb;
+  --idc-radius: 12px;
+  --idc-shadow: 0 4px 16px rgba(15, 36, 96, 0.08);
+}
+
+.idc-btn,
+.idc-btn:visited {
+  display: inline-block;
+  background: var(--idc-brand);
+  color: #fff !important;
+  font-weight: 600;
+  padding: 12px 28px;
+  border-radius: 6px;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-family: Manrope, sans-serif;
+  transition: opacity 0.2s;
+}
+
+.idc-btn:hover {
+  opacity: 0.9;
+}
+
+.idc-btn--brand,
+.idc-btn--brand:visited {
+  background: var(--idc-brand);
+}
+
+.idc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 20px;
+  margin: 28px 0 48px;
+}
+
+.idc-card {
+  background: #fff;
+  border: 1px solid var(--idc-border);
+  border-radius: var(--idc-radius);
+  padding: 24px 20px;
+  box-shadow: var(--idc-shadow);
+}
+
+.idc-card__title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin: 0 0 6px;
+}
+
+.idc-card__meta {
+  font-size: 0.88rem;
+  color: var(--idc-gray);
+}
+
+.idc-artisan-card {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.idc-artisan-card__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.idc-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  background: var(--idc-off-white);
+  color: var(--idc-navy);
+  border: 1px solid var(--idc-border);
+}
+
+.idc-badge--verified {
+  background: #e8f5ee;
+  color: var(--idc-brand-dark);
+  border-color: #bfe3cf;
+}
+
+.idc-badge--rating {
+  background: #fff7e6;
+  color: #92600a;
+  border-color: #fde5b8;
+}
+
+.idc-form {
+  background: #fff;
+  border: 1px solid var(--idc-border);
+  border-radius: var(--idc-radius);
+  box-shadow: var(--idc-shadow);
+  padding: 32px;
+  max-width: 720px;
+}
+
+.idc-form__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.idc-form p {
+  margin: 0 0 16px;
+}
+
+.idc-form label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.idc-form input[type="text"],
+.idc-form input[type="email"],
+.idc-form input[type="tel"],
+.idc-form input[type="number"],
+.idc-form input[type="password"],
+.idc-form select,
+.idc-form textarea {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1px solid var(--idc-border);
+  border-radius: 8px;
+  font-size: 1rem;
+  background: var(--idc-off-white);
+}
+
+.idc-notice {
+  border-radius: 8px;
+  padding: 14px 18px;
+  margin-bottom: 20px;
+  font-weight: 500;
+}
+
+.idc-notice--success {
+  background: #e8f5ee;
+  color: var(--idc-brand-dark);
+  border: 1px solid #bfe3cf;
+}
+
+.idc-notice--error {
+  background: #fdecec;
+  color: #b42318;
+  border: 1px solid #f5c6c2;
+}
+
+.idc-hp-field {
+  position: absolute !important;
+  left: -9999px !important;
+}
+
+.idc-dash-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0 32px;
+}
+
+.idc-dash-table th,
+.idc-dash-table td {
+  border: 1px solid var(--idc-border);
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 0.95rem;
+}
+
+.idc-dash-table th {
+  background: var(--idc-off-white);
+}
+
+.idc-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end;
+  background: var(--idc-off-white);
+  border: 1px solid var(--idc-border);
+  border-radius: var(--idc-radius);
+  padding: 18px;
+  margin-bottom: 8px;
+}
+
+.idc-filters label {
+  font-weight: 600;
+  font-size: 0.88rem;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.idc-filters select,
+.idc-filters input {
+  padding: 9px 12px;
+  border: 1px solid var(--idc-border);
+  border-radius: 8px;
+}
+
+@media (max-width: 640px) {
+  .idc-form__row {
+    grid-template-columns: 1fr;
+  }
+}
