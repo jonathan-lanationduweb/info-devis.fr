@@ -541,3 +541,13 @@ body.idv-noscroll { overflow: hidden; touch-action: none; }
   .idv-mmenu.open .idv-mmenu__nav > a,
   .idv-mmenu.open .idv-mmenu__cta { animation: none; }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   PAGES DASHBOARD : nav mobile propre (pas de double header)
+   ═══════════════════════════════════════════════════════════════ */
+@media (max-width: 767px) {
+  /* Le header global + son menu sont masqués : le dashboard a sa propre
+     barre mobile avec un tiroir listant TOUTES les pages de l'espace. */
+  body.idv-dashboard #site-header,
+  body.idv-dashboard #idv-mmenu { display: none !important; }
+}

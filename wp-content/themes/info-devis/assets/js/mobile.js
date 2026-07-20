@@ -12,6 +12,9 @@
   /* Classes de mise en page selon les barres fixes présentes. */
   if (doc.querySelector('.idv-bottomnav')) body.classList.add('idv-has-bottomnav');
   if (doc.querySelector('.idv-actionbar')) body.classList.add('idv-actionbar-on');
+  /* Pages dashboard : elles ont leur propre navigation mobile (tiroir complet).
+     On masque alors le header global du site pour éviter le double menu. */
+  if (doc.querySelector('#mob-sidebar, #cli-mob-sidebar')) body.classList.add('idv-dashboard');
 
   /* ── Utilitaires ─────────────────────────────────────────── */
   function lockScroll(on) { body.classList.toggle('idv-noscroll', on); }

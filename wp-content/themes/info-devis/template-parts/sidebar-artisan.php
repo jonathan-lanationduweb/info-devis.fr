@@ -74,9 +74,12 @@ $idv_badge_html = $idv_validated
 <!-- ── Navbar top (mobile) ─────────────────────────────────────── -->
 <header class="fixed top-0 left-0 right-0 z-40 h-16 bg-[#faf9f8]/90 backdrop-blur-xl border-b border-outline-variant/10 flex items-center justify-between px-4 md:hidden">
   <a href="<?php echo esc_url(home_url('/')); ?>" class="font-headline italic text-xl text-primary">Info-Devis</a>
-  <button onclick="toggleMobMenu()" class="p-2 rounded-xl hover:bg-surface-container transition-colors" aria-label="Menu">
+  <div class="flex items-center gap-1">
+    <?php get_template_part('template-parts/notifications-bell'); ?>
+    <button onclick="toggleMobMenu()" class="idv-tap p-2 rounded-xl hover:bg-surface-container transition-colors" aria-label="Menu">
     <span class="material-symbols-outlined text-on-surface">menu</span>
-  </button>
+    </button>
+  </div>
 </header>
 
 <!-- ── Overlay mobile ──────────────────────────────────────────── -->
