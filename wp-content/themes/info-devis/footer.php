@@ -6,7 +6,7 @@
 ?>
   </main>
 
-  <footer class="bg-[#071e24] py-16 px-8 border-t border-white/08" role="contentinfo">
+  <footer class="bg-[#071e24] py-16 px-8 border-t border-white/08 <?php echo !empty($GLOBALS['idv_has_sidebar']) ? 'idv-footer--offset' : ''; ?>" role="contentinfo">
     <div class="max-w-screen-xl mx-auto">
       <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-14">
 

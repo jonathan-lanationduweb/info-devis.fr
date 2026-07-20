@@ -668,3 +668,8 @@
   }
   .chatbot-btn svg { width: 20px; height: 20px; }
 }
+
+/* Footer décalé à droite de la barre latérale sur les espaces connectés (≥ md) */
+@media (min-width: 768px) {
+  .idv-footer--offset { margin-left: 18rem; }
+}

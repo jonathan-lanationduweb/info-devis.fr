@@ -5,6 +5,7 @@
  * Args : ['user' => WP_User]
  */
 
+$GLOBALS['idv_has_sidebar'] = true;
 $idv_user = $args['user'] ?? wp_get_current_user();
 $idv_name = $idv_user->display_name ?: 'Mon espace';
 

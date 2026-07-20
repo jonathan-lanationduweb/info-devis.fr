@@ -10,6 +10,7 @@
  * ajoutés à mesure du portage ; suivi dans docs/audit-visuel-original.md).
  */
 
+$GLOBALS['idv_has_sidebar'] = true;
 $idv_user  = $args['user'] ?? wp_get_current_user();
 $idv_fiche = $args['fiche'] ?? null;
 $idv_name  = $idv_fiche ? get_the_title($idv_fiche) : ($idv_user->display_name ?: 'Mon espace');
@@ -31,11 +32,15 @@ $idv_main = [
     [home_url('/dashboard/artisan/messages/'), 'forum', 'Messages'],
     [home_url('/dashboard/artisan/projets/'), 'apartment', 'Mes réalisations'],
     [home_url('/dashboard/artisan/disponibilites/'), 'event_available', 'Disponibilités'],
+    [home_url('/dashboard/artisan/agenda/'), 'calendar_month', 'Mon agenda'],
 ];
 $idv_compte = [
-    [home_url('/dashboard/artisan/stats/'), 'insights', 'Statistiques'],
     [home_url('/dashboard/artisan/profile/'), 'account_circle', 'Mon profil'],
+    [home_url('/dashboard/artisan/verification/'), 'verified', 'Vérification'],
+    [home_url('/dashboard/artisan/stats/'), 'insights', 'Statistiques'],
     [home_url('/dashboard/artisan/avis/'), 'rate_review', 'Mes avis'],
+    [home_url('/dashboard/artisan/apparence/'), 'palette', 'Apparence'],
+    [home_url('/dashboard/artisan/blog/'), 'edit_note', 'Mes articles'],
     [home_url('/dashboard/artisan/documents/'), 'description', 'Documents'],
     [home_url('/dashboard/artisan/abonnement/'), 'card_membership', 'Abonnement'],
 ];
