@@ -8,7 +8,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('IDV_THEME_VERSION', '1.3.1');
+define('IDV_THEME_VERSION', '1.3.2');
 define('IDV_THEME_URI', get_template_directory_uri());
 
 add_action('after_setup_theme', static function (): void {
@@ -19,13 +19,9 @@ add_action('after_setup_theme', static function (): void {
 });
 
 add_action('wp_enqueue_scripts', static function (): void {
-    // Google Fonts — identiques à l'original (Newsreader + Manrope + Material Symbols).
-    wp_enqueue_style(
-        'idv-fonts',
-        'https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Manrope:wght@300;400;500;600;700&display=swap',
-        [],
-        null
-    );
+    // Polices de texte (Newsreader + Manrope) AUTO-HÉBERGÉES — RGPD : aucun
+    // appel à Google, plus de render-blocking. Sous-ensembles latin + latin-ext.
+    wp_enqueue_style('idv-fonts', IDV_THEME_URI . '/assets/css/fonts-local.css', [], IDV_THEME_VERSION);
     wp_enqueue_style(
         'idv-material-symbols',
         'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap',

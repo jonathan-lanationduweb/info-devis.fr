@@ -144,3 +144,7 @@ Accès aux réglages classiques : `/wp-admin/options-general.php?classic=1`. Lai
 - Conversions GA4 : `generate_lead` (devis envoyé), `rdv_booked` (RDV), `sign_up` (inscription)
 - Lien « Gérer les cookies » dans le pied de page (réouverture du bandeau)
 - Événements custom : `window.idcTrack('nom', {params})` (ne part qu'avec consentement)
+
+### Polices auto-hébergées (RGPD)
+
+Newsreader + Manrope sont **auto-hébergés** (`assets/fonts/`, sous-ensembles latin/latin-ext, ~820 Ko) via `assets/css/fonts-local.css` — aucun appel à Google Fonts pour le texte (conforme CNIL). Material Symbols et Font Awesome restent sur CDN mais **non bloquants** ; pour un RGPD total, les sous-ensembler et les auto-héberger (nécessite `fonttools`).
