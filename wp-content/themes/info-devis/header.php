@@ -20,6 +20,8 @@ $idv_links    = idv_nav_links();
 
 <body <?php body_class('bg-background text-on-background font-body'); ?> data-theme="forest">
 
+  <a href="#main-content" class="idv-skip-link">Aller au contenu principal</a>
+
   <nav class="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-gray-100" id="site-header">
     <div class="flex justify-between items-center px-8 py-4 w-full max-w-screen-2xl mx-auto">
 

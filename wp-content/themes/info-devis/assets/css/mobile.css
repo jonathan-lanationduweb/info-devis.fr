@@ -563,3 +563,24 @@ body.idv-noscroll { overflow: hidden; touch-action: none; }
     bottom: calc(64px + var(--idv-safe-bottom) + 12px) !important;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   ACCESSIBILITÉ — lien d'évitement (skip-link)
+   ═══════════════════════════════════════════════════════════════ */
+.idv-skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 1000;
+  background: rgb(var(--tw-primary, 32 119 82));
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 0 0 10px 0;
+  font-weight: 700;
+  text-decoration: none;
+}
+.idv-skip-link:focus {
+  left: 0;
+  outline: 3px solid #fff;
+  outline-offset: -3px;
+}

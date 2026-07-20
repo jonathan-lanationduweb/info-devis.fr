@@ -8,7 +8,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('IDV_THEME_VERSION', '1.3.0');
+define('IDV_THEME_VERSION', '1.3.1');
 define('IDV_THEME_URI', get_template_directory_uri());
 
 add_action('after_setup_theme', static function (): void {
@@ -73,6 +73,30 @@ add_action('wp_enqueue_scripts', static function (): void {
         'swUrl' => home_url('/service-worker.js'),
     ]);
 });
+
+/* Perf : préconnexion aux origines de polices/icônes externes. */
+add_filter('wp_resource_hints', static function (array $hints, string $relation): array {
+    if ($relation === 'preconnect') {
+        $hints[] = ['href' => 'https://fonts.googleapis.com'];
+        $hints[] = ['href' => 'https://fonts.gstatic.com', 'crossorigin'];
+        $hints[] = ['href' => 'https://cdnjs.cloudflare.com'];
+    }
+    return $hints;
+}, 10, 2);
+
+/* Perf : polices d'icônes (Font Awesome + Material Symbols) non bloquantes au
+   rendu (media=print puis bascule en all), avec repli <noscript>. */
+add_filter('style_loader_tag', static function (string $tag, string $handle): string {
+    if (!in_array($handle, ['idv-fontawesome', 'idv-material-symbols'], true)) {
+        return $tag;
+    }
+    $async = preg_replace("/media=(['\"])all\\1/", "media='print' onload=\"this.media='all'\"", $tag);
+    if ($async === null || $async === $tag) {
+        // Pas d'attribut media='all' trouvé : on l'injecte.
+        $async = str_replace('/>', "media='print' onload=\"this.media='all'\" />", $tag);
+    }
+    return $async . '<noscript>' . $tag . '</noscript>';
+}, 10, 2);
 
 /* PWA : manifest, couleur de thème, méta application dans le <head>. */
 add_action('wp_head', static function (): void {
