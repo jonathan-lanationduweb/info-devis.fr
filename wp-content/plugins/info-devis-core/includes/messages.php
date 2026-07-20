@@ -117,13 +117,54 @@ function idc_msg_mark_read(int $demande_id, int $fiche_id, int $user_id): void
     ));
 }
 
-/** Nombre de messages non lus adressés à l'utilisateur. */
+/**
+ * Nombre de messages non lus adressés à l'utilisateur, restreint à SES fils
+ * (client → ses demandes ; artisan → sa fiche). Évite de compter les
+ * conversations d'autrui et la fuite du volume d'activité global.
+ */
 function idc_msg_unread_count(int $user_id): int
 {
     global $wpdb;
-    $t = $wpdb->prefix . 'idc_messages';
+    $t    = $wpdb->prefix . 'idc_messages';
+    $user = get_userdata($user_id);
+    if (!$user) {
+        return 0;
+    }
+
+    // Artisan : uniquement les fils de sa fiche.
+    if (in_array('artisan', (array) $user->roles, true)) {
+        $fiche = get_posts([
+            'post_type'   => 'artisan',
+            'post_status' => 'publish',
+            'numberposts' => 1,
+            'fields'      => 'ids',
+            'meta_key'    => '_idc_user_id',
+            'meta_value'  => $user_id,
+        ]);
+        if (!$fiche) {
+            return 0;
+        }
+        return (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$t} WHERE fiche_id = %d AND read_at IS NULL AND sender_user_id <> %d",
+            (int) $fiche[0],
+            $user_id
+        ));
+    }
+
+    // Client : uniquement les fils de ses demandes de devis.
+    $demandes = get_posts([
+        'post_type'   => 'demande_devis',
+        'post_status' => 'any',
+        'numberposts' => 300,
+        'fields'      => 'ids',
+        'author'      => $user_id,
+    ]);
+    if (!$demandes) {
+        return 0;
+    }
+    $in = implode(',', array_map('intval', $demandes));
     return (int) $wpdb->get_var($wpdb->prepare(
-        "SELECT COUNT(*) FROM {$t} WHERE read_at IS NULL AND sender_user_id <> %d",
+        "SELECT COUNT(*) FROM {$t} WHERE demande_id IN ({$in}) AND read_at IS NULL AND sender_user_id <> %d",
         $user_id
     ));
 }

@@ -52,6 +52,38 @@ add_action('init', static function (): void {
     }
 }, 1);
 
+/** Dossier privé des justificatifs KYC (dans uploads, verrouillé par .htaccess). */
+function idc_documents_private_dir(): array
+{
+    $up  = wp_get_upload_dir();
+    $dir = $up['basedir'] . '/idc-verification';
+    if (!is_dir($dir)) {
+        wp_mkdir_p($dir);
+    }
+    $ht = $dir . '/.htaccess';
+    if (is_dir($dir) && !file_exists($ht)) {
+        @file_put_contents(
+            $ht,
+            "# Documents de vérification (KYC) — accès HTTP direct interdit\n"
+            . "Options -Indexes\n"
+            . "<IfModule mod_authz_core.c>\n  Require all denied\n</IfModule>\n"
+            . "<IfModule !mod_authz_core.c>\n  Order allow,deny\n  Deny from all\n</IfModule>\n"
+        );
+        @file_put_contents($dir . '/index.php', "<?php // Silence is golden.\n");
+    }
+    return ['path' => $dir, 'url' => $up['baseurl'] . '/idc-verification'];
+}
+
+/** Filtre `upload_dir` temporaire : dépose le document dans le dossier privé. */
+function idc_documents_upload_dir(array $dirs): array
+{
+    $sub = '/idc-verification';
+    $dirs['subdir'] = $sub;
+    $dirs['path']   = $dirs['basedir'] . $sub;
+    $dirs['url']    = $dirs['baseurl'] . $sub;
+    return $dirs;
+}
+
 /** Documents d'une fiche, indexés par type (le plus récent par type). */
 function idc_artisan_documents(int $fiche_id): array
 {
@@ -94,13 +126,21 @@ add_action('wp_ajax_idc_artisan_document_upload', static function (): void {
     require_once ABSPATH . 'wp-admin/includes/media.php';
     require_once ABSPATH . 'wp-admin/includes/image.php';
 
+    // Les justificatifs KYC (Kbis, pièce d'identité, RIB…) sont déposés dans un
+    // dossier PRIVÉ, protégé de l'accès HTTP direct. Le visualiseur contrôlé
+    // (idc_document_view) lit le fichier côté serveur, il continue de fonctionner.
+    idc_documents_private_dir(); // s'assure que le dossier + le .htaccess existent
+    add_filter('upload_dir', 'idc_documents_upload_dir');
     $aid = media_handle_upload('document', 0, [], [
         'test_form' => false,
         'mimes'     => ['pdf' => 'application/pdf', 'jpg|jpeg' => 'image/jpeg', 'png' => 'image/png'],
     ]);
+    remove_filter('upload_dir', 'idc_documents_upload_dir');
     if (is_wp_error($aid)) {
         wp_send_json(['success' => false, 'error' => 'Format non accepté (PDF, JPG ou PNG uniquement).'], 400);
     }
+    // Marque l'attachement comme non attaché à une URL publique visible.
+    update_post_meta($aid, '_idc_private_document', 1);
 
     // Marque l'attachement comme privé et rattaché à la fiche (contrôle d'accès).
     update_post_meta($aid, '_idc_document_fiche', $fiche->ID);

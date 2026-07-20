@@ -465,7 +465,36 @@ function ida_rest_rdv_calendar(WP_REST_Request $req): array
 
 function ida_backups_dir(): string
 {
-    return trailingslashit(ABSPATH) . 'backups';
+    $dir = trailingslashit(ABSPATH) . 'backups';
+    ida_backups_protect($dir);
+    return $dir;
+}
+
+/**
+ * Verrouille le dossier des sauvegardes contre l'accès HTTP direct.
+ * Les dumps SQL contiennent des données sensibles (hash de mots de passe, PII) :
+ * ils ne doivent jamais être téléchargeables ni listables depuis le web.
+ * (Aucun endpoint de téléchargement direct n'existe : list/create seulement.)
+ */
+function ida_backups_protect(string $dir): void
+{
+    if (!is_dir($dir) && !wp_mkdir_p($dir)) {
+        return;
+    }
+    $ht = $dir . '/.htaccess';
+    if (!file_exists($ht)) {
+        @file_put_contents(
+            $ht,
+            "# Accès interdit — dumps SQL sensibles\n"
+            . "Options -Indexes\n"
+            . "<IfModule mod_authz_core.c>\n  Require all denied\n</IfModule>\n"
+            . "<IfModule !mod_authz_core.c>\n  Order allow,deny\n  Deny from all\n</IfModule>\n"
+        );
+    }
+    $idx = $dir . '/index.php';
+    if (!file_exists($idx)) {
+        @file_put_contents($idx, "<?php // Silence is golden.\n");
+    }
 }
 
 function ida_rest_backups(): array
