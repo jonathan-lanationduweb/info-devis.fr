@@ -41,6 +41,22 @@ add_action('wp_head', static function (): void {
         'name'     => get_the_title($post_id),
         'url'      => get_permalink($post_id),
     ];
+
+    // Description (bio de la fiche, nettoyée et tronquée).
+    $bio = trim(wp_strip_all_tags((string) get_post($post_id)->post_content));
+    if ($bio !== '') {
+        $schema['description'] = mb_substr($bio, 0, 300);
+    }
+
+    // Image (cover puis vignette) — améliore l'affichage en résultats enrichis.
+    $image = (string) get_post_meta($post_id, '_idc_cover_url', true);
+    if ($image === '' && has_post_thumbnail($post_id)) {
+        $image = (string) get_the_post_thumbnail_url($post_id, 'large');
+    }
+    if ($image !== '') {
+        $schema['image'] = $image;
+    }
+
     if ($ville || $cp) {
         $schema['address'] = array_filter([
             '@type'           => 'PostalAddress',
@@ -49,11 +65,32 @@ add_action('wp_head', static function (): void {
             'addressCountry'  => 'FR',
         ]);
     }
+    // Zone desservie (utile pour le SEO local).
+    if ($ville) {
+        $schema['areaServed'] = ['@type' => 'City', 'name' => $ville];
+    }
     if ($phone) {
         $schema['telephone'] = $phone;
     }
     if ($metiers) {
         $schema['knowsAbout'] = array_map(static fn($t) => $t->name, $metiers);
+        // Catalogue de services (les métiers de l'artisan).
+        $schema['hasOfferCatalog'] = [
+            '@type' => 'OfferCatalog',
+            'name'  => 'Prestations',
+            'itemListElement' => array_map(static fn($t) => [
+                '@type' => 'OfferCatalog',
+                'name'  => $t->name,
+            ], $metiers),
+        ];
+    }
+    // Réseaux sociaux (sameAs).
+    $social = array_values(array_filter([
+        (string) get_post_meta($post_id, '_idc_linkedin_url', true),
+        (string) get_post_meta($post_id, '_idc_instagram_url', true),
+    ]));
+    if ($social) {
+        $schema['sameAs'] = $social;
     }
     // AggregateRating uniquement si des avis approuvés existent réellement.
     if ($count > 0 && $rating > 0) {

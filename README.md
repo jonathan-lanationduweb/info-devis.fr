@@ -32,8 +32,28 @@ DEPLOY.md                      → procédure de déploiement pas à pas
 
 ## Stack
 
-WordPress · PHP 8.3 · MySQL · thème Tailwind (build à prévoir pour la prod) ·
-Stripe (abonnements artisans) · SMTP (Brevo en production).
+WordPress · PHP 8.3 · MySQL · thème Tailwind **compilé** (build statique, plus de CDN) ·
+Stripe (abonnements artisans) · SMTP (Brevo en production) · Yoast SEO.
+
+## Build du CSS (Tailwind)
+
+Le thème n'utilise plus le CDN Tailwind (runtime) : le CSS est **compilé** et
+versionné (`assets/css/tailwind.build.css`), donc le site fonctionne tel quel
+après un simple `git pull` (aucun build requis sur le serveur).
+
+Pour régénérer le CSS après avoir ajouté des classes Tailwind dans les templates :
+
+```bash
+cd wp-content/themes/info-devis
+npm install        # une seule fois (installe Tailwind + plugins, hors dépôt)
+npm run build:css  # régénère assets/css/tailwind.build.css (minifié)
+# ou en continu pendant le dev :
+npm run watch:css
+```
+
+Les classes construites dynamiquement en PHP (ex. `bg-<?= $col ?>-100`) sont
+préservées via la `safelist` de `tailwind.config.js` — l'étendre si de nouvelles
+couleurs de statut sont introduites.
 
 ---
 
