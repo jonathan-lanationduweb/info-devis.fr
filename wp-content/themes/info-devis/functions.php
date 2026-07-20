@@ -8,7 +8,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('IDV_THEME_VERSION', '1.2.3');
+define('IDV_THEME_VERSION', '1.2.4');
 define('IDV_THEME_URI', get_template_directory_uri());
 
 add_action('after_setup_theme', static function (): void {

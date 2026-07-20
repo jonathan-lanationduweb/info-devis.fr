@@ -551,3 +551,15 @@ body.idv-noscroll { overflow: hidden; touch-action: none; }
   body.idv-dashboard #site-header,
   body.idv-dashboard #idv-mmenu { display: none !important; }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   CHATBOT SUR LES PAGES DASHBOARD (barre inférieure propre, h-16)
+   ═══════════════════════════════════════════════════════════════ */
+@media (max-width: 767px) {
+  body.idv-dashboard .chatbot-btn {
+    bottom: calc(64px + var(--idv-safe-bottom) + 12px) !important;
+  }
+  body.idv-dashboard .chatbot-window {
+    bottom: calc(64px + var(--idv-safe-bottom) + 12px) !important;
+  }
+}

@@ -65,7 +65,7 @@ $idv_badge_html = $idv_validated
 ?>
 <style>
   .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24; }
-  #mob-sidebar { transform: translateX(-100%); transition: transform .28s cubic-bezier(.4, 0, .2, 1); }
+  #mob-sidebar { transform: translateX(100%); transition: transform .28s cubic-bezier(.4, 0, .2, 1); }
   #mob-sidebar.open { transform: translateX(0); }
   #mob-overlay { opacity: 0; pointer-events: none; transition: opacity .28s; }
   #mob-overlay.open { opacity: 1; pointer-events: auto; }
@@ -86,7 +86,7 @@ $idv_badge_html = $idv_validated
 <div id="mob-overlay" class="fixed inset-0 z-40 bg-on-surface/50 md:hidden" onclick="toggleMobMenu()"></div>
 
 <!-- ── Sidebar mobile (drawer) ─────────────────────────────────── -->
-<aside id="mob-sidebar" class="fixed left-0 top-0 h-full w-72 z-50 bg-[#faf9f8] border-r border-outline-variant/10 flex flex-col py-6 px-4 gap-1 md:hidden overflow-y-auto">
+<aside id="mob-sidebar" class="fixed right-0 top-0 h-full w-72 z-50 bg-[#faf9f8] border-l border-outline-variant/10 flex flex-col py-6 px-4 gap-1 md:hidden overflow-y-auto">
   <div class="flex items-center justify-between mb-6 px-2">
     <span class="font-headline italic text-primary text-xl">Espace Artisan</span>
     <button onclick="toggleMobMenu()" class="p-1.5 rounded-lg hover:bg-surface-container" aria-label="Fermer">
