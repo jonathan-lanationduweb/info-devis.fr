@@ -21,26 +21,109 @@ if (!defined('ABSPATH')) {
 
 const IDC_RDV_JOURS = ['mon' => 'Lundi', 'tue' => 'Mardi', 'wed' => 'Mercredi', 'thu' => 'Jeudi', 'fri' => 'Vendredi', 'sat' => 'Samedi', 'sun' => 'Dimanche'];
 
-/** Planning hebdomadaire d'une fiche (avec défauts : lun-ven 08:00-18:00). */
-function idc_rdv_week(int $fiche_id): array
+/**
+ * Plages hebdomadaires multi-créneaux d'une fiche.
+ * Retour : [1..7 => [['HH:MM','HH:MM'], …]] (1 = lundi … 7 = dimanche).
+ * Lit `_idc_availability` ; compatible avec l'ancien format {on,start,end}.
+ */
+function idc_rdv_ranges(int $fiche_id): array
 {
     $saved = json_decode((string) get_post_meta($fiche_id, '_idc_availability', true), true);
-    $week  = [];
+    $keys  = array_keys(IDC_RDV_JOURS);
+    $out   = [1 => [], 2 => [], 3 => [], 4 => [], 5 => [], 6 => [], 7 => []];
+
+    if (!is_array($saved)) {
+        foreach ([1, 2, 3, 4, 5] as $n) {
+            $out[$n] = [['08:00', '18:00']]; // défaut : lun-ven 08:00-18:00
+        }
+        return $out;
+    }
+    foreach ($keys as $i => $jour) {
+        $n    = $i + 1;
+        $cell = $saved[$jour] ?? null;
+        if (is_array($cell) && array_key_exists('on', $cell)) {
+            // Ancien format : une seule plage {on,start,end}.
+            if (!empty($cell['on'])) {
+                $s = preg_match('/^\d{2}:\d{2}$/', $cell['start'] ?? '') ? $cell['start'] : '08:00';
+                $e = preg_match('/^\d{2}:\d{2}$/', $cell['end'] ?? '') ? $cell['end'] : '18:00';
+                if ($s < $e) {
+                    $out[$n] = [[$s, $e]];
+                }
+            }
+        } elseif (is_array($cell)) {
+            // Nouveau format : liste de plages [[s,e], …].
+            foreach ($cell as $r) {
+                if (is_array($r) && count($r) >= 2
+                    && preg_match('/^\d{2}:\d{2}$/', (string) $r[0]) && preg_match('/^\d{2}:\d{2}$/', (string) $r[1])
+                    && $r[0] < $r[1]) {
+                    $out[$n][] = [(string) $r[0], (string) $r[1]];
+                }
+            }
+        }
+    }
+    return $out;
+}
+
+/** Planning simple {on,start,end} dérivé des plages (compat agenda/aperçu). */
+function idc_rdv_week(int $fiche_id): array
+{
+    $ranges = idc_rdv_ranges($fiche_id);
+    $week   = [];
     foreach (array_keys(IDC_RDV_JOURS) as $i => $jour) {
-        $week[$jour] = [
-            'on'    => $saved[$jour]['on'] ?? ($i < 5),
-            'start' => preg_match('/^\d{2}:\d{2}$/', $saved[$jour]['start'] ?? '') ? $saved[$jour]['start'] : '08:00',
-            'end'   => preg_match('/^\d{2}:\d{2}$/', $saved[$jour]['end'] ?? '') ? $saved[$jour]['end'] : '18:00',
-        ];
+        $r = $ranges[$i + 1];
+        $week[$jour] = $r
+            ? ['on' => true, 'start' => $r[0][0], 'end' => end($r)[1]]
+            : ['on' => false, 'start' => '08:00', 'end' => '18:00'];
     }
     return $week;
 }
 
-/** Indisponibilités ponctuelles (dates Y-m-d). */
+/**
+ * Absences riches : [ ['id'=>int,'start'=>'Y-m-d H:i','end'=>'Y-m-d H:i','motif'=>string], … ].
+ * Compatible avec l'ancien format (tableau de dates 'Y-m-d' = journée entière).
+ */
+function idc_rdv_indispos_list(int $fiche_id): array
+{
+    $raw = json_decode((string) get_post_meta($fiche_id, '_idc_indispos', true), true);
+    if (!is_array($raw)) {
+        return [];
+    }
+    $out = [];
+    foreach ($raw as $item) {
+        if (is_string($item) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $item)) {
+            $out[] = ['id' => count($out) + 1, 'start' => $item . ' 00:00', 'end' => $item . ' 23:59', 'motif' => ''];
+        } elseif (is_array($item) && !empty($item['start']) && !empty($item['end'])) {
+            $out[] = [
+                'id'    => (int) ($item['id'] ?? count($out) + 1),
+                'start' => (string) $item['start'],
+                'end'   => (string) $item['end'],
+                'motif' => (string) ($item['motif'] ?? ''),
+            ];
+        }
+    }
+    return $out;
+}
+
+/** Compat : dates 'Y-m-d' entièrement bloquées (une absence couvre toute la journée). */
 function idc_rdv_indispos(int $fiche_id): array
 {
-    $dates = json_decode((string) get_post_meta($fiche_id, '_idc_indispos', true), true);
-    return is_array($dates) ? array_values(array_filter($dates, static fn($d) => preg_match('/^\d{4}-\d{2}-\d{2}$/', (string) $d))) : [];
+    $dates = [];
+    foreach (idc_rdv_indispos_list($fiche_id) as $a) {
+        try {
+            $s = new DateTimeImmutable($a['start']);
+            $e = new DateTimeImmutable($a['end']);
+        } catch (Exception $ex) {
+            continue;
+        }
+        $cur = $s->setTime(0, 0);
+        while ($cur <= $e) {
+            if ($s <= $cur->setTime(0, 0) && $e >= $cur->setTime(23, 59)) {
+                $dates[] = $cur->format('Y-m-d');
+            }
+            $cur = $cur->modify('+1 day');
+        }
+    }
+    return array_values(array_unique($dates));
 }
 
 /** RDV actifs (proposés + confirmés) d'une fiche, indexés par 'Y-m-d H:i'. */
@@ -63,101 +146,122 @@ function idc_rdv_occupes(int $fiche_id): array
 }
 
 /**
- * Créneaux réservables des 14 prochains jours : planning hebdo − indispos
- * − créneaux pris − délai de prévenance − plafond par jour.
- * Retour : ['Y-m-d' => ['H:i', …], …] (jours sans créneau omis).
+ * Générateur de créneaux réservables pour une liste de dates ('Y-m-d').
+ * Règles : plages hebdo (multi-créneaux) − créneaux pris − délai de prévenance
+ * − plafond/jour − absences datées − pause déjeuner − pause inter-RDV −
+ * acceptation du jour même. Retour : ['Y-m-d' => ['H:i', …], …].
  */
-function idc_rdv_slots(int $fiche_id, int $days = 14): array
+function idc_rdv_generate_slots(int $fiche_id, array $dates): array
 {
-    $week     = idc_rdv_week($fiche_id);
-    $indispos = idc_rdv_indispos($fiche_id);
+    $ranges   = idc_rdv_ranges($fiche_id);
+    $absences = idc_rdv_indispos_list($fiche_id);
     $occupes  = idc_rdv_occupes($fiche_id);
     $duree    = max(15, (int) (get_post_meta($fiche_id, '_idc_duree_rdv_default_min', true) ?: 90));
+    $pause    = max(0, (int) get_post_meta($fiche_id, '_idc_pause_entre_rdv_min', true));
     $delai_h  = max(0, (int) (get_post_meta($fiche_id, '_idc_delai_prevenance_h', true) ?: 24));
     $max_jour = max(0, (int) get_post_meta($fiche_id, '_idc_max_rdv_jour', true));
+    $jour_meme = (int) get_post_meta($fiche_id, '_idc_accepter_jour_meme', true) === 1;
+    $dejeuner  = (int) get_post_meta($fiche_id, '_idc_pause_dejeuner', true) === 1;
 
     $tz    = wp_timezone();
     $now   = new DateTimeImmutable('now', $tz);
     $limit = $now->modify('+' . $delai_h . ' hours');
-    $keys  = array_keys(IDC_RDV_JOURS); // 'mon' = jour ISO 1 … 'sun' = 7
+    $today = $now->format('Y-m-d');
+    $step  = $duree + $pause;
 
-    $slots = [];
-    for ($d = 0; $d < $days; $d++) {
-        $day  = $now->modify('+' . $d . ' days');
-        $date = $day->format('Y-m-d');
-        $cfg  = $week[$keys[(int) $day->format('N') - 1]];
-        if (empty($cfg['on']) || in_array($date, $indispos, true)) {
+    // Absences en timestamps pour test de chevauchement rapide.
+    $abs = [];
+    foreach ($absences as $a) {
+        try {
+            $abs[] = [(new DateTimeImmutable($a['start'], $tz))->getTimestamp(), (new DateTimeImmutable($a['end'], $tz))->getTimestamp()];
+        } catch (Exception $e) {
             continue;
         }
-        // Plafond de RDV déjà pris ce jour-là.
+    }
+
+    $slots = [];
+    foreach ($dates as $date) {
+        try {
+            $day = new DateTimeImmutable($date, $tz);
+        } catch (Exception $e) {
+            continue;
+        }
+        if (!$jour_meme && $date === $today) {
+            continue;
+        }
+        $dayRanges = $ranges[(int) $day->format('N')] ?? [];
+        if (!$dayRanges) {
+            continue;
+        }
         if ($max_jour > 0) {
-            $pris_ce_jour = count(array_filter(array_keys($occupes), static fn($k) => str_starts_with($k, $date)));
-            if ($pris_ce_jour >= $max_jour) {
+            $pris = count(array_filter(array_keys($occupes), static fn($k) => str_starts_with($k, $date)));
+            if ($pris >= $max_jour) {
                 continue;
             }
         }
-        $cursor = new DateTimeImmutable($date . ' ' . $cfg['start'], $tz);
-        $fin    = new DateTimeImmutable($date . ' ' . $cfg['end'], $tz);
-        while ($cursor->modify('+' . $duree . ' minutes') <= $fin) {
-            $key = $cursor->format('Y-m-d H:i');
-            if ($cursor > $limit && empty($occupes[$key])) {
-                $slots[$date][] = $cursor->format('H:i');
+        foreach ($dayRanges as [$s, $e]) {
+            $cursor = new DateTimeImmutable($date . ' ' . $s, $tz);
+            $fin    = new DateTimeImmutable($date . ' ' . $e, $tz);
+            while ($cursor->modify('+' . $duree . ' minutes') <= $fin) {
+                $slotEnd = $cursor->modify('+' . $duree . ' minutes');
+                $key     = $cursor->format('Y-m-d H:i');
+                $ok      = $cursor > $limit && empty($occupes[$key]);
+                if ($ok && $dejeuner) {
+                    $noon = new DateTimeImmutable($date . ' 12:00', $tz);
+                    $two  = new DateTimeImmutable($date . ' 14:00', $tz);
+                    if ($cursor < $two && $slotEnd > $noon) {
+                        $ok = false;
+                    }
+                }
+                if ($ok) {
+                    $t0 = $cursor->getTimestamp();
+                    $t1 = $slotEnd->getTimestamp();
+                    foreach ($abs as [$as, $ae]) {
+                        if ($t0 < $ae && $t1 > $as) {
+                            $ok = false;
+                            break;
+                        }
+                    }
+                }
+                if ($ok) {
+                    $slots[$date][] = $cursor->format('H:i');
+                }
+                $cursor = $cursor->modify('+' . $step . ' minutes');
             }
-            $cursor = $cursor->modify('+' . $duree . ' minutes');
+        }
+        if (isset($slots[$date])) {
+            $slots[$date] = array_values(array_unique($slots[$date]));
+            sort($slots[$date]);
         }
     }
     return $slots;
 }
 
-/**
- * Créneaux réservables d'une semaine donnée (lundi → dimanche), mêmes règles
- * que idc_rdv_slots (équivalent CreneauxManager::getSlotsForWeek d'origine).
- */
-function idc_rdv_slots_semaine(int $fiche_id, string $monday): array
+/** Créneaux réservables des N prochains jours (à partir d'aujourd'hui). */
+function idc_rdv_slots(int $fiche_id, int $days = 14): array
 {
-    $week     = idc_rdv_week($fiche_id);
-    $indispos = idc_rdv_indispos($fiche_id);
-    $occupes  = idc_rdv_occupes($fiche_id);
-    $duree    = max(15, (int) (get_post_meta($fiche_id, '_idc_duree_rdv_default_min', true) ?: 90));
-    $delai_h  = max(0, (int) (get_post_meta($fiche_id, '_idc_delai_prevenance_h', true) ?: 24));
-    $max_jour = max(0, (int) get_post_meta($fiche_id, '_idc_max_rdv_jour', true));
-
     $tz    = wp_timezone();
     $now   = new DateTimeImmutable('now', $tz);
-    $limit = $now->modify('+' . $delai_h . ' hours');
-    $keys  = array_keys(IDC_RDV_JOURS);
+    $dates = [];
+    for ($d = 0; $d < $days; $d++) {
+        $dates[] = $now->modify('+' . $d . ' days')->format('Y-m-d');
+    }
+    return idc_rdv_generate_slots($fiche_id, $dates);
+}
 
+/** Créneaux réservables d'une semaine donnée (lundi → dimanche). */
+function idc_rdv_slots_semaine(int $fiche_id, string $monday): array
+{
     try {
-        $start = new DateTimeImmutable($monday, $tz);
+        $start = new DateTimeImmutable($monday, wp_timezone());
     } catch (Exception $e) {
         return [];
     }
-
-    $slots = [];
+    $dates = [];
     for ($d = 0; $d < 7; $d++) {
-        $day  = $start->modify('+' . $d . ' days');
-        $date = $day->format('Y-m-d');
-        $cfg  = $week[$keys[(int) $day->format('N') - 1]];
-        if (empty($cfg['on']) || in_array($date, $indispos, true)) {
-            continue;
-        }
-        if ($max_jour > 0) {
-            $pris_ce_jour = count(array_filter(array_keys($occupes), static fn($k) => str_starts_with($k, $date)));
-            if ($pris_ce_jour >= $max_jour) {
-                continue;
-            }
-        }
-        $cursor = new DateTimeImmutable($date . ' ' . $cfg['start'], $tz);
-        $fin    = new DateTimeImmutable($date . ' ' . $cfg['end'], $tz);
-        while ($cursor->modify('+' . $duree . ' minutes') <= $fin) {
-            $key = $cursor->format('Y-m-d H:i');
-            if ($cursor > $limit && empty($occupes[$key])) {
-                $slots[$date][] = $cursor->format('H:i');
-            }
-            $cursor = $cursor->modify('+' . $duree . ' minutes');
-        }
+        $dates[] = $start->modify('+' . $d . ' days')->format('Y-m-d');
     }
-    return $slots;
+    return idc_rdv_generate_slots($fiche_id, $dates);
 }
 
 /** Demandes de RDV du client vers cet artisan sur les N derniers jours (anti-spam 3/7j). */
