@@ -507,3 +507,37 @@ body.idv-noscroll { overflow: hidden; touch-action: none; }
 /* Bouton partage (icône ronde) : masqué tant que Web Share indisponible */
 [data-share] { display: none; }
 [data-share].available { display: inline-flex; }
+
+/* ═══════════════════════════════════════════════════════════════
+   ANIMATION D'OUVERTURE DU MENU (entrée en cascade des liens)
+   ═══════════════════════════════════════════════════════════════ */
+/* Le panneau descend un peu plus franchement (effet « rideau »). */
+.idv-mmenu { transform: translateY(-14px) scale(.99); }
+.idv-mmenu.open { transform: translateY(0) scale(1); }
+
+/* Chaque lien / CTA apparaît en fondu + léger glissement, en décalé. */
+@keyframes idv-menu-item {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.idv-mmenu.open .idv-mmenu__nav > a,
+.idv-mmenu.open .idv-mmenu__cta {
+  animation: idv-menu-item .42s var(--idv-ease) both;
+}
+.idv-mmenu.open .idv-mmenu__nav > a:nth-child(1) { animation-delay: .05s; }
+.idv-mmenu.open .idv-mmenu__nav > a:nth-child(2) { animation-delay: .09s; }
+.idv-mmenu.open .idv-mmenu__nav > a:nth-child(3) { animation-delay: .13s; }
+.idv-mmenu.open .idv-mmenu__nav > a:nth-child(4) { animation-delay: .17s; }
+.idv-mmenu.open .idv-mmenu__nav > a:nth-child(5) { animation-delay: .21s; }
+.idv-mmenu.open .idv-mmenu__nav > a:nth-child(6) { animation-delay: .25s; }
+.idv-mmenu.open .idv-mmenu__nav > a:nth-child(7) { animation-delay: .29s; }
+.idv-mmenu.open .idv-mmenu__nav > a:nth-child(8) { animation-delay: .33s; }
+.idv-mmenu.open .idv-mmenu__nav > a:nth-child(9) { animation-delay: .37s; }
+.idv-mmenu.open .idv-mmenu__cta { animation-delay: .4s; }
+
+/* prefers-reduced-motion : pas de cascade, tout reste visible immédiatement. */
+@media (prefers-reduced-motion: reduce) {
+  .idv-mmenu { transform: none; }
+  .idv-mmenu.open .idv-mmenu__nav > a,
+  .idv-mmenu.open .idv-mmenu__cta { animation: none; }
+}
