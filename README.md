@@ -132,3 +132,15 @@ Fonctionne dès 320 px · pas de débordement horizontal · navigation mobile co
 formulaires adaptés (types, `inputmode`, `autocomplete`, police ≥ 16 px) · safe-areas
 respectées · animations allégées + `prefers-reduced-motion` · manifest valide ·
 service worker fonctionnel (HTTPS) · page hors connexion · mode standalone géré.
+
+## Mesure d'audience & publicité (RGPD)
+
+Le site intègre un **bandeau de consentement (Consent Mode v2)** et un **suivi de conversion** conformes CNIL — **aucun script Google n'est chargé avant le consentement**.
+
+**Activer la mesure :** Réglages → Général → champ « ID Google Analytics 4 » (ex. `G-XXXXXXXXXX`).
+Accès aux réglages classiques : `/wp-admin/options-general.php?classic=1`. Laisser vide = aucune mesure, aucun bandeau.
+
+- Consent Mode v2 par défaut « refusé », passé à « accordé » après acceptation
+- Conversions GA4 : `generate_lead` (devis envoyé), `rdv_booked` (RDV), `sign_up` (inscription)
+- Lien « Gérer les cookies » dans le pied de page (réouverture du bandeau)
+- Événements custom : `window.idcTrack('nom', {params})` (ne part qu'avec consentement)

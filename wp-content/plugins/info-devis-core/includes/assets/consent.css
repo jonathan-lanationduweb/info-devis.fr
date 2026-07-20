@@ -1,0 +1,66 @@
+/**
+ * consent.css — Bandeau de consentement cookies (RGPD).
+ * Masqué par défaut ; affiché par consent.js (classe .open).
+ */
+.idc-consent {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 10000;
+  display: none;
+  padding: 0 12px calc(12px + env(safe-area-inset-bottom, 0px));
+  pointer-events: none;
+}
+.idc-consent.open { display: block; }
+
+.idc-consent__box {
+  pointer-events: auto;
+  max-width: 640px;
+  margin: 0 auto 8px;
+  background: #fff;
+  border: 1px solid #e6e9e8;
+  border-radius: 18px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, .18);
+  padding: 20px 22px;
+  animation: idc-consent-in .3s cubic-bezier(.4, 0, .2, 1);
+}
+@keyframes idc-consent-in { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+.idc-consent__title { font-family: 'Newsreader', serif; font-size: 1.15rem; font-weight: 600; color: #2f3333; margin: 0 0 6px; }
+.idc-consent__text { font-size: .9rem; line-height: 1.55; color: #5b605f; margin: 0 0 4px; }
+.idc-consent__text a { color: #207752; font-weight: 600; }
+
+/* Catégories : masquées tant qu'on n'a pas cliqué « Personnaliser ». */
+.idc-consent__cats { display: none; margin-top: 14px; flex-direction: column; gap: 10px; }
+.idc-consent--custom .idc-consent__cats { display: flex; }
+.idc-consent__cat { display: flex; gap: 10px; align-items: flex-start; font-size: .82rem; color: #5b605f; line-height: 1.45; cursor: pointer; }
+.idc-consent__cat input { margin-top: 2px; width: 18px; height: 18px; accent-color: #207752; flex-shrink: 0; }
+.idc-consent__cat--locked { opacity: .75; cursor: default; }
+
+.idc-consent__actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.idc-consent__btn {
+  flex: 1 1 auto;
+  min-height: 44px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-size: .85rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: filter .15s, background .15s;
+}
+.idc-consent__btn--primary { background: #207752; color: #fff; }
+.idc-consent__btn--primary:hover { filter: brightness(1.08); }
+.idc-consent__btn--ghost { background: #fff; color: #2f3333; border-color: #cbd3d0; }
+.idc-consent__btn--ghost:hover { background: #f3f4f3; }
+/* « Enregistrer mes choix » n'apparaît qu'en mode personnalisé. */
+.idc-consent__btn--save { display: none; }
+.idc-consent--custom .idc-consent__btn--save { display: inline-flex; align-items: center; justify-content: center; }
+.idc-consent--custom .idc-consent__btn--customize { display: none; }
+
+@media (max-width: 767px) {
+  .idc-consent__actions { flex-direction: column; }
+  .idc-consent__btn { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .idc-consent__box { animation: none; }
+}

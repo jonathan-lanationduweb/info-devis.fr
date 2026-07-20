@@ -91,6 +91,9 @@
           <a href="<?php echo esc_url(home_url('/confidentialite/')); ?>" class="hover:text-white/75 transition-colors">Confidentialité</a>
           <a href="<?php echo esc_url(home_url('/cgv/')); ?>" class="hover:text-white/75 transition-colors">CGV</a>
           <a href="<?php echo esc_url(home_url('/plan-du-site/')); ?>" class="hover:text-white/75 transition-colors">Plan du site</a>
+          <?php if (function_exists('idc_ga4_id') && idc_ga4_id() !== '') : ?>
+            <button type="button" data-open-consent class="hover:text-white/75 transition-colors">Gérer les cookies</button>
+          <?php endif; ?>
         </div>
       </div>
     </div>
