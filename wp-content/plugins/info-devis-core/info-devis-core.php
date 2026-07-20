@@ -537,6 +537,7 @@ require_once __DIR__ . '/includes/siret.php';
 require_once __DIR__ . '/includes/emails.php';
 require_once __DIR__ . '/includes/profil.php';
 require_once __DIR__ . '/includes/artisan-front.php';
+require_once __DIR__ . '/includes/security.php';
 require_once __DIR__ . '/includes/rdv.php';
 require_once __DIR__ . '/includes/dispos.php';
 require_once __DIR__ . '/includes/avis.php';
