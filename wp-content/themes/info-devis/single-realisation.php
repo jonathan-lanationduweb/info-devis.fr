@@ -131,11 +131,17 @@ while (have_posts()) :
         </div>
       <?php endif; ?>
 
-      <!-- Favori (persistance à venir — bouton présent comme l'original) -->
-      <button type="button" class="w-full p-4 rounded-2xl border border-outline-variant/20 flex items-center justify-center gap-2 hover:border-primary transition-colors">
+      <!-- Favori (localStorage, hors-ligne) -->
+      <button type="button" class="idv-tap w-full p-4 rounded-2xl border border-outline-variant/20 flex items-center justify-center gap-2 hover:border-primary transition-colors"
+              data-fav
+              data-fav-id="<?php echo (int) $idv_id; ?>"
+              data-fav-type="realisation"
+              data-fav-title="<?php echo esc_attr(get_the_title()); ?>"
+              data-fav-url="<?php echo esc_url(get_permalink()); ?>"
+              data-fav-img="<?php echo esc_url($idv_cover); ?>"
+              aria-pressed="false">
         <span class="material-symbols-outlined">favorite</span>
-        <span class="font-semibold text-sm">Ajouter aux favoris</span>
-        <span class="text-xs text-on-surface-variant">(<?php echo (int) get_post_meta($idv_id, '_idc_likes', true); ?>)</span>
+        <span class="font-semibold text-sm" data-fav-label>Ajouter aux favoris</span>
       </button>
     </aside>
   </div>

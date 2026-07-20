@@ -107,13 +107,13 @@ get_header();
               <label class="block font-label text-[10px] uppercase tracking-[0.2em] text-secondary" for="first_name">Prénom *</label>
               <input
                 class="w-full border-0 border-b border-gray-200 focus:ring-0 focus:border-primary px-0 py-3 font-body transition-colors text-on-surface placeholder-gray-300 bg-transparent"
-                id="first_name" name="first_name" type="text" required placeholder="Jean" />
+                id="first_name" name="first_name" type="text" required placeholder="Jean" autocomplete="given-name" />
             </div>
             <div class="space-y-2">
               <label class="block font-label text-[10px] uppercase tracking-[0.2em] text-secondary" for="last_name">Nom *</label>
               <input
                 class="w-full border-0 border-b border-gray-200 focus:ring-0 focus:border-primary px-0 py-3 font-body transition-colors text-on-surface placeholder-gray-300 bg-transparent"
-                id="last_name" name="last_name" type="text" required placeholder="Dupont" />
+                id="last_name" name="last_name" type="text" required placeholder="Dupont" autocomplete="family-name" />
             </div>
           </div>
 
@@ -121,7 +121,7 @@ get_header();
             <label class="block font-label text-[10px] uppercase tracking-[0.2em] text-secondary" for="email">Email *</label>
             <input
               class="w-full border-0 border-b border-gray-200 focus:ring-0 focus:border-primary px-0 py-3 font-body transition-colors text-on-surface placeholder-gray-300 bg-transparent"
-              id="email" name="email" type="email" required placeholder="jean.dupont@exemple.fr" />
+              id="email" name="email" type="email" required placeholder="jean.dupont@exemple.fr" autocomplete="email" inputmode="email" />
           </div>
 
           <div class="space-y-2">

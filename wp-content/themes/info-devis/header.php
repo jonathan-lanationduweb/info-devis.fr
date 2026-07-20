@@ -55,7 +55,12 @@ $idv_links    = idv_nav_links();
       </div>
 
       <div class="md:hidden flex items-center gap-3">
-        <button id="hamburger" aria-label="Menu">
+        <?php
+        if ($idv_logged && array_intersect(['client', 'artisan'], (array) wp_get_current_user()->roles)) {
+            get_template_part('template-parts/notifications-bell');
+        }
+        ?>
+        <button id="hamburger" class="idv-tap" aria-label="Ouvrir le menu" aria-haspopup="dialog">
           <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <line x1="3" y1="6" x2="21" y2="6" />
             <line x1="3" y1="12" x2="21" y2="12" />
@@ -63,32 +68,6 @@ $idv_links    = idv_nav_links();
           </svg>
         </button>
       </div>
-    </div>
-
-    <!-- Mobile -->
-    <div class="md:hidden hidden flex-col gap-1 px-6 pb-5 bg-white border-t border-gray-100" id="mobile-nav">
-      <?php
-      $idv_current = '/' . trim((string) parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH), '/');
-      foreach ($idv_links as [$href, $label]) :
-          $idv_path   = '/' . trim((string) parse_url($href, PHP_URL_PATH), '/');
-          $idv_active = ($idv_path !== '/' && str_starts_with($idv_current, $idv_path));
-      ?>
-        <a href="<?php echo esc_url($href); ?>"
-          class="py-3 border-b border-gray-100 font-medium text-sm <?php echo $idv_active ? 'text-primary font-semibold' : 'text-on-background'; ?>">
-          <?php echo esc_html($label); ?>
-        </a>
-      <?php endforeach; ?>
-      <?php if ($idv_logged) : ?>
-        <a href="<?php echo esc_url($idv_dash_url); ?>" class="text-on-background py-3 border-b border-gray-100 font-medium text-sm">Mon espace</a>
-        <a href="<?php echo esc_url(wp_logout_url(home_url('/'))); ?>" class="text-on-background py-3 border-b border-gray-100 font-medium text-sm">Déconnexion</a>
-      <?php else : ?>
-        <a href="<?php echo esc_url(home_url('/connexion/')); ?>" class="text-on-background py-3 border-b border-gray-100 font-medium text-sm">Se connecter</a>
-        <a href="<?php echo esc_url(home_url('/inscription/')); ?>" class="text-on-background py-3 border-b border-gray-100 font-medium text-sm">S'inscrire</a>
-        <a href="<?php echo esc_url(home_url('/inscription/?type=artisan')); ?>" class="text-on-background py-3 border-b border-gray-100 font-medium text-sm">Espace Pro</a>
-      <?php endif; ?>
-      <a href="<?php echo esc_url(home_url('/devis/')); ?>" class="mt-3 bg-primary text-white text-center py-3 rounded font-semibold text-sm block">
-        Demander un devis
-      </a>
     </div>
   </nav>
 

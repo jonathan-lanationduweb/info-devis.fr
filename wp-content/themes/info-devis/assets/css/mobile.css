@@ -1,0 +1,377 @@
+/**
+ * mobile.css — Expérience mobile « type application » + PWA (sections 21→24).
+ * Chargé sur tout le site ; les composants ne s'activent qu'en < 768px.
+ * Concepts joaillerie adaptés à InfoDevis : Collections → Professionnels/Métiers.
+ */
+
+:root {
+  --idv-safe-top: env(safe-area-inset-top, 0px);
+  --idv-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --idv-bottomnav-h: 62px;
+  --idv-ease: cubic-bezier(.4, 0, .2, 1);
+}
+
+/* Hauteurs d'écran fiables (évite le 100vh cassé sur mobile). */
+.idv-screen { min-height: 100vh; min-height: 100svh; min-height: 100dvh; }
+
+/* ─────────────────────────────────────────────────────────────
+   1. CIBLES TACTILES ≥ 44×44 px (mobile uniquement)
+   ───────────────────────────────────────────────────────────── */
+@media (max-width: 767px) {
+  .idv-tap,
+  #hamburger,
+  .idv-bottomnav__item,
+  .idv-mmenu__link,
+  .idv-mmenu__close,
+  [data-fav],
+  .idv-accordion__trigger {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  /* Empêche le zoom auto iOS sur les champs (< 16px). */
+  input:not([type=checkbox]):not([type=radio]),
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   2. HEADER MOBILE COMPACT + MENU PLEIN ÉCRAN
+   ───────────────────────────────────────────────────────────── */
+#hamburger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  color: var(--tw-on-surface, #2f3333);
+}
+#hamburger:focus-visible,
+.idv-mmenu__close:focus-visible,
+.idv-mmenu__link:focus-visible,
+.idv-bottomnav__item:focus-visible,
+[data-fav]:focus-visible {
+  outline: 2px solid rgb(var(--tw-primary, 32 119 82));
+  outline-offset: 2px;
+}
+
+.idv-mmenu {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: flex;
+  flex-direction: column;
+  background: #faf9f8;
+  padding-top: calc(1rem + var(--idv-safe-top));
+  padding-bottom: calc(1.5rem + var(--idv-safe-bottom));
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition: opacity .28s var(--idv-ease), transform .28s var(--idv-ease), visibility .28s;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+.idv-mmenu.open { opacity: 1; visibility: visible; transform: translateY(0); }
+
+.idv-mmenu__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem 1rem;
+}
+.idv-mmenu__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #edeeed;
+  color: #2f3333;
+}
+.idv-mmenu__nav { display: flex; flex-direction: column; padding: 0 1.25rem; gap: 2px; }
+.idv-mmenu__link {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 15px 12px;
+  border-radius: 14px;
+  font-family: 'Newsreader', serif;
+  font-size: 1.35rem;
+  color: #2f3333;
+  text-decoration: none;
+  transition: background .15s var(--idv-ease), transform .15s var(--idv-ease);
+}
+.idv-mmenu__link .material-symbols-outlined,
+.idv-mmenu__link svg { color: rgb(var(--tw-primary, 32 119 82)); flex-shrink: 0; }
+.idv-mmenu__link:active { transform: scale(.98); background: #edeeed; }
+.idv-mmenu__link--active { color: rgb(var(--tw-primary, 32 119 82)); font-weight: 600; background: rgb(var(--tw-primary, 32 119 82) / .07); }
+.idv-mmenu__cta {
+  margin: 1rem 1.25rem 0;
+  background: rgb(var(--tw-primary, 32 119 82));
+  color: #fff;
+  text-align: center;
+  padding: 15px;
+  border-radius: 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+.idv-mmenu__foot { margin-top: auto; padding: 1rem 1.75rem 0; display: flex; gap: 1.5rem; flex-wrap: wrap; }
+.idv-mmenu__foot a { color: #5b605f; font-size: .8rem; text-decoration: none; }
+
+/* Menu réservé au mobile. */
+@media (min-width: 768px) { .idv-mmenu { display: none !important; } }
+
+/* ─────────────────────────────────────────────────────────────
+   3. BARRE DE NAVIGATION INFÉRIEURE
+   ───────────────────────────────────────────────────────────── */
+.idv-bottomnav {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 80;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-around;
+  background: rgba(255, 255, 255, .94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid #e6e9e8;
+  padding-bottom: var(--idv-safe-bottom);
+  box-shadow: 0 -2px 16px rgba(0, 0, 0, .05);
+}
+.idv-bottomnav__item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 8px 4px;
+  color: #5b605f;
+  text-decoration: none;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .02em;
+  position: relative;
+  transition: color .15s var(--idv-ease);
+}
+.idv-bottomnav__item svg { width: 23px; height: 23px; stroke-width: 1.8; }
+.idv-bottomnav__item:active { transform: scale(.94); }
+.idv-bottomnav__item--active { color: rgb(var(--tw-primary, 32 119 82)); }
+.idv-bottomnav__item--active svg { stroke-width: 2.3; }
+.idv-bottomnav__badge {
+  position: absolute;
+  top: 3px;
+  left: calc(50% + 6px);
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 9999px;
+  background: #9f403d;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  line-height: 16px;
+}
+.idv-bottomnav__badge.show { display: inline-flex; }
+
+@media (min-width: 768px) { .idv-bottomnav { display: none !important; } }
+
+/* Décale le bas de page pour ne rien masquer sous la barre (mobile, hors dashboard). */
+@media (max-width: 767px) {
+  body.idv-has-bottomnav #main-content { padding-bottom: calc(var(--idv-bottomnav-h) + var(--idv-safe-bottom)); }
+  /* Le chatbot remonte au-dessus de la barre. */
+  body.idv-has-bottomnav .idvbot-launcher,
+  body.idv-has-bottomnav #idvbot-launcher,
+  body.idv-has-bottomnav .chatbot-launcher {
+    bottom: calc(var(--idv-bottomnav-h) + var(--idv-safe-bottom) + 12px) !important;
+  }
+}
+
+/* Verrou de défilement quand un overlay est ouvert. */
+body.idv-noscroll { overflow: hidden; touch-action: none; }
+
+/* ─────────────────────────────────────────────────────────────
+   4. ACCORDÉONS (contenus secondaires repliés sur mobile)
+   ───────────────────────────────────────────────────────────── */
+.idv-accordion { border-bottom: 1px solid #e6e9e8; }
+.idv-accordion__trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 4px;
+  background: none;
+  border: 0;
+  font: inherit;
+  font-weight: 600;
+  color: #2f3333;
+  text-align: left;
+  cursor: pointer;
+}
+.idv-accordion__trigger .idv-accordion__chev { transition: transform .25s var(--idv-ease); flex-shrink: 0; }
+.idv-accordion__trigger[aria-expanded="true"] .idv-accordion__chev { transform: rotate(180deg); }
+.idv-accordion__panel { overflow: hidden; max-height: 0; transition: max-height .3s var(--idv-ease); }
+.idv-accordion__panel-inner { padding: 0 4px 16px; color: #5b605f; }
+
+/* ─────────────────────────────────────────────────────────────
+   5. GALERIE SWIPE (fiche artisan / réalisation)
+   ───────────────────────────────────────────────────────────── */
+.idv-swipe {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  gap: 0;
+}
+.idv-swipe::-webkit-scrollbar { display: none; }
+.idv-swipe__slide {
+  flex: 0 0 100%;
+  scroll-snap-align: center;
+  width: 100%;
+}
+.idv-swipe__slide img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.idv-swipe__dots { display: flex; justify-content: center; gap: 7px; margin-top: 12px; }
+.idv-swipe__dot {
+  width: 7px; height: 7px; border-radius: 9999px; background: #cbd3d0; border: 0; padding: 0;
+  transition: width .2s var(--idv-ease), background .2s var(--idv-ease);
+}
+.idv-swipe__dot--active { width: 20px; background: rgb(var(--tw-primary, 32 119 82)); }
+
+/* ─────────────────────────────────────────────────────────────
+   6. BOUTON FAVORI (cœur) + retour visuel
+   ───────────────────────────────────────────────────────────── */
+[data-fav] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform .12s var(--idv-ease);
+}
+[data-fav][aria-pressed="true"] svg { fill: #9f403d; stroke: #9f403d; }
+[data-fav].idv-fav-pop { animation: idv-fav-pop .32s var(--idv-ease); }
+@keyframes idv-fav-pop { 0%{transform:scale(1)} 40%{transform:scale(1.28)} 100%{transform:scale(1)} }
+
+/* ─────────────────────────────────────────────────────────────
+   7. BARRE D'ACTION FIXE (page fiche artisan mobile)
+   ───────────────────────────────────────────────────────────── */
+.idv-actionbar {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 70;
+  display: none;
+  gap: 10px;
+  padding: 12px 14px calc(12px + var(--idv-safe-bottom));
+  background: rgba(255, 255, 255, .96);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid #e6e9e8;
+  box-shadow: 0 -2px 16px rgba(0, 0, 0, .06);
+}
+.idv-actionbar__fav {
+  flex: 0 0 auto;
+  width: 52px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #cbd3d0;
+  border-radius: 14px;
+  background: #fff;
+  color: #2f3333;
+}
+.idv-actionbar__cta {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: rgb(var(--tw-primary, 32 119 82));
+  color: #fff;
+  border-radius: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  padding: 14px;
+}
+@media (max-width: 767px) {
+  .idv-actionbar { display: flex; }
+  /* Quand la barre d'action est là, on remplace la bottom-nav pour ne pas empiler. */
+  body.idv-actionbar-on .idv-bottomnav { display: none !important; }
+  body.idv-actionbar-on #main-content { padding-bottom: 84px; }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   8. TOAST (retour d'action)
+   ───────────────────────────────────────────────────────────── */
+.idv-toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(var(--idv-bottomnav-h) + var(--idv-safe-bottom) + 16px);
+  transform: translateX(-50%) translateY(20px);
+  z-index: 200;
+  background: #2f3333;
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 9999px;
+  font-size: 13px;
+  font-weight: 600;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s var(--idv-ease), transform .25s var(--idv-ease);
+  max-width: 90vw;
+  text-align: center;
+}
+.idv-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ─────────────────────────────────────────────────────────────
+   9. INVITE D'INSTALLATION PWA
+   ───────────────────────────────────────────────────────────── */
+.idv-install {
+  position: fixed;
+  left: 12px; right: 12px;
+  bottom: calc(var(--idv-bottomnav-h) + var(--idv-safe-bottom) + 12px);
+  z-index: 120;
+  display: none;
+  align-items: center;
+  gap: 12px;
+  background: #fff;
+  border: 1px solid #e6e9e8;
+  border-radius: 16px;
+  padding: 12px 14px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, .14);
+}
+.idv-install.show { display: flex; }
+.idv-install__icon { width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0; }
+.idv-install__txt { flex: 1; min-width: 0; }
+.idv-install__title { font-weight: 700; font-size: 14px; color: #2f3333; }
+.idv-install__sub { font-size: 12px; color: #5b605f; }
+.idv-install__btn { background: rgb(var(--tw-primary, 32 119 82)); color: #fff; border: 0; border-radius: 10px; padding: 9px 14px; font-weight: 700; font-size: 13px; cursor: pointer; }
+.idv-install__close { background: none; border: 0; color: #9CA3AF; font-size: 20px; line-height: 1; cursor: pointer; padding: 4px; }
+@media (min-width: 768px) { .idv-install { max-width: 420px; left: auto; right: 20px; bottom: 20px; } }
+
+/* ─────────────────────────────────────────────────────────────
+   10. MODE STANDALONE (lancé depuis l'écran d'accueil)
+   ───────────────────────────────────────────────────────────── */
+@media (display-mode: standalone) {
+  #site-header { padding-top: var(--idv-safe-top); }
+  /* Masque les invites d'installation en mode app. */
+  .idv-install { display: none !important; }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   11. ANIMATIONS ALLÉGÉES / prefers-reduced-motion
+   ───────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .idv-swipe { scroll-behavior: auto; }
+}

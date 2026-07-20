@@ -156,12 +156,12 @@ $idv_pre_multi = array_filter(array_map('sanitize_title', explode(',', (string) 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="space-y-2">
               <label class="font-label text-[10px] uppercase tracking-widest text-secondary font-bold">Prénom *</label>
-              <input type="text" name="first_name" required placeholder="Jean"
+              <input type="text" name="first_name" required placeholder="Jean" autocomplete="given-name"
                 class="w-full bg-surface-container border-none focus:ring-1 focus:ring-primary p-4 rounded-xl font-body text-on-surface">
             </div>
             <div class="space-y-2">
               <label class="font-label text-[10px] uppercase tracking-widest text-secondary font-bold">Nom</label>
-              <input type="text" name="last_name" placeholder="Dupont"
+              <input type="text" name="last_name" placeholder="Dupont" autocomplete="family-name"
                 class="w-full bg-surface-container border-none focus:ring-1 focus:ring-primary p-4 rounded-xl font-body text-on-surface">
             </div>
           </div>
@@ -169,12 +169,12 @@ $idv_pre_multi = array_filter(array_map('sanitize_title', explode(',', (string) 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="space-y-2">
               <label class="font-label text-[10px] uppercase tracking-widest text-secondary font-bold">Email *</label>
-              <input type="email" name="email" required placeholder="jean@example.com"
+              <input type="email" name="email" required placeholder="jean@example.com" autocomplete="email" inputmode="email"
                 class="w-full bg-surface-container border-none focus:ring-1 focus:ring-primary p-4 rounded-xl font-body text-on-surface">
             </div>
             <div class="space-y-2">
               <label class="font-label text-[10px] uppercase tracking-widest text-secondary font-bold">Téléphone</label>
-              <input type="tel" name="phone" placeholder="06 00 00 00 00"
+              <input type="tel" name="phone" placeholder="06 00 00 00 00" autocomplete="tel" inputmode="tel"
                 class="w-full bg-surface-container border-none focus:ring-1 focus:ring-primary p-4 rounded-xl font-body text-on-surface">
             </div>
           </div>
@@ -182,13 +182,13 @@ $idv_pre_multi = array_filter(array_map('sanitize_title', explode(',', (string) 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="space-y-2">
               <label class="font-label text-[10px] uppercase tracking-widest text-secondary font-bold">Ville *</label>
-              <input type="text" name="ville" required placeholder="Paris"
+              <input type="text" name="ville" required placeholder="Paris" autocomplete="address-level2"
                 value="<?php echo esc_attr($idv_pre_ville); ?>"
                 class="w-full bg-surface-container border-none focus:ring-1 focus:ring-primary p-4 rounded-xl font-body text-on-surface">
             </div>
             <div class="space-y-2">
               <label class="font-label text-[10px] uppercase tracking-widest text-secondary font-bold">Code postal</label>
-              <input type="text" name="code_postal" placeholder="75001" pattern="[0-9]{5}" maxlength="5"
+              <input type="text" name="code_postal" placeholder="75001" pattern="[0-9]{5}" maxlength="5" autocomplete="postal-code" inputmode="numeric"
                 class="w-full bg-surface-container border-none focus:ring-1 focus:ring-primary p-4 rounded-xl font-body text-on-surface">
             </div>
           </div>

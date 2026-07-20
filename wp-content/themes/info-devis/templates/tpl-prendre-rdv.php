@@ -151,7 +151,7 @@ get_header();
 
         <div class="rdv-field">
           <label class="rdv-field__label" for="rdv-adresse">Adresse du chantier *</label>
-          <input type="text" id="rdv-adresse" name="adresse" required maxlength="255"
+          <input type="text" id="rdv-adresse" name="adresse" required maxlength="255" autocomplete="street-address"
                  class="rdv-field__input"
                  placeholder="N° et rue" value="">
         </div>
@@ -159,11 +159,11 @@ get_header();
         <div style="display:grid;grid-template-columns:120px 1fr;gap:12px;">
           <div class="rdv-field">
             <label class="rdv-field__label" for="rdv-cp">Code postal</label>
-            <input type="text" id="rdv-cp" name="code_postal" maxlength="10" class="rdv-field__input">
+            <input type="text" id="rdv-cp" name="code_postal" maxlength="10" autocomplete="postal-code" inputmode="numeric" class="rdv-field__input">
           </div>
           <div class="rdv-field">
             <label class="rdv-field__label" for="rdv-ville">Ville</label>
-            <input type="text" id="rdv-ville" name="ville" maxlength="100" class="rdv-field__input">
+            <input type="text" id="rdv-ville" name="ville" maxlength="100" autocomplete="address-level2" class="rdv-field__input">
           </div>
         </div>
 

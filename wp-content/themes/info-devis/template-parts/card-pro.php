@@ -50,7 +50,14 @@ $idv_metiers = get_the_terms($idv_id, 'metier') ?: [];
       <?php echo (int) $idv_projets; ?> réalisation<?php echo $idv_projets > 1 ? 's' : ''; ?>
     </div>
 
-    <button class="expert-card__fav" type="button" data-favori-toggle data-projet-id="" aria-label="Ajouter aux favoris">
+    <button class="expert-card__fav idv-tap" type="button"
+      data-fav
+      data-fav-id="<?php echo (int) $idv_id; ?>"
+      data-fav-type="artisan"
+      data-fav-title="<?php echo esc_attr($idv_name); ?>"
+      data-fav-url="<?php echo esc_url(get_permalink($idv_artisan)); ?>"
+      data-fav-img="<?php echo esc_url($idv_cover); ?>"
+      aria-pressed="false" aria-label="Ajouter aux favoris">
       <span class="material-symbols-outlined" style="font-size:18px;">favorite</span>
     </button>
   </div>

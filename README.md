@@ -34,3 +34,81 @@ DEPLOY.md                      → procédure de déploiement pas à pas
 
 WordPress · PHP 8.3 · MySQL · thème Tailwind (build à prévoir pour la prod) ·
 Stripe (abonnements artisans) · SMTP (Brevo en production).
+
+---
+
+## Version mobile & Progressive Web App (PWA)
+
+Le site propose une **expérience mobile « type application »** et est **installable**
+comme une PWA sur l'écran d'accueil.
+
+### Fichiers concernés
+
+```
+manifest.webmanifest              → manifest PWA (racine du domaine)
+service-worker.js                 → service worker (scope "/", versionné)
+offline.html                      → page hors connexion (autonome, sans dépendance)
+assets/icons/                     → icônes 192/512, maskable, apple-touch, favicon.ico
+wp-content/themes/info-devis/
+├── assets/css/mobile.css         → composants mobiles (menu, barre inférieure, 44px,
+│                                    safe-areas, accordéons, galerie swipe, actionbar)
+├── assets/js/mobile.js           → menu plein écran a11y, accordéons, swipe,
+│                                    favoris (localStorage), toasts
+├── assets/js/pwa.js              → enregistrement SW, invite d'installation, iOS, standalone
+├── template-parts/mobile-menu.php   → menu plein écran (Échap, focus-trap, scroll-lock)
+├── template-parts/bottom-nav.php    → barre inférieure (Accueil/Pros/Favoris/RDV/Menu)
+└── page-favoris.php                 → page « Mes favoris » (rendu depuis localStorage)
+```
+
+> Les favoris sont stockés **côté client** (localStorage) : ils fonctionnent sans
+> compte et hors connexion.
+
+### Contexte sécurisé requis (important)
+
+Un service worker ne s'enregistre **que dans un contexte sécurisé** : `https://…`
+ou `http://localhost`. En développement via `http://info-devis.local` (HTTP + nom
+d'hôte personnalisé), le SW est **désactivé silencieusement** (le site reste
+100 % fonctionnel). **En production HTTPS, la PWA s'active automatiquement.**
+
+### Contraintes WordPress (§22.7)
+
+Le service worker **n'intercepte jamais** : `/wp-admin/`, `/wp-login.php`,
+`/wp-json/`, `/wp-cron.php`, les aperçus, les espaces privés (`/dashboard/`),
+les requêtes non-GET, et toute URL contenant un nonce — ainsi que d'éventuels
+chemins WooCommerce (`/cart`, `/checkout`, `/mon-compte`) prévus pour le futur.
+Le SW est servi depuis la **racine** (Apache sert les fichiers physiques avant le
+rewrite WordPress) ; `.htaccess` ajoute le type MIME `application/manifest+json`
+et l'en-tête `Service-Worker-Allowed: /`.
+
+### Différence entre les niveaux (§23)
+
+| Niveau | Ce que c'est | État |
+|--------|--------------|------|
+| **Site responsive** | Le site s'adapte à toutes les tailles d'écran. | ✅ En place |
+| **PWA installable** | Ajout à l'écran d'accueil, icône, splash, mode standalone, cache hors ligne. | ✅ En place (HTTPS) |
+| **Application hybride** | La PWA empaquetée dans une coque native (WebView) via **Capacitor**, publiable sur les stores. | 🔜 Compatible |
+| **Application native** | App iOS/Android développée séparément (Swift/Kotlin ou React Native), connectée à WordPress en **headless** (API REST). | 🔜 Architecture compatible |
+
+L'architecture reste compatible avec une future app **Capacitor** ou une **API
+WordPress headless** ; aucune dépendance ne bloque cette évolution.
+
+### Publier plus tard sur l'App Store / Google Play
+
+1. Installer **Capacitor** dans un projet dédié : `npm i @capacitor/core @capacitor/cli`.
+2. `npx cap init` puis pointer le `server.url` vers le site (ou empaqueter les assets).
+3. Ajouter les plateformes : `npx cap add ios` / `npx cap add android`.
+4. Générer les icônes/splash natifs, renseigner identifiants et permissions.
+5. **Android** : ouvrir dans Android Studio, générer un **AAB signé**, publier sur la
+   Google Play Console (fiche, captures, politique de confidentialité).
+6. **iOS** : ouvrir dans Xcode, compte Apple Developer, archive → **App Store Connect**
+   (fiche, captures, revue Apple).
+7. Alternative Android sans coque : **TWA** (Trusted Web Activity) via Bubblewrap,
+   qui embarque directement la PWA.
+
+### Critères d'acceptation mobile (§24) — statut
+
+Fonctionne dès 320 px · pas de débordement horizontal · navigation mobile complète
+(menu plein écran + barre inférieure) · cibles ≥ 44 px · galeries au doigt ·
+formulaires adaptés (types, `inputmode`, `autocomplete`, police ≥ 16 px) · safe-areas
+respectées · animations allégées + `prefers-reduced-motion` · manifest valide ·
+service worker fonctionnel (HTTPS) · page hors connexion · mode standalone géré.

@@ -96,18 +96,15 @@
     </div>
   </footer>
 
-  <script>
-    (function () {
-      var burger = document.getElementById('hamburger');
-      if (burger) {
-        burger.addEventListener('click', function () {
-          var m = document.getElementById('mobile-nav');
-          m.classList.toggle('hidden');
-          m.classList.toggle('flex');
-        });
-      }
-    })();
-  </script>
+  <?php
+  // Menu mobile plein écran (toutes les pages front).
+  get_template_part('template-parts/mobile-menu');
+  // Barre de navigation inférieure : uniquement sur les pages front (pas les
+  // dashboards, qui ont leur propre navigation avec sidebar + bottom nav).
+  if (empty($GLOBALS['idv_has_sidebar'])) {
+      get_template_part('template-parts/bottom-nav');
+  }
+  ?>
 
   <?php wp_footer(); ?>
 </body>

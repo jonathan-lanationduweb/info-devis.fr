@@ -44,7 +44,7 @@ get_header();
       <div class="space-y-2">
         <label class="font-label text-[10px] uppercase tracking-[0.15em] text-on-surface-variant font-bold block" for="email">Adresse Email</label>
         <input class="w-full bg-surface-container border-none py-4 px-4 text-on-surface focus:ring-0 focus:border-b-2 focus:border-primary transition-all font-body"
-          id="email" name="log" type="text" placeholder="votre@email.fr" required autocomplete="username" />
+          id="email" name="log" type="text" placeholder="votre@email.fr" required autocomplete="username" inputmode="email" />
       </div>
 
       <div class="space-y-2">

@@ -244,8 +244,14 @@ $idv_is_client = $idv_logged && in_array('client', (array) $idv_current->roles, 
           </a>
         <?php endif; ?>
         <?php if (!$idv_is_owner) : ?>
-          <button type="button" class="w-12 h-12 border border-outline-variant rounded-full flex items-center justify-center hover:bg-gray-50 transition-colors"
-                  data-favori-toggle aria-label="Ajouter aux favoris">
+          <button type="button" class="idv-tap w-12 h-12 border border-outline-variant rounded-full flex items-center justify-center hover:bg-gray-50 transition-colors"
+                  data-fav
+                  data-fav-id="<?php echo (int) $idv_id; ?>"
+                  data-fav-type="artisan"
+                  data-fav-title="<?php echo esc_attr($idv_name); ?>"
+                  data-fav-url="<?php echo esc_url(get_permalink()); ?>"
+                  data-fav-img="<?php echo esc_url($idv_cover); ?>"
+                  aria-pressed="false" aria-label="Ajouter aux favoris">
             <span class="material-symbols-outlined" style="font-size:18px;color:#9CA3AF;">favorite</span>
           </button>
         <?php endif; ?>
@@ -570,5 +576,30 @@ $idv_is_client = $idv_logged && in_array('client', (array) $idv_current->roles, 
   <?php endif; ?>
 
 </div>
+
+<?php if (!$idv_is_owner) : ?>
+<!-- Barre d'action fixe mobile (section 21.6) : Favori + Prendre RDV -->
+<div class="idv-actionbar" role="group" aria-label="Actions rapides">
+  <button type="button" class="idv-actionbar__fav idv-tap"
+          data-fav
+          data-fav-id="<?php echo (int) $idv_id; ?>"
+          data-fav-type="artisan"
+          data-fav-title="<?php echo esc_attr($idv_name); ?>"
+          data-fav-url="<?php echo esc_url(get_permalink()); ?>"
+          data-fav-img="<?php echo esc_url($idv_cover); ?>"
+          aria-pressed="false" aria-label="Ajouter aux favoris">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+  </button>
+  <?php if ($idv_logged) : ?>
+    <a href="<?php echo esc_url(add_query_arg('pro', $idv_id, home_url('/prendre-rdv/'))); ?>" class="idv-actionbar__cta">
+      <span class="material-symbols-outlined" style="font-size:20px;">event_available</span> Prendre rendez-vous
+    </a>
+  <?php else : ?>
+    <a href="<?php echo esc_url(add_query_arg('redirect_to', rawurlencode(get_permalink()), home_url('/connexion/'))); ?>" class="idv-actionbar__cta">
+      <span class="material-symbols-outlined" style="font-size:20px;">event_available</span> Prendre rendez-vous
+    </a>
+  <?php endif; ?>
+</div>
+<?php endif; ?>
 
 <?php get_footer(); ?>

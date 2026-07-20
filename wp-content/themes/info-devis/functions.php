@@ -8,7 +8,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('IDV_THEME_VERSION', '1.0.5');
+define('IDV_THEME_VERSION', '1.1.0');
 define('IDV_THEME_URI', get_template_directory_uri());
 
 add_action('after_setup_theme', static function (): void {
@@ -56,11 +56,33 @@ add_action('wp_enqueue_scripts', static function (): void {
     wp_enqueue_script('idv-tailwind', 'https://cdn.tailwindcss.com?plugins=forms,container-queries', [], null, false);
     wp_add_inline_script('idv-tailwind', idv_tailwind_config(), 'after');
 
+    // Expérience mobile « type application » (sections 21→24).
+    wp_enqueue_style('idv-mobile', IDV_THEME_URI . '/assets/css/mobile.css', ['idv-theme-tokens'], IDV_THEME_VERSION);
+
     // JS originaux.
     wp_enqueue_script('idv-main', IDV_THEME_URI . '/assets/js/main.js', [], IDV_THEME_VERSION, true);
     wp_enqueue_script('idv-portfolio', IDV_THEME_URI . '/assets/js/portfolio.js', [], IDV_THEME_VERSION, true);
     wp_enqueue_script('idv-chatbot', IDV_THEME_URI . '/assets/js/chatbot.js', [], IDV_THEME_VERSION, true);
+
+    // Mobile + PWA.
+    wp_enqueue_script('idv-mobile', IDV_THEME_URI . '/assets/js/mobile.js', [], IDV_THEME_VERSION, true);
+    wp_enqueue_script('idv-pwa', IDV_THEME_URI . '/assets/js/pwa.js', [], IDV_THEME_VERSION, true);
+    wp_localize_script('idv-pwa', 'IDV_PWA', [
+        'swUrl' => home_url('/service-worker.js'),
+    ]);
 });
+
+/* PWA : manifest, couleur de thème, méta application dans le <head>. */
+add_action('wp_head', static function (): void {
+    $theme_color = '#207752';
+    echo '<link rel="manifest" href="' . esc_url(home_url('/manifest.webmanifest')) . '">' . "\n";
+    echo '<meta name="theme-color" content="' . esc_attr($theme_color) . '">' . "\n";
+    echo '<meta name="mobile-web-app-capable" content="yes">' . "\n";
+    echo '<meta name="apple-mobile-web-app-capable" content="yes">' . "\n";
+    echo '<meta name="apple-mobile-web-app-status-bar-style" content="default">' . "\n";
+    echo '<meta name="apple-mobile-web-app-title" content="InfoDevis">' . "\n";
+    echo '<link rel="apple-touch-icon" href="' . esc_url(home_url('/assets/icons/apple-touch-icon.png')) . '">' . "\n";
+}, 1);
 
 /* Assistant guidé (chatbot) : meta base-url + widget en pied de page, sur tout le site. */
 add_action('wp_head', static function (): void {

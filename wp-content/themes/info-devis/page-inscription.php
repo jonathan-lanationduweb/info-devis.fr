@@ -103,26 +103,26 @@ get_header();
             <div class="space-y-2">
               <label class="font-label text-[10px] uppercase tracking-[0.1em] text-on-surface-variant font-bold" for="first_name">Prénom *</label>
               <input class="w-full bg-surface-container border-none py-4 px-4 text-on-surface focus:ring-0 transition-all duration-300"
-                id="first_name" name="first_name" type="text" placeholder="Jean" required />
+                id="first_name" name="first_name" type="text" placeholder="Jean" required autocomplete="given-name" />
             </div>
             <div class="space-y-2">
               <label class="font-label text-[10px] uppercase tracking-[0.1em] text-on-surface-variant font-bold" for="last_name">Nom *</label>
               <input class="w-full bg-surface-container border-none py-4 px-4 text-on-surface focus:ring-0 transition-all duration-300"
-                id="last_name" name="last_name" type="text" placeholder="Dupont" required />
+                id="last_name" name="last_name" type="text" placeholder="Dupont" required autocomplete="family-name" />
             </div>
           </div>
 
           <div class="space-y-2">
             <label class="font-label text-[10px] uppercase tracking-[0.1em] text-on-surface-variant font-bold" for="email">Email *</label>
             <input class="w-full bg-surface-container border-none py-4 px-4 text-on-surface focus:ring-0 transition-all duration-300"
-              id="email" name="email" type="email" placeholder="jean.dupont@exemple.fr" required />
+              id="email" name="email" type="email" placeholder="jean.dupont@exemple.fr" required autocomplete="email" inputmode="email" />
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div class="space-y-2">
               <label class="font-label text-[10px] uppercase tracking-[0.1em] text-on-surface-variant font-bold" for="phone">Téléphone</label>
               <input class="w-full bg-surface-container border-none py-4 px-4 text-on-surface focus:ring-0 transition-all duration-300"
-                id="phone" name="phone" type="tel" placeholder="06 12 34 56 78" />
+                id="phone" name="phone" type="tel" placeholder="06 12 34 56 78" autocomplete="tel" inputmode="tel" />
             </div>
             <div class="space-y-2">
               <label class="font-label text-[10px] uppercase tracking-[0.1em] text-on-surface-variant font-bold" for="password">Mot de passe *</label>
