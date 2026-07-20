@@ -184,11 +184,32 @@
 /* Décale le bas de page pour ne rien masquer sous la barre (mobile, hors dashboard). */
 @media (max-width: 767px) {
   body.idv-has-bottomnav #main-content { padding-bottom: calc(var(--idv-bottomnav-h) + var(--idv-safe-bottom)); }
-  /* Le chatbot remonte au-dessus de la barre. */
-  body.idv-has-bottomnav .idvbot-launcher,
-  body.idv-has-bottomnav #idvbot-launcher,
-  body.idv-has-bottomnav .chatbot-launcher {
+
+  /* Chatbot : lanceur remonté au-dessus de la barre inférieure, plus compact. */
+  .chatbot-btn {
+    width: 50px !important;
+    height: 50px !important;
+    right: 14px !important;
+    bottom: 18px !important;
+  }
+  body.idv-has-bottomnav .chatbot-btn {
     bottom: calc(var(--idv-bottomnav-h) + var(--idv-safe-bottom) + 12px) !important;
+  }
+  /* Fenêtre du chatbot : quasi plein écran, au-dessus de la barre. */
+  .chatbot-window {
+    left: 10px !important;
+    right: 10px !important;
+    width: auto !important;
+    max-height: 72dvh !important;
+    bottom: calc(var(--idv-bottomnav-h) + var(--idv-safe-bottom) + 12px) !important;
+  }
+  /* Robot un peu réduit dans le lanceur compact. */
+  .chatbot-btn .idvbot-scale { transform: translate(-50%, -50%) scale(0.2) !important; }
+  /* L'invite d'installation se place au-dessus du lanceur pour ne pas le chevaucher. */
+  body.idv-has-bottomnav .idv-install {
+    bottom: calc(var(--idv-bottomnav-h) + var(--idv-safe-bottom) + 74px);
+    right: 12px;
+    left: 12px;
   }
 }
 
