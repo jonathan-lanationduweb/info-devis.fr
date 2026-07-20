@@ -51,3 +51,38 @@ Inscription, connexion, demande de devis, prise de RDV, messagerie, signature,
 paiement d'abonnement Stripe (test puis live), emails, cloche de notifications.
 
 Détails de sécurité et points à durcir : voir `docs/audit-securite-complet.md`.
+
+---
+
+## ✅ Checklist AVANT mise en ligne (à vérifier en production)
+
+Ces réglages sont stockés **en base de données** (pas dans Git) : à refaire/vérifier
+sur le site de production.
+
+### Critique
+- [ ] **Indexation** : Réglages → Lecture → **décocher** « Demander aux moteurs de recherche de ne pas indexer ce site » (`blog_public = 1`). Sinon le site est invisible sur Google.
+- [ ] **HTTPS** actif (certificat SSL) — active la PWA + cookies sécurisés. Mettre `WP_HOME`/`WP_SITEURL` en `https://`.
+- [ ] **Clés Stripe LIVE** (pas test) dans `wp-config.php` + URL du webhook Stripe à jour.
+- [ ] **SMTP** (WP Mail SMTP) configuré avec les identifiants de production (envoi des emails).
+- [ ] Retirer `Options +Indexes` du vhost Apache de production.
+
+### SEO
+- [ ] Titre + meta description de l'accueil renseignés (page « Accueil » → Yoast).
+- [ ] Soumettre le sitemap (`/sitemap_index.xml`) dans Google Search Console.
+- [ ] Vérifier les meta descriptions des pages clés (métiers, tarifs, contact).
+
+### Sécurité / RGPD
+- [ ] Sauvegardes automatiques **hors serveur** (le dossier `/backups` est verrouillé mais reste sur le serveur).
+- [ ] Bandeau de **consentement cookies** (Consent Mode v2) si activation de la publicité/analytics.
+- [ ] Comptes de test supprimés (marc.testeur, claire.cliente, etc.).
+
+### Mesure / Ads (optionnel mais recommandé)
+- [ ] Google Analytics 4 + suivi de conversion (devis, RDV, inscription).
+- [ ] Consentement cookies **avant** tout script de tracking.
+
+### Vérifié automatiquement (QA)
+- [x] 42 pages : HTTP 200, 0 erreur PHP
+- [x] Responsive 320→1280 px sans débordement (mobile + desktop)
+- [x] En-têtes de sécurité, /backups et documents KYC verrouillés (403)
+- [x] XML-RPC désactivé, énumération utilisateurs bloquée, session 1h
+- [x] PWA (manifest, service worker, offline, icônes) servie ; sitemap + schema OK
