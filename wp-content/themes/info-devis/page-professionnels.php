@@ -115,7 +115,50 @@ $idv_base_url = home_url('/professionnels/');
                 </a>
             <?php endforeach; ?>
         </div>
+
+        <?php $idv_active_count = (int) (bool) $idv_categ + (int) (bool) $idv_q + (int) (bool) $idv_ville; ?>
+        <button type="button" class="idv-filters-trigger" data-sheet-open="idv-filters-sheet" aria-haspopup="dialog">
+            <span class="material-symbols-outlined" style="font-size:20px;">tune</span>
+            Filtres &amp; tri
+            <?php if ($idv_active_count) : ?><span class="idv-filters-trigger__count"><?php echo $idv_active_count; ?></span><?php endif; ?>
+        </button>
     </section>
+
+    <!-- Bottom-sheet filtres (mobile) -->
+    <div id="idv-filters-sheet" class="idv-sheet" role="dialog" aria-modal="true" aria-label="Filtres" aria-hidden="true">
+        <div class="idv-sheet__handle"></div>
+        <div class="idv-sheet__head">
+            <span class="idv-sheet__title">Filtres &amp; tri</span>
+            <button type="button" class="idv-sheet__close" data-sheet-close aria-label="Fermer"><span class="material-symbols-outlined">close</span></button>
+        </div>
+
+        <p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2 mt-2">Métier</p>
+        <div class="idv-sheet__filters">
+            <a href="<?php echo esc_url($idv_base_url); ?>" class="idv-sheet__filter <?php echo $idv_categ === '' ? 'idv-sheet__filter--active' : ''; ?>">
+                <span class="material-symbols-outlined">tune</span> Tous les métiers
+            </a>
+            <?php foreach ((array) $idv_terms as $idv_term) : ?>
+                <a href="<?php echo esc_url(add_query_arg('categorie', $idv_term->slug, $idv_base_url)); ?>"
+                   class="idv-sheet__filter <?php echo $idv_categ === $idv_term->slug ? 'idv-sheet__filter--active' : ''; ?>">
+                    <?php echo idv_cat_icon_html($idv_term->slug); ?> <?php echo esc_html($idv_term->name); ?>
+                </a>
+            <?php endforeach; ?>
+        </div>
+
+        <p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2 mt-6">Trier par</p>
+        <div class="idv-sheet__filters">
+            <?php
+            $idv_sorts = ['recommended' => 'Recommandés', 'rating' => 'Mieux notés', 'avis' => "Plus d'avis", 'distance' => 'Plus récents'];
+            foreach ($idv_sorts as $idv_sk => $idv_slabel) :
+                $idv_sort_url = add_query_arg(array_filter(['q' => $idv_q, 'ville' => $idv_ville, 'categorie' => $idv_categ, 'sort' => $idv_sk]), $idv_base_url);
+            ?>
+                <a href="<?php echo esc_url($idv_sort_url); ?>" class="idv-sheet__filter <?php echo $idv_sort === $idv_sk ? 'idv-sheet__filter--active' : ''; ?>">
+                    <span class="material-symbols-outlined"><?php echo $idv_sort === $idv_sk ? 'radio_button_checked' : 'radio_button_unchecked'; ?></span>
+                    <?php echo esc_html($idv_slabel); ?>
+                </a>
+            <?php endforeach; ?>
+        </div>
+    </div>
 
     <!-- Compteur résultats + tri -->
     <div class="flex items-center justify-between gap-4 mb-8 flex-wrap">

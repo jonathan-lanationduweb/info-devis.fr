@@ -255,6 +255,14 @@ $idv_is_client = $idv_logged && in_array('client', (array) $idv_current->roles, 
             <span class="material-symbols-outlined" style="font-size:18px;color:#9CA3AF;">favorite</span>
           </button>
         <?php endif; ?>
+        <button type="button" class="idv-tap w-12 h-12 border border-outline-variant rounded-full items-center justify-center hover:bg-gray-50 transition-colors"
+                data-share
+                data-share-title="<?php echo esc_attr($idv_name); ?>"
+                data-share-text="<?php echo esc_attr('Découvrez ' . $idv_name . ' sur InfoDevis'); ?>"
+                data-share-url="<?php echo esc_url(get_permalink()); ?>"
+                aria-label="Partager">
+          <span class="material-symbols-outlined" style="font-size:18px;color:#9CA3AF;">ios_share</span>
+        </button>
       </div>
     </div>
   </section>

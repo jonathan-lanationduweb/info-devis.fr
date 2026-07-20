@@ -42,10 +42,44 @@
     <button type="button" onclick="location.reload()">Réessayer</button>
     <br>
     <a class="home" href="/">Retour à l'accueil</a>
+
+    <section id="cached" style="margin-top:36px;text-align:left;display:none;">
+      <p style="font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700;margin-bottom:10px;">Pages déjà consultées</p>
+      <ul id="cached-list" style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:2px;"></ul>
+    </section>
   </main>
+  <style>
+    #cached-list a { display:block; padding:11px 12px; border-radius:10px; color:var(--ink); text-decoration:none; font-size:14px; font-weight:600; background:#fff; border:1px solid #e6e9e8; }
+    #cached-list a:active { background:#f0f0ee; }
+  </style>
   <script>
     // Recharge automatiquement dès que la connexion revient.
     window.addEventListener('online', function () { location.reload(); });
+
+    // Liste des pages HTML déjà en cache (consultation hors ligne).
+    (async function () {
+      if (!('caches' in window)) return;
+      try {
+        var names = await caches.keys();
+        var pageCache = names.filter(function (n) { return n.indexOf('-pages') !== -1; })[0];
+        if (!pageCache) return;
+        var cache = await caches.open(pageCache);
+        var reqs = await cache.keys();
+        var seen = {}, items = [];
+        reqs.forEach(function (req) {
+          var u = new URL(req.url);
+          if (u.pathname === '/offline.html') return;
+          var label = u.pathname.replace(/\/$/, '').split('/').filter(Boolean).pop() || 'Accueil';
+          label = decodeURIComponent(label).replace(/-/g, ' ');
+          if (seen[u.pathname]) return; seen[u.pathname] = 1;
+          items.push({ url: u.pathname, label: label.charAt(0).toUpperCase() + label.slice(1) });
+        });
+        if (!items.length) return;
+        var ul = document.getElementById('cached-list');
+        ul.innerHTML = items.slice(0, 8).map(function (i) { return '<li><a href="' + i.url + '">' + i.label + '</a></li>'; }).join('');
+        document.getElementById('cached').style.display = 'block';
+      } catch (e) {}
+    })();
   </script>
 </body>
 </html>

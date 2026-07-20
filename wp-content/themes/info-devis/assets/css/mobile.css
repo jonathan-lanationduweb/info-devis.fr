@@ -375,3 +375,114 @@ body.idv-noscroll { overflow: hidden; touch-action: none; }
   }
   .idv-swipe { scroll-behavior: auto; }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   AMÉLIORATIONS « ENCORE MIEUX » (fluidité, interactions, visuel)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* 12. Transitions de page façon application (View Transitions API) */
+@view-transition { navigation: auto; }
+::view-transition-old(root) { animation: idv-vt-out .22s var(--idv-ease) both; }
+::view-transition-new(root) { animation: idv-vt-in .28s var(--idv-ease) both; }
+@keyframes idv-vt-out { to { opacity: 0; transform: translateY(-6px); } }
+@keyframes idv-vt-in { from { opacity: 0; transform: translateY(8px); } }
+
+/* 13. Header qui se masque au défilement (mobile) */
+@media (max-width: 767px) {
+  #site-header { transition: transform .3s var(--idv-ease); will-change: transform; }
+  body.idv-head-hidden #site-header { transform: translateY(-100%); }
+}
+
+/* 14. Feedback tactile — effet ripple + enfoncement */
+.idv-ripple-host { position: relative; overflow: hidden; }
+.idv-ripple {
+  position: absolute; border-radius: 50%; transform: scale(0);
+  background: currentColor; opacity: .16; pointer-events: none;
+  animation: idv-ripple .55s var(--idv-ease); z-index: 0;
+}
+@keyframes idv-ripple { to { transform: scale(2.6); opacity: 0; } }
+@media (max-width: 767px) {
+  .idv-tap:active, .btn-primary-pill:active, .btn-outline-pill:active,
+  .expert-card__cta:active, .idv-mmenu__cta:active { transform: scale(.97); }
+}
+
+/* 15. Bottom nav — indicateur actif + apparition */
+.idv-bottomnav__item::before {
+  content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%) scaleX(0);
+  width: 26px; height: 3px; border-radius: 0 0 4px 4px;
+  background: rgb(var(--tw-primary, 32 119 82)); transition: transform .25s var(--idv-ease);
+}
+.idv-bottomnav__item--active::before { transform: translateX(-50%) scaleX(1); }
+
+/* 16. Pull-to-refresh */
+.idv-ptr {
+  position: fixed; top: calc(var(--idv-safe-top)); left: 0; right: 0;
+  display: flex; align-items: center; justify-content: center;
+  height: 56px; z-index: 60; pointer-events: none;
+  opacity: 0; transform: translateY(-56px); transition: opacity .15s, transform .15s;
+  color: rgb(var(--tw-primary, 32 119 82));
+}
+.idv-ptr.visible { opacity: 1; }
+.idv-ptr__spin { width: 26px; height: 26px; border: 2.5px solid currentColor; border-top-color: transparent; border-radius: 50%; }
+.idv-ptr.spinning .idv-ptr__spin { animation: idv-spin .7s linear infinite; }
+@keyframes idv-spin { to { transform: rotate(360deg); } }
+
+/* 17. Bottom-sheet (filtres, actions) */
+.idv-sheet-backdrop {
+  position: fixed; inset: 0; z-index: 95; background: rgba(15, 20, 18, .45);
+  opacity: 0; visibility: hidden; transition: opacity .25s var(--idv-ease), visibility .25s;
+}
+.idv-sheet-backdrop.open { opacity: 1; visibility: visible; }
+.idv-sheet {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 96;
+  background: #fff; border-radius: 22px 22px 0 0;
+  transform: translateY(100%); transition: transform .32s var(--idv-ease);
+  max-height: 82vh; max-height: 82dvh; overflow-y: auto;
+  padding: 0 20px calc(24px + var(--idv-safe-bottom));
+  box-shadow: 0 -8px 40px rgba(0, 0, 0, .18);
+}
+.idv-sheet.open { transform: translateY(0); }
+.idv-sheet__handle { width: 42px; height: 4px; background: #cbd3d0; border-radius: 9999px; margin: 12px auto 4px; }
+.idv-sheet__head { display: flex; align-items: center; justify-content: space-between; padding: 8px 0 14px; position: sticky; top: 0; background: #fff; }
+.idv-sheet__title { font-family: 'Newsreader', serif; font-size: 1.3rem; font-weight: 600; }
+.idv-sheet__close { width: 40px; height: 40px; border-radius: 12px; background: #edeeed; border: 0; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
+@media (min-width: 768px) { .idv-sheet, .idv-sheet-backdrop { display: none !important; } }
+
+/* Déclencheur de filtres (mobile only) + masque la rangée de pastilles au profit du sheet */
+.idv-filters-trigger { display: none; }
+@media (max-width: 767px) {
+  .idv-filters-trigger {
+    display: inline-flex; align-items: center; gap: 8px;
+    width: 100%; justify-content: center;
+    padding: 13px; border: 1px solid #cbd3d0; border-radius: 14px; background: #fff;
+    font-weight: 700; font-size: 14px; color: #2f3333; margin-top: 16px;
+  }
+  .idv-filters-trigger__count { background: rgb(var(--tw-primary, 32 119 82)); color: #fff; border-radius: 9999px; min-width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; padding: 0 5px; }
+  .idv-filter-pills { display: none !important; }
+}
+.idv-sheet__filters { display: flex; flex-direction: column; gap: 6px; }
+.idv-sheet__filter {
+  display: flex; align-items: center; gap: 12px; padding: 14px 12px; border-radius: 12px;
+  color: #2f3333; text-decoration: none; font-weight: 600; min-height: 48px;
+}
+.idv-sheet__filter--active { background: rgb(var(--tw-primary, 32 119 82) / .1); color: rgb(var(--tw-primary, 32 119 82)); }
+
+/* 18. Squelettes de chargement */
+.idv-skeleton { background: linear-gradient(90deg, #edeeed 25%, #f5f6f5 37%, #edeeed 63%); background-size: 400% 100%; animation: idv-shimmer 1.4s ease infinite; border-radius: 10px; }
+@keyframes idv-shimmer { 0% { background-position: 100% 0; } 100% { background-position: -100% 0; } }
+
+/* 19. Anti-scintillement des images (réservation d'espace) */
+.expert-card__cover img, .projet-card img { background: #edeeed; }
+
+/* 20. Bouton de partage natif */
+.idv-share-btn {
+  display: none; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; padding: 13px; margin-top: 10px;
+  border: 1px solid #cbd3d0; border-radius: 14px; background: #fff;
+  font-weight: 600; color: #2f3333; cursor: pointer;
+}
+.idv-share-btn.available { display: inline-flex; }
+
+/* Bouton partage (icône ronde) : masqué tant que Web Share indisponible */
+[data-share] { display: none; }
+[data-share].available { display: inline-flex; }

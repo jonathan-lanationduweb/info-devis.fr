@@ -8,7 +8,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('IDV_THEME_VERSION', '1.1.0');
+define('IDV_THEME_VERSION', '1.2.0');
 define('IDV_THEME_URI', get_template_directory_uri());
 
 add_action('after_setup_theme', static function (): void {
@@ -66,6 +66,7 @@ add_action('wp_enqueue_scripts', static function (): void {
 
     // Mobile + PWA.
     wp_enqueue_script('idv-mobile', IDV_THEME_URI . '/assets/js/mobile.js', [], IDV_THEME_VERSION, true);
+    wp_enqueue_script('idv-mobile-enhance', IDV_THEME_URI . '/assets/js/mobile-enhance.js', ['idv-mobile'], IDV_THEME_VERSION, true);
     wp_enqueue_script('idv-pwa', IDV_THEME_URI . '/assets/js/pwa.js', [], IDV_THEME_VERSION, true);
     wp_localize_script('idv-pwa', 'IDV_PWA', [
         'swUrl' => home_url('/service-worker.js'),
