@@ -50,3 +50,7 @@ Thumbs.db
 
 # --- Traductions WordPress (auto-installées) ---
 /wp-content/languages/
+
+# Dépendances de build (Tailwind) — le CSS compilé est versionné, pas les deps
+node_modules/
+wp-content/themes/info-devis/node_modules/

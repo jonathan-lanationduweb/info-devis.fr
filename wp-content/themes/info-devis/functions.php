@@ -8,7 +8,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('IDV_THEME_VERSION', '1.2.5');
+define('IDV_THEME_VERSION', '1.3.0');
 define('IDV_THEME_URI', get_template_directory_uri());
 
 add_action('after_setup_theme', static function (): void {
@@ -52,9 +52,10 @@ add_action('wp_enqueue_scripts', static function (): void {
         wp_enqueue_style('idv-notifications', IDV_THEME_URI . '/assets/css/notifications.css', ['idv-theme-tokens'], IDV_THEME_VERSION);
     }
 
-    // Tailwind CDN + configuration inline d'origine (views/layout/main.php).
-    wp_enqueue_script('idv-tailwind', 'https://cdn.tailwindcss.com?plugins=forms,container-queries', [], null, false);
-    wp_add_inline_script('idv-tailwind', idv_tailwind_config(), 'after');
+    // Tailwind : CSS compilé (build de production) au lieu du CDN runtime.
+    // Chargé après les CSS du thème pour conserver la cascade d'origine (le CDN
+    // injectait ses styles en dernier). Voir tailwind.config.js + `npm run build:css`.
+    wp_enqueue_style('idv-tailwind', IDV_THEME_URI . '/assets/css/tailwind.build.css', ['idv-mobile'], IDV_THEME_VERSION);
 
     // Expérience mobile « type application » (sections 21→24).
     wp_enqueue_style('idv-mobile', IDV_THEME_URI . '/assets/css/mobile.css', ['idv-theme-tokens'], IDV_THEME_VERSION);
