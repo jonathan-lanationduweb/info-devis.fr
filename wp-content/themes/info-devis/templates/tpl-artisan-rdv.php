@@ -134,11 +134,6 @@ if ($idv_detail_id && $idv_fiche) {
             <p class="text-sm text-on-surface-variant text-center py-2">Aucune action disponible.</p>
           <?php endif; ?>
         </div>
-        <?php if ($idv_client_id) : ?>
-          <a href="<?php echo esc_url(home_url('/dashboard/artisan/messages/')); ?>" class="flex items-center justify-center gap-2 bg-surface-container-low py-3 rounded-xl font-bold text-sm hover:bg-surface-container transition-all">
-            <span class="material-symbols-outlined text-[18px]">forum</span> Contacter le client
-          </a>
-        <?php endif; ?>
       </aside>
     </div>
 

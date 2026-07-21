@@ -99,9 +99,6 @@ if ($idv_detail_id) {
           <button class="w-full border border-red-200 text-red-600 py-3 rounded-xl font-bold text-sm hover:bg-red-50 transition-all">Annuler ce rendez-vous</button>
         </form>
       <?php endif; ?>
-      <a href="<?php echo esc_url(home_url('/dashboard/client/messages/')); ?>" class="mt-3 flex items-center justify-center gap-2 bg-surface-container-low py-3 rounded-xl font-bold text-sm hover:bg-surface-container transition-all">
-        <span class="material-symbols-outlined text-[18px]">forum</span> Contacter l'artisan
-      </a>
     </aside>
   </div>
 
