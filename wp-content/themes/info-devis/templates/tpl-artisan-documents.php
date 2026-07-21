@@ -77,7 +77,13 @@ $idv_status_cfg = [
               </div>
               <p class="font-bold text-on-surface mb-1">Cliquez ou déposez votre fichier ici</p>
               <p class="text-xs text-on-surface-variant">PDF, JPG ou PNG (max 10 Mo)</p>
-              <p id="doc-filename" class="mt-3 text-primary text-sm font-semibold hidden"></p>
+              <div id="doc-selected" class="mt-3 hidden items-center gap-2 text-primary text-sm font-semibold">
+                <span class="material-symbols-outlined text-[18px]">description</span>
+                <span id="doc-filename"></span>
+                <button type="button" id="doc-clear" class="text-red-500 hover:bg-red-100 rounded-full p-0.5 transition-colors" title="Retirer le fichier" aria-label="Retirer le fichier">
+                  <span class="material-symbols-outlined text-[18px]">close</span>
+                </button>
+              </div>
             </div>
             <input type="file" id="doc-input" name="document" accept=".pdf,.jpg,.jpeg,.png" class="hidden" required>
 
@@ -169,14 +175,20 @@ $idv_status_cfg = [
   const AJAX = '<?php echo esc_js($idv_ajax); ?>';
   const drop = document.getElementById('doc-drop');
   const input = document.getElementById('doc-input');
+  const sel = document.getElementById('doc-selected');
   const fname = document.getElementById('doc-filename');
+  const clearBtn = document.getElementById('doc-clear');
   const form = document.getElementById('doc-form');
   const msg = document.getElementById('doc-msg');
 
+  function showFile(name) { fname.textContent = name; sel.classList.remove('hidden'); sel.classList.add('flex'); }
+  function clearFile() { input.value = ''; sel.classList.add('hidden'); sel.classList.remove('flex'); fname.textContent = ''; }
+
   drop.addEventListener('click', () => input.click());
-  input.addEventListener('change', () => { if (input.files[0]) { fname.textContent = input.files[0].name; fname.classList.remove('hidden'); } });
+  input.addEventListener('change', () => { if (input.files[0]) showFile(input.files[0].name); });
   ['dragover', 'dragleave', 'drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.toggle('border-primary/60', ev === 'dragover'); }));
-  drop.addEventListener('drop', e => { if (e.dataTransfer.files[0]) { input.files = e.dataTransfer.files; fname.textContent = e.dataTransfer.files[0].name; fname.classList.remove('hidden'); } });
+  drop.addEventListener('drop', e => { if (e.dataTransfer.files[0]) { input.files = e.dataTransfer.files; showFile(e.dataTransfer.files[0].name); } });
+  clearBtn.addEventListener('click', e => { e.stopPropagation(); clearFile(); });
 
   form.addEventListener('submit', async e => {
     e.preventDefault();
