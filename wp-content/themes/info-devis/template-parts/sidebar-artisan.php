@@ -29,7 +29,6 @@ $idv_main = [
     [home_url('/dashboard/artisan/'), 'dashboard', 'Tableau de bord'],
     [home_url('/dashboard/artisan/leads/'), 'lightbulb', 'Mes opportunités'],
     [home_url('/dashboard/artisan/rdv/'), 'engineering', 'Mes interventions'],
-    [home_url('/dashboard/artisan/messages/'), 'forum', 'Messages'],
     [home_url('/dashboard/artisan/projets/'), 'apartment', 'Mes réalisations'],
     [home_url('/dashboard/artisan/disponibilites/'), 'event_available', 'Disponibilités'],
     [home_url('/dashboard/artisan/agenda/'), 'calendar_month', 'Mon agenda'],

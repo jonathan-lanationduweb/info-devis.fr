@@ -13,12 +13,10 @@ $idv_links = [
     [home_url('/dashboard/client/'), 'dashboard', 'Tableau de bord'],
     [home_url('/dashboard/client/devis/'), 'architecture', 'Mes Projets'],
     [home_url('/dashboard/client/disponibilites/'), 'schedule', 'Dispos artisans'],
-    [home_url('/dashboard/client/messages/'), 'forum', 'Messages'],
     [home_url('/dashboard/client/avis/'), 'star_rate', 'Mes Avis'],
     [home_url('/mes-rdv/'), 'event_available', 'Mes RDV'],
     [home_url('/dashboard/client/profile/'), 'account_circle', 'Mon profil'],
 ];
-$idv_unread = function_exists('idc_msg_unread_count') ? idc_msg_unread_count($idv_user->ID) : 0;
 $idv_current = trailingslashit((string) parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH));
 $idv_is_active = static function (string $url) use ($idv_current): bool {
     return trailingslashit((string) parse_url($url, PHP_URL_PATH)) === $idv_current;
