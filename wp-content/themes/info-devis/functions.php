@@ -8,7 +8,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('IDV_THEME_VERSION', '1.3.3');
+define('IDV_THEME_VERSION', '1.3.4');
 define('IDV_THEME_URI', get_template_directory_uri());
 
 add_action('after_setup_theme', static function (): void {
@@ -80,10 +80,13 @@ add_filter('wp_resource_hints', static function (array $hints, string $relation)
     return $hints;
 }, 10, 2);
 
-/* Perf : polices d'icônes (Font Awesome + Material Symbols) non bloquantes au
-   rendu (media=print puis bascule en all), avec repli <noscript>. */
+/* Perf : Font Awesome chargé sans bloquer le rendu (media=print puis bascule en
+   all) + repli <noscript>. Material Symbols reste BLOQUANT : c'est une police à
+   ligatures utilisée dans la navigation ; en non-bloquant, les noms d'icônes
+   (« dashboard », « forum »…) s'affichent en clair tant que la police n'est pas
+   appliquée. FA, lui, utilise des pseudo-éléments (pas de texte parasite). */
 add_filter('style_loader_tag', static function (string $tag, string $handle): string {
-    if (!in_array($handle, ['idv-fontawesome', 'idv-material-symbols'], true)) {
+    if (!in_array($handle, ['idv-fontawesome'], true)) {
         return $tag;
     }
     $async = preg_replace("/media=(['\"])all\\1/", "media='print' onload=\"this.media='all'\"", $tag);
