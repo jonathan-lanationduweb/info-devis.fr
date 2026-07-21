@@ -197,3 +197,31 @@ add_action('wp_ajax_idc_document_view', static function (): void {
     readfile($path);
     exit;
 });
+
+/* ── Supprimer un document (AJAX, propriétaire, tant que non validé) ─────── */
+add_action('wp_ajax_idc_artisan_document_delete', static function (): void {
+    if (!isset($_POST['idc_doc_nonce']) || !wp_verify_nonce($_POST['idc_doc_nonce'], 'idc_artisan_document')) {
+        wp_send_json(['success' => false, 'error' => 'Session expirée, rechargez la page.'], 403);
+    }
+    $fiche = function_exists('idc_current_artisan_fiche') ? idc_current_artisan_fiche() : null;
+    if (!$fiche) {
+        wp_send_json(['success' => false, 'error' => 'Fiche artisan introuvable.'], 403);
+    }
+    $doc_id = (int) ($_POST['id'] ?? 0);
+    global $wpdb;
+    $t   = $wpdb->prefix . 'idc_documents';
+    $doc = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$t} WHERE id = %d", $doc_id));
+    if (!$doc || (int) $doc->fiche_id !== (int) $fiche->ID) {
+        wp_send_json(['success' => false, 'error' => 'Document introuvable.'], 404);
+    }
+    // Un document déjà validé ne peut plus être supprimé par l'artisan.
+    if ($doc->status === 'validated') {
+        wp_send_json(['success' => false, 'error' => 'Ce document est déjà validé et ne peut plus être supprimé.'], 403);
+    }
+    // Supprime le fichier joint puis la ligne.
+    if ($doc->attachment_id) {
+        wp_delete_attachment((int) $doc->attachment_id, true);
+    }
+    $wpdb->delete($t, ['id' => $doc_id], ['%d']);
+    wp_send_json(['success' => true, 'message' => 'Document supprimé.']);
+});

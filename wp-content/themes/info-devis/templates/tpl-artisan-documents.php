@@ -136,6 +136,12 @@ $idv_status_cfg = [
                        class="text-primary hover:bg-primary/10 rounded-lg p-1.5 transition-colors" title="Voir le document">
                       <span class="material-symbols-outlined text-[20px]">visibility</span>
                     </a>
+                    <?php if ($idv_status !== 'validated') : ?>
+                      <button type="button" data-doc-delete="<?php echo (int) $idv_doc->id; ?>"
+                              class="text-red-500 hover:bg-red-50 rounded-lg p-1.5 transition-colors" title="Supprimer ce document">
+                        <span class="material-symbols-outlined text-[20px]">delete</span>
+                      </button>
+                    <?php endif; ?>
                   <?php endif; ?>
                   <span class="text-[10px] font-bold px-2 py-1 rounded <?php echo esc_attr($idv_sbcls); ?> uppercase tracking-tight whitespace-nowrap"><?php echo esc_html($idv_sbadge); ?></span>
                 </div>
@@ -189,6 +195,25 @@ $idv_status_cfg = [
       msg.textContent = 'Erreur réseau. Réessayez.'; msg.classList.remove('hidden');
     }
     btn.disabled = false; btn.textContent = 'Soumettre le document';
+  });
+
+  // Suppression d'un document (tant qu'il n'est pas validé).
+  const NONCE = '<?php echo esc_js($idv_nonce); ?>';
+  document.addEventListener('click', async e => {
+    const del = e.target.closest('[data-doc-delete]');
+    if (!del) return;
+    if (!confirm('Supprimer ce document ? Cette action est définitive.')) return;
+    del.disabled = true;
+    const fd = new FormData();
+    fd.append('action', 'idc_artisan_document_delete');
+    fd.append('idc_doc_nonce', NONCE);
+    fd.append('id', del.getAttribute('data-doc-delete'));
+    try {
+      const res = await fetch(AJAX, { method: 'POST', body: fd, credentials: 'same-origin' });
+      const data = await res.json();
+      if (data.success) { location.reload(); }
+      else { alert(data.error || 'Erreur'); del.disabled = false; }
+    } catch (err) { alert('Erreur réseau. Réessayez.'); del.disabled = false; }
   });
 })();
 </script>
