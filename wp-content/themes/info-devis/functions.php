@@ -396,15 +396,8 @@ function idv_contact(string $key): string
     return (string) get_option('idv_contact_' . $key, $defaults[$key] ?? '');
 }
 
-/**
- * Barre d'admin masquée sur le front pour les clients et artisans
- * (le site original n'en a pas ; l'équipe garde son propre réglage
- * via infodevis-admin).
+/*
+ * La barre d'admin (masquée pour clients/artisans) et le contrôle d'accès
+ * (wp-admin, wp-login → /connexion/) sont désormais regroupés dans le fichier
+ * de sécurité isolé : info-devis-core/includes/access-control.php
  */
-add_filter('show_admin_bar', static function ($show) {
-    $idv_user = wp_get_current_user();
-    if ($idv_user->exists() && array_intersect(['client', 'artisan'], (array) $idv_user->roles)) {
-        return false;
-    }
-    return $show;
-});

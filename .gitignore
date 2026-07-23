@@ -17,6 +17,9 @@
 # --- SECRETS & config locale — NE JAMAIS committer ---
 wp-config.php
 /.htaccess
+# Secrets centralisés dans .env (le modèle .env.example, lui, est versionné)
+.env
+/deploy/.env
 
 # --- Données, envois, sauvegardes ---
 /backups/
