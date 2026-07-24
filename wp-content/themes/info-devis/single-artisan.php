@@ -355,13 +355,22 @@ $idv_is_client = $idv_logged && in_array('client', (array) $idv_current->roles, 
             <i class="fa-solid fa-screwdriver-wrench text-primary" style="font-size:16px;" aria-hidden="true"></i>
             Nos domaines d'expertise
           </h3>
-          <?php if ($idv_m('expertises_detail')) : ?>
-            <p class="text-on-surface-variant leading-relaxed mb-4"><?php echo nl2br(esc_html($idv_m('expertises_detail'))); ?></p>
+          <?php if ($idv_m('expertises_detail')) :
+              $idv_expertises = array_filter(array_map('trim', preg_split('/\r?\n+/', trim($idv_m('expertises_detail')))));
+          ?>
+            <div class="flex flex-wrap gap-2 mb-5">
+              <?php foreach ($idv_expertises as $idv_exp) : ?>
+                <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-medium bg-primary/5 text-primary border border-primary/15">
+                  <i class="fa-solid fa-check text-[10px] opacity-70" aria-hidden="true"></i>
+                  <?php echo esc_html($idv_exp); ?>
+                </span>
+              <?php endforeach; ?>
+            </div>
           <?php endif; ?>
           <?php if ($idv_metiers) : ?>
-            <div class="flex flex-wrap gap-2">
+            <div class="flex flex-wrap gap-2 pt-1">
               <?php foreach ($idv_metiers as $idv_t) : ?>
-                <span class="px-3 py-1.5 rounded-full text-xs font-medium" style="background:#f8f8f8;"><?php echo esc_html($idv_t->name); ?></span>
+                <span class="px-3 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wide bg-surface-container text-on-surface-variant"><?php echo esc_html($idv_t->name); ?></span>
               <?php endforeach; ?>
             </div>
           <?php endif; ?>
