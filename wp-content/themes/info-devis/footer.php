@@ -60,7 +60,7 @@
         <!-- Services -->
         <div>
           <h4 class="font-bold text-xs tracking-widest uppercase mb-5 text-white">Services</h4>
-          <ul class="space-y-3 text-white/55 text-sm font-medium">
+          <ul class="grid grid-cols-2 gap-x-6 gap-y-3 text-white/55 text-sm font-medium">
             <li><a href="<?php echo esc_url(home_url('/devis/')); ?>" class="hover:text-primary transition-colors">Demander un devis</a></li>
             <li><a href="<?php echo esc_url(home_url('/professionnels/')); ?>" class="hover:text-primary transition-colors">Trouver un artisan</a></li>
             <li><a href="<?php echo esc_url(home_url('/guides/')); ?>" class="hover:text-primary transition-colors">Guides travaux</a></li>
@@ -73,7 +73,7 @@
         <!-- Infos -->
         <div>
           <h4 class="font-bold text-xs tracking-widest uppercase mb-5 text-white">Informations</h4>
-          <ul class="space-y-3 text-white/55 text-sm font-medium">
+          <ul class="grid grid-cols-2 gap-x-6 gap-y-3 text-white/55 text-sm font-medium">
             <li><a href="<?php echo esc_url(home_url('/contact/')); ?>" class="hover:text-primary transition-colors">Contact</a></li>
             <li><a href="<?php echo esc_url(home_url('/mentions-legales/')); ?>" class="hover:text-primary transition-colors">Mentions légales</a></li>
             <li><a href="<?php echo esc_url(home_url('/confidentialite/')); ?>" class="hover:text-primary transition-colors">Confidentialité</a></li>
