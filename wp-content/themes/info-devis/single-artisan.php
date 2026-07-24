@@ -117,9 +117,20 @@ $idv_is_client = $idv_logged && in_array('client', (array) $idv_current->roles, 
             <span>Gérant : <strong><?php echo esc_html($idv_gerant); ?></strong></span>
           </p>
         <?php endif; ?>
-        <p class="text-lg text-on-surface-variant italic mb-4" style="font-family:'Newsreader',serif;">
+        <p class="text-lg text-on-surface-variant italic mb-3" style="font-family:'Newsreader',serif;">
           <?php echo esc_html($idv_specialite); ?>
         </p>
+        <?php if ($idv_nb_avis > 0) :
+            $idv_round = (int) round($idv_rating);
+        ?>
+          <a href="<?php echo esc_url($idv_tab_url('avis')); ?>" class="inline-flex items-center gap-2 mb-3 group" title="Voir les avis">
+            <span class="text-base leading-none tracking-tight">
+              <span class="text-amber-500"><?php echo str_repeat('★', $idv_round); ?></span><span class="text-stone-300"><?php echo str_repeat('★', 5 - $idv_round); ?></span>
+            </span>
+            <span class="text-sm font-bold text-on-surface"><?php echo esc_html(number_format($idv_rating, 1, ',', '')); ?></span>
+            <span class="text-sm text-on-surface-variant group-hover:text-primary transition-colors">(<?php echo (int) $idv_nb_avis; ?> avis)</span>
+          </a>
+        <?php endif; ?>
         <div class="flex items-center gap-2 flex-wrap">
           <span class="idv-badge <?php echo esc_attr($idv_b_class); ?> idv-badge--md">
             <i class="<?php echo esc_attr($idv_b_icon); ?> idv-badge__icon" aria-hidden="true"></i>
@@ -167,8 +178,8 @@ $idv_is_client = $idv_logged && in_array('client', (array) $idv_current->roles, 
     <div class="md:col-span-4 space-y-6">
       <div class="space-y-4">
         <?php if ($idv_exp > 0) : ?>
-          <div class="flex items-center gap-4">
-            <div class="w-10 h-10 rounded flex items-center justify-center" style="background:#f8f8f8;">
+          <div class="flex items-center gap-3 p-3 rounded-xl border border-outline-variant/15 bg-white">
+            <div class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0" style="background:#f8f8f8;">
               <span class="material-symbols-outlined text-primary" style="font-size:20px;">work_history</span>
             </div>
             <div>
@@ -189,8 +200,8 @@ $idv_is_client = $idv_logged && in_array('client', (array) $idv_current->roles, 
         </div>
 
         <?php if ($idv_ville) : ?>
-          <div class="flex items-center gap-4">
-            <div class="w-10 h-10 rounded flex items-center justify-center" style="background:#f8f8f8;">
+          <div class="flex items-center gap-3 p-3 rounded-xl border border-outline-variant/15 bg-white">
+            <div class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0" style="background:#f8f8f8;">
               <span class="material-symbols-outlined text-primary" style="font-size:20px;">location_on</span>
             </div>
             <div>
@@ -217,8 +228,16 @@ $idv_is_client = $idv_logged && in_array('client', (array) $idv_current->roles, 
 
     <div class="md:col-span-8 flex flex-col justify-between">
       <div class="max-w-xl">
+        <?php $idv_bio = trim(wp_strip_all_tags(get_the_content())); ?>
         <p class="text-on-surface-variant text-sm leading-relaxed mb-8">
-          <?php echo esc_html(wp_strip_all_tags(get_the_content()) ?: 'Cet artisan n\'a pas encore rédigé sa biographie.'); ?>
+          <?php if ($idv_bio !== '') : ?>
+            <?php echo esc_html(wp_trim_words($idv_bio, 32, '…')); ?>
+            <?php if (str_word_count($idv_bio) > 32) : ?>
+              <a href="<?php echo esc_url($idv_tab_url('apropos')); ?>" class="text-primary font-semibold hover:underline whitespace-nowrap">Lire la suite</a>
+            <?php endif; ?>
+          <?php else : ?>
+            Cet artisan n'a pas encore rédigé sa biographie.
+          <?php endif; ?>
         </p>
       </div>
 
