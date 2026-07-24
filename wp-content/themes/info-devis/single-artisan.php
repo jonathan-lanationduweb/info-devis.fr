@@ -379,9 +379,9 @@ $idv_is_client = $idv_logged && in_array('client', (array) $idv_current->roles, 
           ?>
             <div class="flex flex-wrap gap-2 mb-5">
               <?php foreach ($idv_expertises as $idv_exp) : ?>
-                <span class="inline-flex items-center gap-1.5 max-w-full px-3.5 py-1.5 rounded-2xl text-sm font-medium bg-primary/5 text-primary border border-primary/15">
+                <span class="inline-flex items-center gap-2 max-w-full px-4 py-2 rounded-full text-sm font-medium bg-primary/5 text-primary border border-primary/15 leading-normal">
                   <i class="fa-solid fa-check text-[10px] opacity-70 shrink-0" aria-hidden="true"></i>
-                  <span class="min-w-0 break-words leading-snug"><?php echo esc_html($idv_exp); ?></span>
+                  <span class="min-w-0 break-words"><?php echo esc_html($idv_exp); ?></span>
                 </span>
               <?php endforeach; ?>
             </div>
