@@ -44,15 +44,13 @@ $idv_links    = idv_nav_links();
           }
           get_template_part('template-parts/user-avatar');
           ?>
-          <a href="<?php echo esc_url($idv_dash_url); ?>" class="nav-link">Mon espace</a>
-          <a href="<?php echo esc_url(wp_logout_url(home_url('/'))); ?>" class="nav-link">Déconnexion</a>
         <?php else : ?>
           <a href="<?php echo esc_url(home_url('/connexion/')); ?>" class="nav-link">Se connecter</a>
           <a href="<?php echo esc_url(home_url('/inscription/')); ?>" class="nav-link">S'inscrire</a>
           <a href="<?php echo esc_url(home_url('/inscription/?type=artisan')); ?>" class="nav-link">Espace Pro</a>
         <?php endif; ?>
         <a href="<?php echo esc_url(home_url('/devis/')); ?>"
-          class="bg-primary text-white px-5 py-2.5 rounded font-semibold text-sm hover:opacity-90 transition-all">
+          class="bg-primary text-white px-5 py-2.5 rounded-full font-semibold text-sm hover:opacity-90 transition-all">
           Demander un devis
         </a>
       </div>

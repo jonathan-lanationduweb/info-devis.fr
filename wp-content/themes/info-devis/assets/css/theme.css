@@ -269,3 +269,8 @@ body[style*="--idv-primary-custom"] {
   --color-brand:   var(--idv-primary-custom);
   --idv-primary:   var(--idv-primary-custom);
 }
+
+/* Menu déroulant du compte (pastille initiales) — retire la flèche native */
+.idv-avatar-menu > summary { list-style: none; }
+.idv-avatar-menu > summary::-webkit-details-marker { display: none; }
+.idv-avatar-menu > summary::marker { content: ""; }
