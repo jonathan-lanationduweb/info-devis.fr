@@ -75,6 +75,7 @@ $idv_badge_html = $idv_validated
   <a href="<?php echo esc_url(home_url('/')); ?>" class="font-headline italic text-xl text-primary">Info-Devis</a>
   <div class="flex items-center gap-1">
     <?php get_template_part('template-parts/notifications-bell'); ?>
+    <?php get_template_part('template-parts/user-avatar'); ?>
     <button onclick="toggleMobMenu()" class="idv-tap p-2 rounded-xl hover:bg-surface-container transition-colors" aria-label="Menu">
     <span class="material-symbols-outlined text-on-surface">menu</span>
     </button>

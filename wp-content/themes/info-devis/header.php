@@ -23,7 +23,7 @@ $idv_links    = idv_nav_links();
   <a href="#main-content" class="idv-skip-link">Aller au contenu principal</a>
 
   <nav class="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-gray-100" id="site-header">
-    <div class="flex justify-between items-center px-8 py-4 w-full max-w-screen-2xl mx-auto">
+    <div class="flex justify-between items-center px-4 md:px-8 py-4 w-full max-w-screen-2xl mx-auto">
 
       <div class="flex items-center gap-10">
         <a href="<?php echo esc_url(home_url('/')); ?>" class="font-headline text-2xl font-bold italic text-primary">
@@ -42,6 +42,7 @@ $idv_links    = idv_nav_links();
           if (array_intersect(['client', 'artisan'], (array) wp_get_current_user()->roles)) {
               get_template_part('template-parts/notifications-bell');
           }
+          get_template_part('template-parts/user-avatar');
           ?>
           <a href="<?php echo esc_url($idv_dash_url); ?>" class="nav-link">Mon espace</a>
           <a href="<?php echo esc_url(wp_logout_url(home_url('/'))); ?>" class="nav-link">Déconnexion</a>
@@ -60,6 +61,9 @@ $idv_links    = idv_nav_links();
         <?php
         if ($idv_logged && array_intersect(['client', 'artisan'], (array) wp_get_current_user()->roles)) {
             get_template_part('template-parts/notifications-bell');
+        }
+        if ($idv_logged) {
+            get_template_part('template-parts/user-avatar');
         }
         ?>
         <button id="hamburger" class="idv-tap" aria-label="Ouvrir le menu" aria-haspopup="dialog">
