@@ -45,7 +45,7 @@
         <!-- Catégories -->
         <div>
           <h4 class="font-bold text-xs tracking-widest uppercase mb-5 text-white">Catégories</h4>
-          <ul class="space-y-3 text-white/55 text-sm font-medium">
+          <ul class="grid grid-cols-2 gap-x-6 gap-y-3 text-white/55 text-sm font-medium">
             <li><a href="<?php echo esc_url(home_url('/categorie/plomberie/')); ?>" class="hover:text-primary transition-colors">Plomberie</a></li>
             <li><a href="<?php echo esc_url(home_url('/categorie/electricite/')); ?>" class="hover:text-primary transition-colors">Électricité</a></li>
             <li><a href="<?php echo esc_url(home_url('/categorie/peinture/')); ?>" class="hover:text-primary transition-colors">Peinture</a></li>
