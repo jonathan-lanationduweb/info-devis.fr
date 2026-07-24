@@ -379,9 +379,9 @@ $idv_is_client = $idv_logged && in_array('client', (array) $idv_current->roles, 
           ?>
             <div class="flex flex-wrap gap-2 mb-5">
               <?php foreach ($idv_expertises as $idv_exp) : ?>
-                <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-medium bg-primary/5 text-primary border border-primary/15">
-                  <i class="fa-solid fa-check text-[10px] opacity-70" aria-hidden="true"></i>
-                  <?php echo esc_html($idv_exp); ?>
+                <span class="inline-flex items-center gap-1.5 max-w-full px-3.5 py-1.5 rounded-2xl text-sm font-medium bg-primary/5 text-primary border border-primary/15">
+                  <i class="fa-solid fa-check text-[10px] opacity-70 shrink-0" aria-hidden="true"></i>
+                  <span class="min-w-0 break-words leading-snug"><?php echo esc_html($idv_exp); ?></span>
                 </span>
               <?php endforeach; ?>
             </div>
@@ -389,7 +389,7 @@ $idv_is_client = $idv_logged && in_array('client', (array) $idv_current->roles, 
           <?php if ($idv_metiers) : ?>
             <div class="flex flex-wrap gap-2 pt-1">
               <?php foreach ($idv_metiers as $idv_t) : ?>
-                <span class="px-3 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wide bg-surface-container text-on-surface-variant"><?php echo esc_html($idv_t->name); ?></span>
+                <span class="inline-block max-w-full break-words px-3 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wide bg-surface-container text-on-surface-variant"><?php echo esc_html($idv_t->name); ?></span>
               <?php endforeach; ?>
             </div>
           <?php endif; ?>
